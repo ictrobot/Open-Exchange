@@ -4,7 +4,6 @@ bin/
 tmp/
 jars/
 temp/
-build.properties
 *.tmp
 *.bak
 *.swp
