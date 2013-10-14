@@ -1,0 +1,19 @@
+[
+{
+  "modid": "OE",
+  "name": "Open-Exchange",
+  "description": "Open-Exchange",
+  "version": "@VERSION@",
+  "credits": "ictrobot",
+  "logoFile": "logo.png",
+  "mcversion": "1.6.2",
+  "url": "https://github.com/ictrobot/",
+  "updateUrl": "",
+  "authors": [ "ictrobot"],
+  "parent": "",
+  "screenshots": [],
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]
