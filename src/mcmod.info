@@ -2,7 +2,7 @@
 {
   "modid": "OE",
   "name": "Open-Exchange",
-  "description": "Open-Exchange",
+  "description": "Idea from Equivalent Exchange 2 by x3n0ph0b3 & Pahimar",
   "version": "@VERSION@",
   "credits": "ictrobot",
   "logoFile": "logo.png",
