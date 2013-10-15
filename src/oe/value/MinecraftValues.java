@@ -86,7 +86,7 @@ public class MinecraftValues extends Values {
     add(Item.spiderEye, 12);
     add(Item.fishRaw, 32);
     
-    add(Block.planks, getValue(Block.planks) / 4);
+    add(Block.planks, getValue(Block.wood) / 4);
     add(Item.stick, getValue(Block.planks) / 2);
     add(Block.glass, getValue(Block.sand));
     add(Block.blockIron, getValue(Item.ingotIron) * 9);
