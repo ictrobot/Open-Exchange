@@ -39,47 +39,49 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public void updateEntity() {
     updateDifferent();
     if (Sided.isServer()) {
-      if (prevStored != stored) {
-        onInventoryChanged();
-      }
-      ticks++;
-      if (ticks > 5) {
-        ticks = 1;
-        prevStored = stored;
-      }
-      for (int i = 1; i <= 4; i++) {
-        if (getStackInSlot(0) != null) {
-          ItemStack target = getStackInSlot(0).copy();
-          target.stackSize = 1;
-          if (Values.hasValue(target)) {
-            hasTarget = true;
-            onInventoryChanged();
-            int V = Values.getValue(target);
-            if (stored >= V) {
-              if (incrTarget()) {
-                stored = stored - V;
-                onInventoryChanged();
+      if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord)==0) {
+        if (prevStored != stored) {
+          onInventoryChanged();
+        }
+        ticks++;
+        if (ticks > 5) {
+          ticks = 1;
+          prevStored = stored;
+        }
+        for (int i = 1; i <= 4; i++) {
+          if (getStackInSlot(0) != null) {
+            ItemStack target = getStackInSlot(0).copy();
+            target.stackSize = 1;
+            if (Values.hasValue(target)) {
+              hasTarget = true;
+              onInventoryChanged();
+              int V = Values.getValue(target);
+              if (stored >= V) {
+                if (incrTarget()) {
+                  stored = stored - V;
+                  onInventoryChanged();
+                }
               }
+            } else {
+              hasTarget = false;
+              onInventoryChanged();
             }
-          } else {
-            hasTarget = false;
-            onInventoryChanged();
           }
+          updateDifferent();
+          
+          int slot = ValueSlot();
+          if (slot == -1) {
+            return;
+          }
+          ItemStack itemstack = getStackInSlot(slot).copy();
+          if (itemstack == null) {
+            return;
+          }
+          int V = Values.getValue(itemstack);
+          stored = stored + V;
+          decrStackSize(slot, 1);
+          sendChangeToClients();
         }
-        updateDifferent();
-        
-        int slot = ValueSlot();
-        if (slot == -1) {
-          return;
-        }
-        ItemStack itemstack = getStackInSlot(slot).copy();
-        if (itemstack == null) {
-          return;
-        }
-        int V = Values.getValue(itemstack);
-        stored = stored + V;
-        decrStackSize(slot, 1);
-        sendChangeToClients();
       }
     } else {
       if (getStackInSlot(0) != null) {
@@ -184,7 +186,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       System.out.println("Free " + free);
       if (free != -1) {
         ItemStack tmp = chestContents[0].copy();
-        tmp.stackSize = 1;
+        tmp.stackSize = 0;
         System.out.println("tmp = " + tmp.toString());
         setInventorySlotContents(free, tmp);
       }
@@ -264,7 +266,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       for (int slot = 1; slot < size; slot++) {
         if (getStackInSlot(slot) != null) {
           if (Values.hasValue(getStackInSlot(slot)) && isDifferent[slot]) {
-            System.out.println("VS " + slot);
             return slot;
           }
         }
@@ -317,20 +318,30 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public int[] getAccessibleSlotsFromSide(int side) {
-    if (side == 0 || side == 1) {
+    if (side == 1) {
       int[] tmp = { 0 };
       return tmp;
+    //} else if (side == 0) {
+    //  return targetCopyExtract();
     } else {
-      int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
       return tmp;
     }
   }
   
   @Override
   public boolean canInsertItem(int slot, ItemStack itemstack, int side) {
-    if ((side == 0 || side == 1) && (slot == 0)) {
+    if (side == 1 && slot == 0) {
       return true;
-    } else if ((!(side == 0 || side == 1)) && slot > 0 && slot < 10) {
+    } else if (side == 0) {
+      boolean s = false;
+      for (int i = 0; i < targetCopyExtract().length; i++) {
+        if (targetCopyExtract()[i] == slot) {
+          s = true;
+        }
+      }
+      return s;
+    } else if (side != 0 && slot > 0 && slot < size) {
       return true;
     }
     return false;
@@ -338,11 +349,44 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
-    if ((side == 0 || side == 1) && (slot == 0)) {
+    if (side == 1 && slot == 0) {
       return true;
-    } else if ((!(side == 0 || side == 1)) && slot > 0 && slot < 10) {
+    } else if (side == 0) {
+      boolean s = false;
+      for (int i = 0; i < targetCopyExtract().length; i++) {
+        if (targetCopyExtract()[i] == slot) {
+          s = true;
+        }
+      }
+      return s;
+    } else if (side != 0 && slot > 0 && slot < size) {
       return true;
     }
     return false;
+  }
+  
+  public int[] targetCopyExtract() {
+    int[] tmp = new int[numTargetCopies()];
+    if (tmp.length==0) {
+      return new int[] {};
+    }
+    int l = 0;
+    for (int i = 1; i < size; i++) {
+      if (!isDifferent[i]) {
+        tmp[l] = i;
+        l++;
+      } 
+    }
+    return tmp;
+  }
+  
+  public int numTargetCopies() {
+    int tmp = 0;
+    for (int i = 1; i < size; i++) {
+      if (!isDifferent[i]) {
+        tmp++;
+      }
+    }
+    return tmp;
   }
 }
