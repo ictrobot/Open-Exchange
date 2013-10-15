@@ -10,7 +10,7 @@
 	<property name="forge.version" value="9.11.1.916"/>
 	<property name="forge.name" value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
   <property name="forge.latest" value="minecraftforge/minecraftforge-src-latest.zip"/>
-  <property name="output.file" value="${basedir}\jars\Gems ${build.build_type}-${build.build_number}.jar"/>
+  <property name="output.file" value="${basedir}\jars\Open-Exchange ${build.build_type}-${build.build_number}.jar"/>
   
   <target name="forge">
     <delete dir="${basedir}/temp/" />
