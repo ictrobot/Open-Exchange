@@ -26,7 +26,7 @@ public class ValueData {
     this.metaprovided = false;
   }
   
-  public ValueData(ItemStack stack, int Type, int Value) {
+  public ValueData(ItemStack stack, int Value) {
     this.itemstackprovided = true;
     this.itemstack = stack;
     this.ID = stack.itemID;

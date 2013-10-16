@@ -76,8 +76,8 @@ public class Values {
     increase();
   }
   
-  public static void add(ItemStack stack, int Type, int Value) {
-    data[data.length - 1] = new ValueData(stack, Type, Value);
+  public static void add(ItemStack stack, int Value) {
+    data[data.length - 1] = new ValueData(stack, Value);
     increase();
   }
   
