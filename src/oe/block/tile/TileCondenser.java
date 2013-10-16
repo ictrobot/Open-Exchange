@@ -184,11 +184,9 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         return true;
       }
       int free = freeSlot();
-      System.out.println("Free " + free);
       if (free != -1) {
         ItemStack tmp = chestContents[0].copy();
         tmp.stackSize = 0;
-        System.out.println("tmp = " + tmp.toString());
         setInventorySlotContents(free, tmp);
       }
     }
