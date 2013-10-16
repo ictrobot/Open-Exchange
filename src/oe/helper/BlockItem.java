@@ -3,12 +3,18 @@ package oe.helper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class BlockOrItem {
+public class BlockItem {
   public static boolean isItem(int ID) {
     return Item.itemsList[ID] != null;
   }
   
   public static boolean isBlock(int ID) {
-    return Block.blocksList[ID] != null;
+    if (ID>4096) {
+      return false;
+    }
+    if (Block.blocksList[ID].getUnlocalizedName()=="ForgeFiller") {
+      return false;
+    }
+    return true;
   }
 }
