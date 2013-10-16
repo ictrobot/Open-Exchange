@@ -10,11 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import oe.api.OETileInterface;
 import oe.helper.Sided;
 import oe.value.Values;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileCondenser extends TileEntity implements IInventory, ISidedInventory {
+public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
   public ItemStack[] chestContents;
   public final int size = 28;
   public int stored;
@@ -388,5 +389,15 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       }
     }
     return tmp;
+  }
+
+  @Override
+  public int getStored() {
+    return stored;
+  }
+
+  @Override
+  public void setStored(int value) {
+    stored = value;
   }
 }
