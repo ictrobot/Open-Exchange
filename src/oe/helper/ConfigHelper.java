@@ -26,7 +26,9 @@ public class ConfigHelper {
   }
   
   public static void save() {
-    config.save();
+    if (config.hasChanged()) {
+      config.save();
+    }
   }
   
   public static int item(String Name) {
