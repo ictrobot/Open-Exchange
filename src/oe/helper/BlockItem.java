@@ -9,10 +9,10 @@ public class BlockItem {
   }
   
   public static boolean isBlock(int ID) {
-    if (ID>4096) {
+    if (ID > 4096) {
       return false;
     }
-    if (Block.blocksList[ID].getUnlocalizedName()=="ForgeFiller") {
+    if (Block.blocksList[ID].getUnlocalizedName() == "ForgeFiller") {
       return false;
     }
     return true;

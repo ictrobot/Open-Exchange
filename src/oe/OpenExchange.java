@@ -2,6 +2,8 @@ package oe;
 
 import java.io.File;
 import oe.handler.IMC;
+import oe.item.ItemIDs;
+import oe.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
@@ -24,7 +26,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import oe.packet.*;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe"}, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -45,6 +47,10 @@ public class OpenExchange {
     BlockIDs.Load();
     Log.debug("Loading Blocks");
     Blocks.Load();
+    Log.debug("Loading Item IDs");
+    ItemIDs.Load();
+    Log.debug("Loading Items");
+    Items.Load();
     Log.debug("Registering Blocks");
     Blocks.Register();
     Log.debug("Registering Tile Entities");
@@ -65,7 +71,7 @@ public class OpenExchange {
   
   @EventHandler
   public void handleIMCMessages(IMCEvent event) {
-
-      IMC.processIMCMessages(event);
+    
+    IMC.processIMCMessages(event);
   }
 }

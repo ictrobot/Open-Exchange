@@ -40,7 +40,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public void updateEntity() {
     updateDifferent();
     if (Sided.isServer()) {
-      if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord)==0) {
+      if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         if (prevStored != stored) {
           onInventoryChanged();
         }
@@ -320,10 +320,10 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     if (side == 1) {
       int[] tmp = { 0 };
       return tmp;
-    //} else if (side == 0) {
-    //  return targetCopyExtract();
+      // } else if (side == 0) {
+      // return targetCopyExtract();
     } else {
-      int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
+      int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
       return tmp;
     }
   }
@@ -366,7 +366,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   public int[] targetCopyExtract() {
     int[] tmp = new int[numTargetCopies()];
-    if (tmp.length==0) {
+    if (tmp.length == 0) {
       return new int[] {};
     }
     int l = 0;
@@ -374,7 +374,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       if (!isDifferent[i]) {
         tmp[l] = i;
         l++;
-      } 
+      }
     }
     return tmp;
   }
@@ -388,12 +388,12 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     }
     return tmp;
   }
-
+  
   @Override
   public int getStored() {
     return stored;
   }
-
+  
   @Override
   public void setStored(int value) {
     stored = value;

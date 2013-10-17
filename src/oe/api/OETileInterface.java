@@ -1,6 +1,6 @@
 package oe.api;
 
-public interface OETileInterface{
+public interface OETileInterface {
   /**
    * Returns the value stored in the tile entity
    */
