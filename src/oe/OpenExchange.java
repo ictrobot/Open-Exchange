@@ -1,6 +1,7 @@
 package oe;
 
 import java.io.File;
+import oe.handler.IMC;
 import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
@@ -17,12 +18,13 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import oe.packet.*;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "OE", "OEValueS", "OEValueG" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe"}, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -59,5 +61,11 @@ public class OpenExchange {
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
     MinecraftForge.EVENT_BUS.register(new ToolTip());
+  }
+  
+  @EventHandler
+  public void handleIMCMessages(IMCEvent event) {
+
+      IMC.processIMCMessages(event);
   }
 }

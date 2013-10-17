@@ -9,11 +9,9 @@ public class PacketHandler implements IPacketHandler {
   
   @Override
   public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerEntity) {
+    System.out.println(packet.channel);
     if (packet.channel=="oe" || packet.channel=="OE") {
       InternalPacket.packet(manager, packet, playerEntity);
-    }
-    if (packet.channel=="OEValues") {
-      APIPacket.packet(manager, packet, playerEntity);
     }
   }
 

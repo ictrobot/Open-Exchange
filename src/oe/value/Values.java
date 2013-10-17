@@ -4,15 +4,20 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import oe.Log;
+import oe.helper.ConfigHelper;
 
 public class Values {
   
-  public final static String name = "QMC";
-  public final static String nameFull = "Quantum Matter Currency";
+  public static String name = "QMC";
+  public static String nameFull = "Quantum Matter Currency";
   
   private static ValueData[] data = new ValueData[1];
   
   public static void load() {
+    ConfigHelper.load();
+    name = ConfigHelper.other("Values", "Name", "QMC");
+    nameFull = ConfigHelper.other("Values", "Stands For", "Quantum Matter Currency");
+    ConfigHelper.save();
   }
   
   public static int Length() {
