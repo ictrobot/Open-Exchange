@@ -1,10 +1,12 @@
 package oe;
 
 import java.io.File;
+import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
 import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
+import oe.client.ToolTip;
 import oe.proxy.CommonProxy;
 import oe.value.MinecraftValues;
 import oe.value.Values;
@@ -20,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import oe.packet.*;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "OE", "OEValues" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "OE", "OEValueS", "OEValueG" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -56,5 +58,6 @@ public class OpenExchange {
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
+    MinecraftForge.EVENT_BUS.register(new ToolTip());
   }
 }
