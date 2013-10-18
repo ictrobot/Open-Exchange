@@ -53,6 +53,8 @@ public class OpenExchange {
     Items.Load();
     Log.debug("Registering Blocks");
     Blocks.Register();
+    Log.debug("Registering Items");
+    Items.Register();
     Log.debug("Registering Tile Entities");
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
