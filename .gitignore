@@ -4,12 +4,12 @@ bin/
 tmp/
 jars/
 temp/
+build.properties
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
-build.properties
 .classpath
 .settings/
 .loadpath
