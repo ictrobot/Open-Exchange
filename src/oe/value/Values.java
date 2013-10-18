@@ -26,7 +26,7 @@ public class Values {
     return data.length;
   }
   
-  public static int getValue(Item item) {
+  public static double getValue(Item item) {
     for (int i = 1; i < data.length; i++) {
       if (data[i - 1].type == 1) {
         if (data[i - 1].item == item) {
@@ -37,7 +37,7 @@ public class Values {
     return OreValues.getValue(item);
   }
   
-  public static int getValue(Block block) {
+  public static double getValue(Block block) {
     for (int i = 1; i < data.length; i++) {
       if (data[i - 1].type == 0) {
         if (data[i - 1].block == block) {
@@ -48,7 +48,7 @@ public class Values {
     return OreValues.getValue(block);
   }
   
-  public static int getValue(ItemStack itemstack) {
+  public static double getValue(ItemStack itemstack) {
     if (itemstack == null) {
       return -1;
     }
@@ -77,47 +77,47 @@ public class Values {
     data = tmp;
   }
   
-  public static void add(Block block2, int Value) {
+  public static void add(Block block2, double Value) {
     data[data.length - 1] = new ValueData(block2, Value);
     increase();
   }
   
-  public static void add(ItemStack stack, int Value) {
+  public static void add(ItemStack stack, double Value) {
     data[data.length - 1] = new ValueData(stack, Value);
     increase();
   }
   
-  public static void add(Block block2, int meta, int Value) {
+  public static void add(Block block2, int meta, double Value) {
     data[data.length - 1] = new ValueData(block2, meta, Value);
     increase();
   }
   
-  public static void add(Block block2, int meta, ItemStack stack, int Value) {
+  public static void add(Block block2, int meta, ItemStack stack, double Value) {
     data[data.length - 1] = new ValueData(block2, meta, stack, Value);
     increase();
   }
   
-  public static void add(Block block2, ItemStack stack, int Value) {
+  public static void add(Block block2, ItemStack stack, double Value) {
     data[data.length - 1] = new ValueData(block2, stack, Value);
     increase();
   }
   
-  public static void add(Item item2, int meta, ItemStack stack, int Value) {
+  public static void add(Item item2, int meta, ItemStack stack, double Value) {
     data[data.length - 1] = new ValueData(item2, meta, stack, Value);
     increase();
   }
   
-  public static void add(Item item2, int meta, int Value) {
+  public static void add(Item item2, int meta, double Value) {
     data[data.length - 1] = new ValueData(item2, meta, Value);
     increase();
   }
   
-  public static void add(Item item2, int Value) {
+  public static void add(Item item2, double Value) {
     data[data.length - 1] = new ValueData(item2, Value);
     increase();
   }
   
-  public static void add(Item item2, ItemStack stack, int Value) {
+  public static void add(Item item2, ItemStack stack, double Value) {
     data[data.length - 1] = new ValueData(item2, stack, Value);
     increase();
   }

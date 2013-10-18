@@ -4,10 +4,10 @@ public interface OETileInterface {
   /**
    * Returns the value stored in the tile entity
    */
-  public int getStored();
+  public double getStored();
   
   /**
    * Sets the value stored in the tile entity
    */
-  public void setStored(int value);
+  public void setStored(double value);
 }

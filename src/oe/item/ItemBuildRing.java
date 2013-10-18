@@ -31,19 +31,19 @@ public class ItemBuildRing extends Item {
             if (BlockItem.isBlock(held.itemID)) {
               if (held.stackSize == 1) {
                 if (Values.hasValue(held)) {
-                  int v = itemStack.getTagCompound().getInteger("Value");
+                  double v = itemStack.getTagCompound().getDouble("Value");
                   if (v >= Values.getValue(held)) {
-                    itemStack.getTagCompound().setInteger("Value", itemStack.getTagCompound().getInteger("Value") - Values.getValue(held));
+                    itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - Values.getValue(held));
                     held.stackSize++;
                   } else {
                     int vs = ValueSlot(player);
                     if (vs != -1) {
-                      itemStack.getTagCompound().setInteger("Value", itemStack.getTagCompound().getInteger("Value") + Values.getValue(player.inventory.mainInventory[vs]));
+                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") + Values.getValue(player.inventory.mainInventory[vs]));
                       player.inventory.mainInventory[vs].stackSize--;
                       if (player.inventory.mainInventory[vs].stackSize == 0) {
                         player.inventory.mainInventory[vs] = null;
                       }
-                      itemStack.getTagCompound().setInteger("Value", itemStack.getTagCompound().getInteger("Value") - Values.getValue(held));
+                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - Values.getValue(held));
                       held.stackSize++;
                     }
                   }
@@ -59,7 +59,7 @@ public class ItemBuildRing extends Item {
   private void checkNBT(ItemStack itemstack) {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
-      itemstack.getTagCompound().setInteger("Value", 0);
+      itemstack.getTagCompound().setDouble("Value", 0);
     }
   }
   
@@ -82,7 +82,7 @@ public class ItemBuildRing extends Item {
       } else {
         list.add("\u00A77Disabled");
       }
-      list.add(Values.name + ": " + itemStack.getTagCompound().getInteger("Value"));
+      list.add(Values.name + ": " + itemStack.getTagCompound().getDouble("Value"));
     }
   }
   

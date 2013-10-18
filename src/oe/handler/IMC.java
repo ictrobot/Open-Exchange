@@ -31,10 +31,10 @@ public class IMC {
     
     NBTTagCompound nbt = imcMessage.getNBTValue();
     
-    int Value = Values.getValue(new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta")));
+    double Value = Values.getValue(new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta")));
     
     NBTTagCompound message = new NBTTagCompound();
-    message.setInteger("value", Value);
+    message.setDouble("value", Value);
     message.setInteger("itemID", nbt.getInteger("itemID"));
     message.setInteger("meta", nbt.getInteger("meta"));
     FMLInterModComms.sendMessage(imcMessage.getSender(), "QMC_VALUE", message);
@@ -46,6 +46,6 @@ public class IMC {
     
     ItemStack stack = new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta"));
     
-    Values.add(stack, nbt.getInteger("value"));
+    Values.add(stack, nbt.getDouble("value"));
   }
 }

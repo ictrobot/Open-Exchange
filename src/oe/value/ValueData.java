@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ValueData {
-  public int value;
+  public double value;
   public ItemStack itemstack;
   public Block block;
   public Item item;
@@ -15,7 +15,7 @@ public class ValueData {
   public boolean itemstackprovided;
   public boolean metaprovided;
   
-  public ValueData(Block block2, int Value) {
+  public ValueData(Block block2, double Value) {
     this.block = block2;
     this.itemstackprovided = false;
     this.itemstack = new ItemStack(block2);
@@ -26,7 +26,7 @@ public class ValueData {
     this.metaprovided = false;
   }
   
-  public ValueData(ItemStack stack, int Value) {
+  public ValueData(ItemStack stack, double Value) {
     this.itemstackprovided = true;
     this.itemstack = stack;
     this.ID = stack.itemID;
@@ -36,7 +36,7 @@ public class ValueData {
     this.metaprovided = false;
   }
   
-  public ValueData(Block block2, int meta, int Value) {
+  public ValueData(Block block2, int meta, double Value) {
     this.block = block2;
     this.itemstackprovided = false;
     this.itemstack = new ItemStack(block2, 1, meta);
@@ -47,7 +47,7 @@ public class ValueData {
     this.metaprovided = true;
   }
   
-  public ValueData(Block block2, int meta, ItemStack stack, int Value) {
+  public ValueData(Block block2, int meta, ItemStack stack, double Value) {
     this.block = block2;
     this.itemstackprovided = true;
     this.itemstack = stack;
@@ -58,7 +58,7 @@ public class ValueData {
     this.metaprovided = true;
   }
   
-  public ValueData(Block block2, ItemStack stack, int Value) {
+  public ValueData(Block block2, ItemStack stack, double Value) {
     this.block = block2;
     this.itemstackprovided = true;
     this.itemstack = stack;
@@ -69,7 +69,7 @@ public class ValueData {
     this.metaprovided = false;
   }
   
-  public ValueData(Item item2, int meta, ItemStack stack, int Value) {
+  public ValueData(Item item2, int meta, ItemStack stack, double Value) {
     this.item = item2;
     this.itemstackprovided = true;
     this.itemstack = stack;
@@ -80,7 +80,7 @@ public class ValueData {
     this.metaprovided = true;
   }
   
-  public ValueData(Item item2, int meta, int Value) {
+  public ValueData(Item item2, int meta, double Value) {
     this.item = item2;
     this.itemstackprovided = false;
     this.itemstack = new ItemStack(item2, 1, meta);
@@ -91,7 +91,7 @@ public class ValueData {
     this.metaprovided = true;
   }
   
-  public ValueData(Item item2, int Value) {
+  public ValueData(Item item2, double Value) {
     this.item = item2;
     this.itemstackprovided = false;
     this.itemstack = new ItemStack(item2);
@@ -102,7 +102,7 @@ public class ValueData {
     this.metaprovided = false;
   }
   
-  public ValueData(Item item2, ItemStack stack, int Value) {
+  public ValueData(Item item2, ItemStack stack, double Value) {
     this.item = item2;
     this.itemstackprovided = true;
     this.itemstack = stack;

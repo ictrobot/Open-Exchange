@@ -37,14 +37,14 @@ public class InternalPacket {
     int x;
     int y;
     int z;
-    int stored;
+    double stored;
     boolean hasTarget;
     try {
       int sender = inputStream.readInt();
       x = inputStream.readInt();
       y = inputStream.readInt();
       z = inputStream.readInt();
-      stored = inputStream.readInt();
+      stored = inputStream.readDouble();
       hasTarget = inputStream.readBoolean();
     } catch (IOException e) {
       e.printStackTrace();

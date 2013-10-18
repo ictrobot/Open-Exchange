@@ -23,20 +23,20 @@ public class OreValues {
     data = tmp;
   }
   
-  public static void add(String oreDictionary, int value) {
+  public static void add(String oreDictionary, double value) {
     data[data.length - 1] = new OreData(oreDictionary, value);
     increase();
   }
   
-  public static int getValue(Item item) {
+  public static double getValue(Item item) {
     return getValue(new ItemStack(item));
   }
   
-  public static int getValue(Block block) {
+  public static double getValue(Block block) {
     return getValue(new ItemStack(block));
   }
   
-  public static int getValue(ItemStack itemstack) {
+  public static double getValue(ItemStack itemstack) {
     if (itemstack == null) {
       return -1;
     }

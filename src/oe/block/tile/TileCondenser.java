@@ -18,9 +18,9 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
   public ItemStack[] chestContents;
   public final int size = 28;
-  public int stored;
+  public double stored;
   public String renderText = "";
-  private int prevStored;
+  private double prevStored;
   private int ticks;
   public boolean hasTarget;
   public int percent = 0; // CLIENT SIDE
@@ -56,7 +56,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
             if (Values.hasValue(target)) {
               hasTarget = true;
               onInventoryChanged();
-              int V = Values.getValue(target);
+              double V = Values.getValue(target);
               if (stored >= V) {
                 if (incrTarget()) {
                   stored = stored - V;
@@ -78,7 +78,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           if (itemstack == null) {
             return;
           }
-          int V = Values.getValue(itemstack);
+          double V = Values.getValue(itemstack);
           stored = stored + V;
           decrStackSize(slot, 1);
           sendChangeToClients();
@@ -90,7 +90,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           ItemStack target = getStackInSlot(0).copy();
           target.stackSize = 1;
           if (Values.hasValue(target)) {
-            int V = Values.getValue(target);
+            double V = Values.getValue(target);
             double per = (double) stored / (double) V;
             per = 100 * per;
             this.percent = (int) per;
@@ -223,7 +223,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         chestContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
       }
     }
-    stored = TagCompound.getInteger("OE_Stored_Value");
+    stored = TagCompound.getDouble("OE_Stored_Value");
   }
   
   @Override
@@ -239,7 +239,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       }
     }
     TagCompound.setTag("Items", TagList);
-    TagCompound.setInteger("OE_Stored_Value", stored);
+    TagCompound.setDouble("OE_Stored_Value", stored);
   }
   
   @Override
@@ -301,7 +301,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       outputStream.writeInt(this.xCoord);
       outputStream.writeInt(this.yCoord);
       outputStream.writeInt(this.zCoord);
-      outputStream.writeInt(this.stored);
+      outputStream.writeDouble(this.stored);
       outputStream.writeBoolean(this.hasTarget);
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -390,12 +390,12 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   }
   
   @Override
-  public int getStored() {
+  public double getStored() {
     return stored;
   }
   
   @Override
-  public void setStored(int value) {
+  public void setStored(double value) {
     stored = value;
   }
 }
