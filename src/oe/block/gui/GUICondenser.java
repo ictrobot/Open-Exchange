@@ -1,5 +1,6 @@
 package oe.block.gui;
 
+import java.text.DecimalFormat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +12,8 @@ import oe.value.Values;
 public class GUICondenser extends GuiContainer {
   
   TileCondenser tile;
+  
+  DecimalFormat df = new DecimalFormat("0.00");
   
   public GUICondenser(InventoryPlayer inventoryPlayer, TileCondenser tileEntity) {
     super(new ContainerCondenser(inventoryPlayer, tileEntity));
@@ -33,11 +36,10 @@ public class GUICondenser extends GuiContainer {
       per = 100;
     }
     per = per + 3;
-    this.drawTexturedModalRect(25, 5, 0, 20, per, 14);
-    this.drawTexturedModalRect(25, 5, 0, 0, 106, 14);
+    this.drawTexturedModalRect(23, 9, 0, 20, per, 12);
+    this.drawTexturedModalRect(23, 9, 0, 0, 106, 12);
     // Storage Text
-    fontRenderer.drawString(tile.stored + "", 131, 6, 4210752);
-    fontRenderer.drawString(Values.name, 131, 14, 4210752);
+    fontRenderer.drawString(df.format(tile.stored) + " " + Values.name, 25, 3, 4210752);
     // Inventory Text
     fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);
   }
