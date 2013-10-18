@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class MinecraftValues extends Values {
   public static void load() {
     
-    int r = Length();
+    int r = length();
     
     add(Block.cobblestone, 1);
     add(Block.stone, 1);
@@ -277,7 +277,7 @@ public class MinecraftValues extends Values {
     add(Item.legsDiamond, 0, getValue(Item.diamond) * 7);
     add(Item.bootsDiamond, 0, getValue(Item.diamond) * 4);
     
-    int reg = Length() - r;
+    int reg = length() - r;
     Log.info(reg + " Minecraft " + nameFull + " Values Loaded");
   }
 }

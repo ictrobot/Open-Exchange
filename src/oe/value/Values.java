@@ -18,9 +18,11 @@ public class Values {
     name = ConfigHelper.other("Values", "Name", "QMC");
     nameFull = ConfigHelper.other("Values", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
+    MinecraftValues.load();
+    OreValues.load();
   }
   
-  public static int Length() {
+  public static int length() {
     return data.length;
   }
   
@@ -32,7 +34,7 @@ public class Values {
         }
       }
     }
-    return 0;
+    return OreValues.getValue(item);
   }
   
   public static int getValue(Block block) {
@@ -43,7 +45,7 @@ public class Values {
         }
       }
     }
-    return 0;
+    return OreValues.getValue(block);
   }
   
   public static int getValue(ItemStack itemstack) {
@@ -66,10 +68,10 @@ public class Values {
         }
       }
     }
-    return 0;
+    return OreValues.getValue(itemstack);
   }
   
-  public static void increase() {
+  private static void increase() {
     ValueData[] tmp = new ValueData[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
@@ -121,31 +123,14 @@ public class Values {
   }
   
   public static boolean hasValue(Item item) {
-    return getValue(item) != 0;
+    return getValue(item) != -1;
   }
   
   public static boolean hasValue(Block block) {
-    return getValue(block) != 0;
+    return getValue(block) != -1;
   }
   
   public static boolean hasValue(ItemStack itemstack) {
-    boolean state = itemstackType(itemstack) != -1;
-    return state;
-  }
-  
-  private static int itemstackType(ItemStack itemstack) {
-    if (itemstack == null) {
-      return -1;
-    }
-    try {
-      for (int i = 1; i < data.length; i++) {
-        if (itemstack.itemID == data[i - 1].ID) {
-          return data[i - 1].type;
-        }
-      }
-    } catch (NullPointerException e) {
-      return -1;
-    }
-    return -1;
+    return getValue(itemstack) != -1;
   }
 }

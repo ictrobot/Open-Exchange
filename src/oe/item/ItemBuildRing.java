@@ -76,12 +76,14 @@ public class ItemBuildRing extends Item {
   
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-    if (itemStack.getTagCompound().getBoolean("Enabled")) {
-      list.add("\u00A77Enabled");
-    } else {
-      list.add("\u00A77Disabled");
+    if (itemStack.getTagCompound() != null) {
+      if (itemStack.getTagCompound().getBoolean("Enabled")) {
+        list.add("\u00A77Enabled");
+      } else {
+        list.add("\u00A77Disabled");
+      }
+      list.add(Values.name + ": " + itemStack.getTagCompound().getInteger("Value"));
     }
-    list.add(Values.name + ": " + itemStack.getTagCompound().getInteger("Value"));
   }
   
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {

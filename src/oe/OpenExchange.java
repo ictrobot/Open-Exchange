@@ -11,7 +11,6 @@ import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
 import oe.client.ToolTip;
 import oe.proxy.CommonProxy;
-import oe.value.MinecraftValues;
 import oe.value.Values;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -42,7 +41,6 @@ public class OpenExchange {
     configdir = event.getModConfigurationDirectory();
     Log.debug("Loading Exchange Values");
     Values.load();
-    MinecraftValues.load();
     Log.debug("Loading Block IDs");
     BlockIDs.Load();
     Log.debug("Loading Blocks");
