@@ -50,7 +50,6 @@ public class Values {
     if (itemstack == null) {
       return -1;
     }
-    itemstack.stackSize = 1;
     for (int i = 1; i < data.length; i++) {
       if (data[i - 1].itemstack == null) {
         Log.warning("Values Database Corrupted");

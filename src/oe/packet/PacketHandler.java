@@ -13,5 +13,4 @@ public class PacketHandler implements IPacketHandler {
       InternalPacket.packet(manager, packet, playerEntity);
     }
   }
-  
 }
