@@ -16,8 +16,13 @@ public class Register {
   
   public static void Block(Block Block, String Name, String Tool, int HarvestLevel) {
     LanguageRegistry.addName(Block, Name);
-    GameRegistry.registerBlock(Block, "OpenExchange");
+    GameRegistry.registerBlock(Block, Block.getUnlocalizedName());
     MinecraftForge.setBlockHarvestLevel(Block, Tool, HarvestLevel);
+  }
+  
+  public static void Block(Block Block, String Name) {
+    LanguageRegistry.addName(Block, Name);
+    GameRegistry.registerBlock(Block, Block.getUnlocalizedName());
   }
   
   public static void Ore(String OreName, Block block) {
