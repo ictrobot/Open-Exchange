@@ -5,8 +5,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.block.container.ContainerCharging;
 import oe.block.container.ContainerCondenser;
+import oe.block.container.ContainerExtractor;
 import oe.block.tile.TileCharging;
 import oe.block.tile.TileCondenser;
+import oe.block.tile.TileExtractor;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GUIHandler implements IGuiHandler {
@@ -17,6 +19,8 @@ public class GUIHandler implements IGuiHandler {
       return new ContainerCondenser(player.inventory, (TileCondenser) tileEntity);
     } else if (tileEntity instanceof TileCharging) {
       return new ContainerCharging(player.inventory, (TileCharging) tileEntity);
+    } else if (tileEntity instanceof TileExtractor) {
+      return new ContainerExtractor(player.inventory, (TileExtractor) tileEntity);
     }
     return null;
   }
@@ -28,6 +32,8 @@ public class GUIHandler implements IGuiHandler {
       return new GUICondenser(player.inventory, (TileCondenser) tileEntity);
     } else if (tileEntity instanceof TileCharging) {
       return new GUICharging(player.inventory, (TileCharging) tileEntity);
+    } else if (tileEntity instanceof TileExtractor) {
+      return new GUIExtractor(player.inventory, (TileExtractor) tileEntity);
     }
     return null;
   }

@@ -4,29 +4,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import oe.api.OEProvideQMC;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
+public class TileExtractor extends TileEntity implements IInventory, OETileInterface {
   public ItemStack[] chestContents;
-  public final int size = 28;
+  public final int size = 27;
   public double stored;
-  private double prevStored;
-  private int ticks;
-  public boolean hasTarget;
   public int percent = 0; // CLIENT SIDE
-  public boolean[] isDifferent = new boolean[size];
+  boolean working = false;
   
-  public TileCondenser() {
+  public TileExtractor() {
     super();
     this.chestContents = new ItemStack[getSizeInventory()];
   }
@@ -38,79 +35,46 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public void updateEntity() {
-    updateDifferent();
     if (Sided.isServer()) {
+      boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
-        if (prevStored != stored) {
-          onInventoryChanged();
-        }
-        ticks++;
-        if (ticks > 5) {
-          ticks = 1;
-          prevStored = stored;
-        }
+        
         for (int i = 1; i <= 4; i++) {
-          if (getStackInSlot(0) != null) {
-            ItemStack target = getStackInSlot(0).copy();
-            target.stackSize = 1;
-            if (QMC.hasValue(target)) {
-              hasTarget = true;
-              onInventoryChanged();
-              double V = QMC.getQMC(target);
-              if (stored >= V) {
-                if (incrTarget()) {
-                  stored = stored - V;
-                  onInventoryChanged();
-                }
-              }
-            } else {
-              hasTarget = false;
-              onInventoryChanged();
+          int slot = -1;
+          for (int s = 0; s < size; s++) {
+            if (getStackInSlot(s) != null && slot == -1 && QMC.hasValue(getStackInSlot(s))) {
+              slot = s;
             }
           }
-          updateDifferent();
-          
-          int slot = ValueSlot();
           if (slot == -1) {
-            return;
+            break;
           }
           ItemStack itemstack = getStackInSlot(slot).copy();
           if (itemstack == null) {
-            return;
+            break;
           }
           double V = QMC.getQMC(itemstack);
           stored = stored + V;
           decrStackSize(slot, 1);
-          sendChangeToClients();
+          tmpWorking = true;
         }
+        stored = OEProvideQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
+        sendChangeToClients();
+      }
+      if (tmpWorking != working) {
+        working = tmpWorking;
+        if (working) {
+          worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 7);
+        } else {
+          worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 7);
+        }
+        System.out.println(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
       }
     } else {
-      if (getStackInSlot(0) != null) {
-        ItemStack target = getStackInSlot(0).copy();
-        target.stackSize = 1;
-        if (QMC.hasValue(target)) {
-          double V = QMC.getQMC(target);
-          double per = (double) stored / (double) V;
-          per = 100 * per;
-          this.percent = (int) per;
-          return;
-        }
-      }
-    }
-  }
-  
-  private void updateDifferent() {
-    boolean state;
-    for (int i = 1; i < size; i++) {
-      state = true;
-      if (chestContents[i] != null && chestContents[0] != null) {
-        if (chestContents[i].itemID == chestContents[0].itemID) {
-          if (chestContents[i].getItemDamage() == chestContents[0].getItemDamage()) {
-            state = false;
-          }
-        }
-      }
-      isDifferent[i] = state;
+      double per = (double) stored / (double) getMaxQMC();
+      per = 100 * per;
+      this.percent = (int) per;
+      return;
     }
   }
   
@@ -161,41 +125,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     } else {
       return null;
     }
-  }
-  
-  public boolean incrTarget() {
-    if (chestContents[0] != null) {
-      int slot = -1;
-      for (int i = 1; i < size; i++) {
-        if (chestContents[i] != null) {
-          ItemStack tmp = getStackInSlot(i).copy();
-          if (!isDifferent[i] && slot == -1 && tmp.getMaxStackSize() > tmp.stackSize) {
-            slot = i;
-          }
-        }
-      }
-      if (slot != -1) {
-        chestContents[slot].stackSize++;
-        onInventoryChanged();
-        return true;
-      }
-      int free = freeSlot();
-      if (free != -1) {
-        ItemStack tmp = chestContents[0].copy();
-        tmp.stackSize = 0;
-        setInventorySlotContents(free, tmp);
-      }
-    }
-    return false;
-  }
-  
-  public int freeSlot() {
-    for (int i = 1; i < size; i++) {
-      if (chestContents[i] == null) {
-        return i;
-      }
-    }
-    return -1;
   }
   
   @Override
@@ -254,21 +183,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     return entityplayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
   }
   
-  private int ValueSlot() {
-    if (getStackInSlot(0) != null) {
-      ItemStack target = getStackInSlot(0).copy();
-      target.stackSize = 1;
-      for (int slot = 1; slot < size; slot++) {
-        if (getStackInSlot(slot) != null) {
-          if (QMC.hasValue(getStackInSlot(slot)) && isDifferent[slot]) {
-            return slot;
-          }
-        }
-      }
-    }
-    return -1;
-  }
-  
   @Override
   public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
     return true;
@@ -293,12 +207,11 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
     DataOutputStream outputStream = new DataOutputStream(bos);
     try {
-      outputStream.writeInt(10);
+      outputStream.writeInt(12);
       outputStream.writeInt(this.xCoord);
       outputStream.writeInt(this.yCoord);
       outputStream.writeInt(this.zCoord);
       outputStream.writeDouble(this.stored);
-      outputStream.writeBoolean(this.hasTarget);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -309,80 +222,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     packet.length = bos.size();
     
     PacketDispatcher.sendPacketToAllAround(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 64, worldObj.provider.dimensionId, packet);
-  }
-  
-  @Override
-  public int[] getAccessibleSlotsFromSide(int side) {
-    if (side == 1) {
-      int[] tmp = { 0 };
-      return tmp;
-      // } else if (side == 0) {
-      // return targetCopyExtract();
-    } else {
-      int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
-      return tmp;
-    }
-  }
-  
-  @Override
-  public boolean canInsertItem(int slot, ItemStack itemstack, int side) {
-    if (side == 1 && slot == 0) {
-      return true;
-    } else if (side == 0) {
-      boolean s = false;
-      for (int i = 0; i < targetCopyExtract().length; i++) {
-        if (targetCopyExtract()[i] == slot) {
-          s = true;
-        }
-      }
-      return s;
-    } else if (side != 0 && slot > 0 && slot < size) {
-      return true;
-    }
-    return false;
-  }
-  
-  @Override
-  public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
-    if (side == 1 && slot == 0) {
-      return true;
-    } else if (side == 0) {
-      boolean s = false;
-      for (int i = 0; i < targetCopyExtract().length; i++) {
-        if (targetCopyExtract()[i] == slot) {
-          s = true;
-        }
-      }
-      return s;
-    } else if (side != 0 && slot > 0 && slot < size) {
-      return true;
-    }
-    return false;
-  }
-  
-  public int[] targetCopyExtract() {
-    int[] tmp = new int[numTargetCopies()];
-    if (tmp.length == 0) {
-      return new int[] {};
-    }
-    int l = 0;
-    for (int i = 1; i < size; i++) {
-      if (!isDifferent[i]) {
-        tmp[l] = i;
-        l++;
-      }
-    }
-    return tmp;
-  }
-  
-  public int numTargetCopies() {
-    int tmp = 0;
-    for (int i = 1; i < size; i++) {
-      if (!isDifferent[i]) {
-        tmp++;
-      }
-    }
-    return tmp;
   }
   
   @Override
@@ -407,7 +246,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public int getMaxQMC() {
-    return 1000000000;
+    return 100000000;
   }
   
   @Override
@@ -417,7 +256,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public OEType getType() {
-    return OEType.Consumer;
+    return OEType.Producer;
   }
   
 }

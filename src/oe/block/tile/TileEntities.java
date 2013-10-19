@@ -6,5 +6,6 @@ public class TileEntities {
   public static void Register() {
     GameRegistry.registerTileEntity(TileCondenser.class, "OECondenser");
     GameRegistry.registerTileEntity(TileCharging.class, "OECharging");
+    GameRegistry.registerTileEntity(TileExtractor.class, "OEExtractor");
   }
 }
