@@ -3,7 +3,7 @@ package oe.client;
 import java.text.DecimalFormat;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import oe.value.*;
+import oe.qmc.*;
 
 public class ToolTip {
   
@@ -11,8 +11,8 @@ public class ToolTip {
   
   @ForgeSubscribe
   public void handleItemTooltipEvent(ItemTooltipEvent event) {
-    if (Values.hasValue(event.itemStack)) {
-      event.toolTip.add(Values.name + ": " + df.format(Values.getValue(event.itemStack)));
+    if (QMC.hasValue(event.itemStack)) {
+      event.toolTip.add(QMC.name + ": " + df.format(QMC.getQMC(event.itemStack)));
     }
   }
 }

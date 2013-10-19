@@ -1,17 +1,17 @@
-package oe.value;
+package oe.qmc;
 
 import oe.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class DefaultOre extends OreValues {
+public class DefaultOreQMC extends QMCOre {
   public static void load() {
     ConfigHelper.load();
-    add("logWood", Values.getValue(Block.wood));
-    add("plankWood", Values.getValue(Block.wood));
-    add("stickWood", Values.getValue(Item.stick));
-    add("blockCobble", Values.getValue(Block.cobblestone));
-    add("blockStone", Values.getValue(Block.stone));
+    add("logWood", QMC.getQMC(Block.wood));
+    add("plankWood", QMC.getQMC(Block.wood));
+    add("stickWood", QMC.getQMC(Item.stick));
+    add("blockCobble", QMC.getQMC(Block.cobblestone));
+    add("blockStone", QMC.getQMC(Block.stone));
     config("ingotCopper", 192);
     config("ingotTin", 192);
     config("ingotLead", 256);

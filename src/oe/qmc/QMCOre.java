@@ -1,16 +1,16 @@
-package oe.value;
+package oe.qmc;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class OreValues {
+public class QMCOre {
   
-  private static OreData[] data = new OreData[1];
+  private static QMCOreData[] data = new QMCOreData[1];
   
   public static void load() {
-    DefaultOre.load();
+    DefaultOreQMC.load();
   }
   
   public static int length() {
@@ -18,25 +18,25 @@ public class OreValues {
   }
   
   private static void increase() {
-    OreData[] tmp = new OreData[data.length + 1];
+    QMCOreData[] tmp = new QMCOreData[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
   }
   
   public static void add(String oreDictionary, double value) {
-    data[data.length - 1] = new OreData(oreDictionary, value);
+    data[data.length - 1] = new QMCOreData(oreDictionary, value);
     increase();
   }
   
-  public static double getValue(Item item) {
-    return getValue(new ItemStack(item));
+  public static double getQMC(Item item) {
+    return getQMC(new ItemStack(item));
   }
   
-  public static double getValue(Block block) {
-    return getValue(new ItemStack(block));
+  public static double getQMC(Block block) {
+    return getQMC(new ItemStack(block));
   }
   
-  public static double getValue(ItemStack itemstack) {
+  public static double getQMC(ItemStack itemstack) {
     if (itemstack == null) {
       return -1;
     }

@@ -1,6 +1,6 @@
 package oe.api;
 
-import oe.value.*;
+import oe.qmc.*;
 
-public class OEValue extends Values {
+public class OEValue extends QMC {
 }

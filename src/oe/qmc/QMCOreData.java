@@ -1,10 +1,10 @@
-package oe.value;
+package oe.qmc;
 
-public class OreData {
+public class QMCOreData {
   public String oreDictionaryName;
   public double value;
   
-  public OreData(String oreDictionary, double Value) {
+  public QMCOreData(String oreDictionary, double Value) {
     this.oreDictionaryName = oreDictionary;
     this.value = Value;
   }

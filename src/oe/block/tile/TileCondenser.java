@@ -12,7 +12,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.helper.Sided;
-import oe.value.Values;
+import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
@@ -53,10 +53,10 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           if (getStackInSlot(0) != null) {
             ItemStack target = getStackInSlot(0).copy();
             target.stackSize = 1;
-            if (Values.hasValue(target)) {
+            if (QMC.hasValue(target)) {
               hasTarget = true;
               onInventoryChanged();
-              double V = Values.getValue(target);
+              double V = QMC.getQMC(target);
               if (stored >= V) {
                 if (incrTarget()) {
                   stored = stored - V;
@@ -78,7 +78,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           if (itemstack == null) {
             return;
           }
-          double V = Values.getValue(itemstack);
+          double V = QMC.getQMC(itemstack);
           stored = stored + V;
           decrStackSize(slot, 1);
           sendChangeToClients();
@@ -89,8 +89,8 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         if (getStackInSlot(0).stackSize < 64) {
           ItemStack target = getStackInSlot(0).copy();
           target.stackSize = 1;
-          if (Values.hasValue(target)) {
-            double V = Values.getValue(target);
+          if (QMC.hasValue(target)) {
+            double V = QMC.getQMC(target);
             double per = (double) stored / (double) V;
             per = 100 * per;
             this.percent = (int) per;
@@ -264,7 +264,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       target.stackSize = 1;
       for (int slot = 1; slot < size; slot++) {
         if (getStackInSlot(slot) != null) {
-          if (Values.hasValue(getStackInSlot(slot)) && isDifferent[slot]) {
+          if (QMC.hasValue(getStackInSlot(slot)) && isDifferent[slot]) {
             return slot;
           }
         }

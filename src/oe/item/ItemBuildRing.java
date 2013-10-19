@@ -3,7 +3,7 @@ package oe.item;
 import java.util.List;
 import oe.helper.BlockItem;
 import oe.helper.Sided;
-import oe.value.Values;
+import oe.qmc.QMC;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,20 +30,20 @@ public class ItemBuildRing extends Item {
           if (held != null) {
             if (BlockItem.isBlock(held.itemID)) {
               if (held.stackSize == 1) {
-                if (Values.hasValue(held)) {
+                if (QMC.hasValue(held)) {
                   double v = itemStack.getTagCompound().getDouble("Value");
-                  if (v >= Values.getValue(held)) {
-                    itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - Values.getValue(held));
+                  if (v >= QMC.getQMC(held)) {
+                    itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - QMC.getQMC(held));
                     held.stackSize++;
                   } else {
                     int vs = ValueSlot(player);
                     if (vs != -1) {
-                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") + Values.getValue(player.inventory.mainInventory[vs]));
+                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") + QMC.getQMC(player.inventory.mainInventory[vs]));
                       player.inventory.mainInventory[vs].stackSize--;
                       if (player.inventory.mainInventory[vs].stackSize == 0) {
                         player.inventory.mainInventory[vs] = null;
                       }
-                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - Values.getValue(held));
+                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - QMC.getQMC(held));
                       held.stackSize++;
                     }
                   }
@@ -66,7 +66,7 @@ public class ItemBuildRing extends Item {
   private int ValueSlot(EntityPlayer player) {
     for (int slot = 35; slot >= 0; slot--) {
       if (player.inventory.mainInventory[slot] != null) {
-        if (Values.hasValue(player.inventory.mainInventory[slot]) && player.inventory.currentItem != slot) {
+        if (QMC.hasValue(player.inventory.mainInventory[slot]) && player.inventory.currentItem != slot) {
           return slot;
         }
       }
@@ -82,7 +82,7 @@ public class ItemBuildRing extends Item {
       } else {
         list.add("\u00A77Disabled");
       }
-      list.add(Values.name + ": " + itemStack.getTagCompound().getDouble("Value"));
+      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
     }
   }
   

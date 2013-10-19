@@ -2,7 +2,7 @@ package oe;
 
 import java.util.ArrayList;
 import java.util.List;
-import oe.value.Values;
+import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -63,7 +63,7 @@ public class OECommand implements ICommand {
     if (player != null) {
       ItemStack held = player.getHeldItem();
       if (held != null) {
-        double v = Values.getValue(held);
+        double v = QMC.getQMC(held);
         if (v != -1) {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("Value of ItemStack in your hand is " + v));
         } else {

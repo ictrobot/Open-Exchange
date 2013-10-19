@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import oe.block.container.ContainerCondenser;
 import oe.block.tile.TileCondenser;
-import oe.value.Values;
+import oe.qmc.QMC;
 
 public class GUICondenser extends GuiContainer {
   
@@ -39,7 +39,7 @@ public class GUICondenser extends GuiContainer {
     this.drawTexturedModalRect(23, 9, 0, 20, per, 12);
     this.drawTexturedModalRect(23, 9, 0, 0, 106, 12);
     // Storage Text
-    fontRenderer.drawString(df.format(tile.stored) + " " + Values.name, 25, 3, 4210752);
+    fontRenderer.drawString(df.format(tile.stored) + " " + QMC.name, 25, 3, 4210752);
     // Inventory Text
     fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);
   }

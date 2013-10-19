@@ -1,6 +1,6 @@
 package oe.handler;
 
-import oe.value.Values;
+import oe.qmc.QMC;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -31,7 +31,7 @@ public class IMC {
     
     NBTTagCompound nbt = imcMessage.getNBTValue();
     
-    double Value = Values.getValue(new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta")));
+    double Value = QMC.getQMC(new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta")));
     
     NBTTagCompound message = new NBTTagCompound();
     message.setDouble("value", Value);
@@ -46,6 +46,6 @@ public class IMC {
     
     ItemStack stack = new ItemStack(nbt.getInteger("itemID"), 0, nbt.getInteger("meta"));
     
-    Values.add(stack, nbt.getDouble("value"));
+    QMC.add(stack, nbt.getDouble("value"));
   }
 }
