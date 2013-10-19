@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import oe.block.tile.TileCharging;
 import oe.block.tile.TileCondenser;
 import cpw.mods.fml.common.network.Player;
 
@@ -27,7 +28,33 @@ public class InternalPacket {
       EntityPlayer player = ((EntityPlayer) playerEntity);
       if (packetSender == 10) {
         updateCondenser(manager, packet, player);
+      } else if (packetSender == 11) {
+        updateCharging(manager, packet, player);
       }
+    }
+  }
+  
+  @SuppressWarnings("unused")
+  public static void updateCharging(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player) {
+    DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+    int x;
+    int y;
+    int z;
+    double stored;
+    try {
+      int sender = inputStream.readInt();
+      x = inputStream.readInt();
+      y = inputStream.readInt();
+      z = inputStream.readInt();
+      stored = inputStream.readDouble();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return;
+    }
+    TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
+    if (te instanceof TileCharging) {
+      TileCharging charging = (TileCharging) te;
+      charging.stored = stored;
     }
   }
   

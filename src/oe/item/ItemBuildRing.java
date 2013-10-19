@@ -1,6 +1,8 @@
 package oe.item;
 
 import java.util.List;
+import oe.api.OEItemInterface;
+import oe.api.lib.OEType;
 import oe.helper.BlockItem;
 import oe.helper.Sided;
 import oe.qmc.QMC;
@@ -12,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class ItemBuildRing extends Item {
+public class ItemBuildRing extends Item implements OEItemInterface {
   
   public ItemBuildRing(int id) {
     super(id);
@@ -98,5 +100,50 @@ public class ItemBuildRing extends Item {
       }
     }
     return itemStack;
+  }
+  
+  @Override
+  public double getQMC(ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      return stack.getTagCompound().getDouble("Value");
+    } else {
+      return -1;
+    }
+  }
+  
+  @Override
+  public void setQMC(double qmc, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      stack.getTagCompound().setDouble("Value", qmc);
+    }
+  }
+  
+  @Override
+  public void increaseQMC(double value, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      stack.getTagCompound().setDouble("Value", stack.getTagCompound().getDouble("Value") + value);
+    }
+  }
+  
+  @Override
+  public void decreaseQMC(double value, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      stack.getTagCompound().setDouble("Value", stack.getTagCompound().getDouble("Value") - value);
+    }
+  }
+  
+  @Override
+  public int getMaxQMC() {
+    return 10000;
+  }
+  
+  @Override
+  public int getTier() {
+    return 1;
+  }
+  
+  @Override
+  public OEType getType() {
+    return OEType.Consumer;
   }
 }
