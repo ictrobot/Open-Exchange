@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
+import oe.api.lib.OEType;
 import oe.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -390,12 +391,38 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   }
   
   @Override
-  public double getStored() {
+  public double getQMC() {
     return stored;
   }
   
   @Override
-  public void setStored(double value) {
+  public void setQMC(double value) {
     stored = value;
   }
+  
+  @Override
+  public void increaseQMC(double value) {
+    stored = stored + value;
+  }
+  
+  @Override
+  public void decreaseQMC(double value) {
+    stored = stored - value;
+  }
+  
+  @Override
+  public int getMaxQMC() {
+    return 1000000000;
+  }
+  
+  @Override
+  public int getTier() {
+    return 1;
+  }
+  
+  @Override
+  public OEType getType() {
+    return OEType.Consumer;
+  }
+  
 }
