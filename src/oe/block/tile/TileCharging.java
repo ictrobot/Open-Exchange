@@ -292,7 +292,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public int getMaxQMC() {
-    return 1000000000;
+    return 10000;
   }
   
   @Override

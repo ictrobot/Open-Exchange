@@ -410,7 +410,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public int getMaxQMC() {
-    return 1000000000;
+    return 10000000;
   }
   
   @Override

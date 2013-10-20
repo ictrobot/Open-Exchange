@@ -1,5 +1,6 @@
 package oe.qmc;
 
+import java.text.DecimalFormat;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,8 @@ public class QMC {
   public static String nameFull = "Quantum Matter Currency";
   
   private static QMCData[] data = new QMCData[1];
+  
+  public static DecimalFormat formatter = new DecimalFormat("0.00");
   
   public static void load() {
     ConfigHelper.load();

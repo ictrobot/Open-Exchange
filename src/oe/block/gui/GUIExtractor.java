@@ -1,6 +1,5 @@
 package oe.block.gui;
 
-import java.text.DecimalFormat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -12,8 +11,6 @@ import oe.qmc.QMC;
 public class GUIExtractor extends GuiContainer {
   
   TileExtractor tile;
-  
-  DecimalFormat df = new DecimalFormat("0.00");
   
   public GUIExtractor(InventoryPlayer inventoryPlayer, TileExtractor tileEntity) {
     super(new ContainerExtractor(inventoryPlayer, tileEntity));
@@ -35,7 +32,7 @@ public class GUIExtractor extends GuiContainer {
     this.drawTexturedModalRect(35, 9, 0, 20, per, 12);
     this.drawTexturedModalRect(35, 9, 0, 0, 106, 12);
     // Storage Text
-    String text = df.format(tile.stored) + " " + QMC.name;
+    String text = QMC.formatter.format(tile.stored) + " " + QMC.name;
     int pos = (176 - (text.length() * 5)) / 2;
     fontRenderer.drawString(text, pos, 3, 4210752);
     // Inventory Text

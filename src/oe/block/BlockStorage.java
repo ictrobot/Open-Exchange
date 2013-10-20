@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
+import oe.qmc.QMC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -38,7 +39,7 @@ public class BlockStorage extends BlockContainer {
     }
     TileStorage storage = (TileStorage) te;
     storage.onInventoryChanged();
-    player.addChatMessage("Stored " + storage.stored);
+    player.addChatMessage("Stored " + storage.stored + " Maximum " + storage.getMaxQMC() + " Percentage " + QMC.formatter.format(storage.stored / storage.getMaxQMC() * 100));
     storage.onClick(player);
     return true;
   }
