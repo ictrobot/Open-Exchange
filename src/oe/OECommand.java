@@ -51,7 +51,7 @@ public class OECommand implements ICommand {
       commandHelp(sender, arguments);
       return;
     }
-    if (arguments[0].matches("value")) {
+    if (arguments[0].matches(QMC.name)) {
       commandValue(sender, arguments);
       return;
     }
@@ -65,9 +65,9 @@ public class OECommand implements ICommand {
       if (held != null) {
         double v = QMC.getQMC(held);
         if (v != -1) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Value of ItemStack in your hand is " + v));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText(QMC.name + " value of ItemStack in your hand is " + v));
         } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The ItemStack in your hand does not have a value"));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The ItemStack in your hand does not have a " + QMC.name + " value"));
         }
       } else {
         sender.sendChatToPlayer(ChatMessageComponent.createFromText("You have nothing in your hand"));

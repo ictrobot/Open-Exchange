@@ -12,12 +12,12 @@ public interface OETileInterface extends OEInterface {
   public void setQMC(double qmc);
   
   /**
-   * Increases stored QMC by vlue
+   * Increases stored QMC by value
    */
   public void increaseQMC(double value);
   
   /**
-   * Decreases stored QMC by vlue
+   * Decreases stored QMC by value
    */
   public void decreaseQMC(double value);
 }

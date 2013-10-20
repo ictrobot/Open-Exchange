@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import oe.block.tile.TileCharging;
 import oe.block.tile.TileCondenser;
 import oe.block.tile.TileExtractor;
+import oe.block.tile.TileStorage;
 import cpw.mods.fml.common.network.Player;
 
 public class InternalPacket {
@@ -33,7 +34,33 @@ public class InternalPacket {
         updateCharging(manager, packet, player);
       } else if (packetSender == 12) {
         updateExtractor(manager, packet, player);
+      } else if (packetSender == 13) {
+        updateStorage(manager, packet, player);
       }
+    }
+  }
+  
+  @SuppressWarnings("unused")
+  private static void updateStorage(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player) {
+    DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+    int x;
+    int y;
+    int z;
+    double stored;
+    try {
+      int sender = inputStream.readInt();
+      x = inputStream.readInt();
+      y = inputStream.readInt();
+      z = inputStream.readInt();
+      stored = inputStream.readDouble();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return;
+    }
+    TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
+    if (te instanceof TileStorage) {
+      TileStorage storage = (TileStorage) te;
+      storage.stored = stored;
     }
   }
   

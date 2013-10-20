@@ -7,5 +7,6 @@ public class TileEntities {
     GameRegistry.registerTileEntity(TileCondenser.class, "OECondenser");
     GameRegistry.registerTileEntity(TileCharging.class, "OECharging");
     GameRegistry.registerTileEntity(TileExtractor.class, "OEExtractor");
+    GameRegistry.registerTileEntity(TileStorage.class, "OEStorage");
   }
 }

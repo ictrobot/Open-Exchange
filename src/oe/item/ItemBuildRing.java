@@ -37,17 +37,6 @@ public class ItemBuildRing extends Item implements OEItemInterface {
                   if (v >= QMC.getQMC(held)) {
                     itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - QMC.getQMC(held));
                     held.stackSize++;
-                  } else {
-                    int vs = ValueSlot(player);
-                    if (vs != -1) {
-                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") + QMC.getQMC(player.inventory.mainInventory[vs]));
-                      player.inventory.mainInventory[vs].stackSize--;
-                      if (player.inventory.mainInventory[vs].stackSize == 0) {
-                        player.inventory.mainInventory[vs] = null;
-                      }
-                      itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - QMC.getQMC(held));
-                      held.stackSize++;
-                    }
                   }
                 }
               }
@@ -63,17 +52,6 @@ public class ItemBuildRing extends Item implements OEItemInterface {
       itemstack.setTagCompound(new NBTTagCompound());
       itemstack.getTagCompound().setDouble("Value", 0);
     }
-  }
-  
-  private int ValueSlot(EntityPlayer player) {
-    for (int slot = 35; slot >= 0; slot--) {
-      if (player.inventory.mainInventory[slot] != null) {
-        if (QMC.hasValue(player.inventory.mainInventory[slot]) && player.inventory.currentItem != slot) {
-          return slot;
-        }
-      }
-    }
-    return -1;
   }
   
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -139,7 +117,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   
   @Override
   public int getTier() {
-    return 1;
+    return 2;
   }
   
   @Override

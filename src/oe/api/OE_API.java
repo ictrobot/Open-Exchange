@@ -1,6 +1,7 @@
 package oe.api;
 
 import java.lang.reflect.Method;
+import oe.api.lib.OEType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -37,13 +38,13 @@ public class OE_API {
     double qmcLeftOver = qmc;
     int[] tier = new int[6];
     double[] canHandle = new double[6];
-    for (int i = 0; i < 6; i++) {
-      tier[i] = 0;
-      canHandle[i] = 0;
+    for (int c = 0; c < 6; c++) {
+      tier[c] = 0;
+      canHandle[c] = 0;
       int targetX = x;
       int targetY = y;
       int targetZ = z;
-      switch (i) {
+      switch (c) {
         case 0:
           targetY++;
           break;
@@ -63,12 +64,14 @@ public class OE_API {
           targetX--;
           break;
       }
-      TileEntity te = world.getBlockTileEntity(targetX, targetY, targetZ);
-      if (te != null) {
-        if (isOE(te.getClass())) {
-          OETileInterface oe = (OETileInterface) te;
-          tier[i] = oe.getTier();
-          canHandle[i] = oe.getMaxQMC() - oe.getQMC();
+      TileEntity tile = world.getBlockTileEntity(targetX, targetY, targetZ);
+      if (tile != null) {
+        if (isOE(tile.getClass())) {
+          OETileInterface oe = (OETileInterface) tile;
+          if (oe.getType() != OEType.Producer) {
+            tier[c] = oe.getTier();
+            canHandle[c] = oe.getMaxQMC() - oe.getQMC();
+          }
         }
       }
     }
@@ -79,13 +82,13 @@ public class OE_API {
       }
     }
     for (int t = maxTier; t > 0; t--) {
-      for (int i = 0; i < 5; i++) {
-        if (tier[i] == maxTier) {
+      for (int a = 0; a < 6; a++) {
+        if (tier[a] == maxTier) {
           double amount = 0;
-          if (canHandle[i] >= maxTier * 10) {
+          if (canHandle[a] >= maxTier * 10) {
             amount = maxTier * 10;
           } else {
-            amount = canHandle[i];
+            amount = canHandle[a];
           }
           if (amount > qmcLeftOver) {
             amount = qmcLeftOver;
@@ -93,7 +96,7 @@ public class OE_API {
           int targetX = x;
           int targetY = y;
           int targetZ = z;
-          switch (i) {
+          switch (a) {
             case 0:
               targetY++;
               break;
@@ -113,10 +116,10 @@ public class OE_API {
               targetX--;
               break;
           }
-          TileEntity te = world.getBlockTileEntity(targetX, targetY, targetZ);
-          if (te != null) {
-            if (te instanceof OETileInterface) {
-              OETileInterface oe = (OETileInterface) te;
+          TileEntity tile = world.getBlockTileEntity(targetX, targetY, targetZ);
+          if (tile != null) {
+            if (isOE(tile.getClass())) {
+              OETileInterface oe = (OETileInterface) tile;
               oe.increaseQMC(amount);
               qmcLeftOver = qmcLeftOver - amount;
             }

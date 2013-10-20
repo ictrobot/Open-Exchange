@@ -297,7 +297,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public int getTier() {
-    return 1;
+    return 2;
   }
   
   @Override
