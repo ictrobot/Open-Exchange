@@ -146,4 +146,8 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   public OEType getType() {
     return OEType.Consumer;
   }
+  
+  @Override
+  public void isOE() {
+  }
 }

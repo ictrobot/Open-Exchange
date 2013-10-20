@@ -420,4 +420,8 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     return OEType.Consumer;
   }
   
+  @Override
+  public void isOE() {
+  }
+  
 }

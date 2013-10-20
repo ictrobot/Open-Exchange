@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
-import oe.api.OEProvideQMC;
+import oe.api.OE_API;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.helper.Sided;
@@ -58,7 +58,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
           decrStackSize(slot, 1);
           tmpWorking = true;
         }
-        stored = OEProvideQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
+        stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
         sendChangeToClients();
       }
       if (tmpWorking != working) {
@@ -257,6 +257,10 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   @Override
   public OEType getType() {
     return OEType.Producer;
+  }
+  
+  @Override
+  public void isOE() {
   }
   
 }
