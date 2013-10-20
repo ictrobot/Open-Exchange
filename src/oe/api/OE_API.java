@@ -1,9 +1,29 @@
 package oe.api;
 
+import java.lang.reflect.Method;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class OEProvideQMC {
+public class OE_API {
+  
+  /**
+   * Checks if a class is extends OEInterface (Checks by looking for a method called "isOE")
+   * 
+   * @param c
+   * @return
+   */
+  public static boolean isOE(Class<?> c) {
+    boolean hasMethod = false;
+    Method[] methods = c.getMethods();
+    for (Method m : methods) {
+      if (m.getName().equals("isOE")) {
+        hasMethod = true;
+        break;
+      }
+    }
+    return hasMethod;
+  }
+  
   /**
    * Provide other blocks with QMC, Coords are for the block providing
    * 
@@ -45,7 +65,7 @@ public class OEProvideQMC {
       }
       TileEntity te = world.getBlockTileEntity(targetX, targetY, targetZ);
       if (te != null) {
-        if (te instanceof OETileInterface) {
+        if (isOE(te.getClass())) {
           OETileInterface oe = (OETileInterface) te;
           tier[i] = oe.getTier();
           canHandle[i] = oe.getMaxQMC() - oe.getQMC();
