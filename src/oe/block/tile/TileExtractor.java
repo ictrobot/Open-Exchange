@@ -89,7 +89,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   
   @Override
   public String getInvName() {
-    return "Condenser";
+    return "Extractor";
   }
   
   @Override
