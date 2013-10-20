@@ -232,16 +232,19 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   @Override
   public void setQMC(double value) {
     stored = value;
+    onInventoryChanged();
   }
   
   @Override
   public void increaseQMC(double value) {
     stored = stored + value;
+    onInventoryChanged();
   }
   
   @Override
   public void decreaseQMC(double value) {
     stored = stored - value;
+    onInventoryChanged();
   }
   
   @Override
