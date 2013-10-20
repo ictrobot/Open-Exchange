@@ -169,7 +169,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       for (int i = 1; i < size; i++) {
         if (chestContents[i] != null) {
           ItemStack tmp = getStackInSlot(i).copy();
-          if (!isDifferent[i] && slot == -1 && tmp.getMaxStackSize() > tmp.stackSize) {
+          if (!isDifferent[i] && slot == -1 && tmp.getMaxStackSize() > tmp.stackSize && QMC.getQMC(getStackInSlot(i)) + stored <= getMaxQMC()) {
             slot = i;
           }
         }

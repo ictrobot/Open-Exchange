@@ -55,6 +55,8 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
                     stored = stored - amount;
                     onInventoryChanged();
                   }
+                } else {
+                  moveOutput(slot);
                 }
               }
             }
@@ -67,6 +69,22 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
       this.percent = (int) per;
       return;
     }
+  }
+  
+  private boolean moveOutput(int slot) {
+    int freeS = -1;
+    for (int s = 9; s <= 17; s++) {
+      if (getStackInSlot(s) == null) {
+        freeS = s;
+        break;
+      }
+    }
+    if (freeS != -1) {
+      chestContents[freeS] = chestContents[slot];
+      chestContents[slot] = null;
+      return true;
+    }
+    return false;
   }
   
   public ItemStack[] getContents() {

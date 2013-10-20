@@ -38,12 +38,12 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
     if (Sided.isServer()) {
       boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
-        
         for (int i = 1; i <= 4; i++) {
           int slot = -1;
           for (int s = 0; s < size; s++) {
-            if (getStackInSlot(s) != null && slot == -1 && QMC.hasValue(getStackInSlot(s))) {
+            if (getStackInSlot(s) != null && slot == -1 && QMC.hasValue(getStackInSlot(s)) && QMC.getQMC(getStackInSlot(s).copy()) + stored <= getMaxQMC()) {
               slot = s;
+              break;
             }
           }
           if (slot == -1) {
@@ -56,6 +56,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
           double V = QMC.getQMC(itemstack);
           stored = stored + V;
           decrStackSize(slot, 1);
+          sendChangeToClients();
           tmpWorking = true;
         }
         stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
@@ -68,7 +69,6 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
         } else {
           worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 7);
         }
-        System.out.println(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
       }
     } else {
       double per = (double) stored / (double) getMaxQMC();
