@@ -10,4 +10,10 @@ public class GuessData {
     output = Output;
     input = Input;
   }
+  
+  public GuessData(ItemStack Output, ItemStack Input) {
+    input = new ItemStack[1];
+    input[0] = Input;
+    output = Output;
+  }
 }

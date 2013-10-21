@@ -1,9 +1,11 @@
 package oe.qmc.guess;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import oe.Log;
 import oe.OpenExchange;
 import oe.api.OE_API;
 import oe.qmc.QMC;
@@ -11,6 +13,12 @@ import oe.qmc.QMC;
 public class Guess {
   
   public static Class<?>[] classes = new Class[0];
+  
+  // To Stop recursions
+  private static int recursions = 0;
+  private static int recursionLimit = 50;
+  private static boolean recursionNotified = false;
+  private static ItemStack stackCheck;
   
   public static boolean add(Class<?> c) {
     if (OE_API.isOEGuessable(c)) {
@@ -33,19 +41,18 @@ public class Guess {
         }
       }
     }
-    check();
+    checkLoop();
   }
   
-  private static void check() {
+  private static void checkLoop() {
     for (int i = 0; i < Block.blocksList.length; i++) {
       if (Block.blocksList[i] != null) {
         if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
           ItemStack stack = new ItemStack(Block.blocksList[i]);
           if (!QMC.hasValue(stack)) {
-            double d = checkClasses(stack);
-            if (d > 0) {
-              QMC.add(Block.blocksList[i], stack, d);
-            }
+            recursions = -1;
+            recursionNotified = false;
+            check(stack);
           }
         }
       }
@@ -54,13 +61,31 @@ public class Guess {
       if (Item.itemsList[i] != null) {
         ItemStack stack = new ItemStack(Item.itemsList[i]);
         if (!QMC.hasValue(stack)) {
-          double d = checkClasses(stack);
-          if (d > 0) {
-            QMC.add(stack, d);
-          }
+          recursions = -1;
+          recursionNotified = false;
+          check(stack);
         }
       }
     }
+  }
+  
+  public static double check(ItemStack itemstack) {
+    recursions++;
+    if (recursions == 0) {
+      stackCheck = itemstack;
+    }
+    if (recursions > recursionLimit) {
+      if (!recursionNotified) {
+        Log.debug("ItemStack " + stackCheck.toString() + " (ID: " + stackCheck.itemID + ") is recurring to many times");
+        recursionNotified = true;
+      }
+      return -1;
+    }
+    double v = checkClasses(itemstack);
+    if (v > -1) {
+      QMC.add(itemstack, v);
+    }
+    return v;
   }
   
   public static double checkClasses(ItemStack itemstack) {
@@ -76,6 +101,8 @@ public class Guess {
         if (value > 0) {
           d = d + value;
         }
+      } catch (InvocationTargetException e) {
+        e.getTargetException().printStackTrace();
       } catch (Exception e) {
         if (OpenExchange.debug) {
           e.printStackTrace();

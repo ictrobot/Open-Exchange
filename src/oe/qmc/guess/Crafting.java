@@ -20,16 +20,22 @@ public class Crafting extends OEGuesser {
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
       if (recipeObject instanceof IRecipe) {
         IRecipe recipe = (IRecipe) recipeObject;
-        ItemStack recipeOutput = recipe.getRecipeOutput();
-        if (recipeOutput != null) {
-          increaseCrafting();
-          crafting[crafting.length - 1] = new GuessData(recipeOutput, getCraftingInputs(recipe));
+        ItemStack output = recipe.getRecipeOutput();
+        if (output != null) {
+          ItemStack[] input = getCraftingInputs(recipe);
+          if (input != null) {
+            increaseCrafting();
+            crafting[crafting.length - 1] = new GuessData(output, input);
+          }
         }
       }
     }
   }
   
   public static double check(ItemStack itemstack) {
+    if (itemstack == null) {
+      return -1;
+    }
     GuessData[] data = new GuessData[0];
     for (GuessData gd : crafting) {
       if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == gd.output.getItemDamage()) {
@@ -45,7 +51,7 @@ public class Crafting extends OEGuesser {
           double value = 0;
           for (ItemStack stack : gd.input) {
             if (stack != null) {
-              double v = Guess.checkClasses(stack);
+              double v = Guess.check(stack);
               if (v == -1) {
                 value = v;
                 break;
@@ -104,9 +110,13 @@ public class Crafting extends OEGuesser {
           if (input[i] instanceof ArrayList) {
             ArrayList al = (ArrayList) input[i];
             Object[] obj = al.toArray();
-            if (obj[0] instanceof ItemStack) {
-              ItemStack stack = (ItemStack) obj[0];
-              inputs[i] = stack;
+            if (obj.length != 0) {
+              if (obj[0] != null) {
+                if (obj[0] instanceof ItemStack) {
+                  ItemStack stack = (ItemStack) obj[0];
+                  inputs[i] = stack;
+                }
+              }
             }
           } else if (input[i] instanceof ItemStack) {
             ItemStack stack = (ItemStack) input[i];

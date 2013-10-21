@@ -68,6 +68,11 @@ public class ConfigHelper {
     return num;
   }
   
+  public static double other(String Subname, String Name, double normal) {
+    double num = config.get(Subname, Name, normal).getDouble(normal);
+    return num;
+  }
+  
   public static boolean other(String Subname, String Name, boolean normal) {
     boolean num = config.get(Subname, Name, normal).getBoolean(false);
     return num;
