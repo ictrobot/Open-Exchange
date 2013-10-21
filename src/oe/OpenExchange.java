@@ -49,6 +49,9 @@ public class OpenExchange {
     ConfigHelper.load();
     debug = ConfigHelper.other("DEBUG", "Debug enabled", false);
     ConfigHelper.save();
+    if (debug) {
+      Log.info("Debugging Enabled");
+    }
     Log.debug("Loading Exchange Values");
     QMC.load();
     Log.debug("Loading Block IDs");

@@ -1,32 +1,31 @@
 package oe;
 
-import oe.helper.ConfigHelper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Log {
   
-  static String prefix = "OPEN EXCHANGE: ";
+  static Logger log = Logger.getLogger(Reference.MOD_ID);
   
-  public Log(String str) {
-    System.out.println(prefix + str);
+  public static void output(Level lvl, Object o) {
+    log.log(lvl, o.toString());
   }
   
-  public static void error(String str) {
-    System.out.println(prefix + "ERROR: " + str);
+  public static void severe(Object o) {
+    output(Level.SEVERE, o);
   }
   
-  public static void info(String str) {
-    System.out.println(prefix + "INFO: " + str);
+  public static void info(Object o) {
+    output(Level.INFO, o);
   }
   
-  public static void warning(String str) {
-    System.out.println(prefix + "WARNING: " + str);
+  public static void warning(Object o) {
+    output(Level.WARNING, o);
   }
   
-  public static void debug(String str) {
-    ConfigHelper.load();
+  public static void debug(Object o) {
     if (OpenExchange.debug) {
-      System.out.println(prefix + "DEBUG: " + str);
+      output(Level.INFO, "[DEBUG]: " + o.toString());
     }
-    ConfigHelper.save();
   }
 }
