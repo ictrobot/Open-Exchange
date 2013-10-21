@@ -24,8 +24,7 @@ public class Log {
   
   public static void debug(String str) {
     ConfigHelper.load();
-    boolean debug = ConfigHelper.other("DEBUG", "Debug enabled", false);
-    if (debug) {
+    if (OpenExchange.debug) {
       System.out.println(prefix + "DEBUG: " + str);
     }
     ConfigHelper.save();

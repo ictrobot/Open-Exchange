@@ -2,6 +2,7 @@ package oe;
 
 import java.io.File;
 import oe.handler.IMC;
+import oe.helper.ConfigHelper;
 import oe.item.ItemIDs;
 import oe.item.Items;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,12 +25,17 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import oe.packet.*;
 import oe.qmc.QMC;
+import oe.qmc.guess.Crafting;
+import oe.qmc.guess.Guess;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
+  
+  public static boolean debug; // Debug Enabled
+  public static boolean guess; // Guessing of values enabled?
   
   @SidedProxy(clientSide = "oe.proxy.ClientProxy", serverSide = "oe.proxy.CommonProxy")
   public static CommonProxy proxy;
@@ -40,6 +46,10 @@ public class OpenExchange {
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     configdir = event.getModConfigurationDirectory();
+    ConfigHelper.load();
+    debug = ConfigHelper.other("DEBUG", "Debug enabled", false);
+    guess = ConfigHelper.other("Guessing", "Try to Guess values?", true);
+    ConfigHelper.save();
     Log.debug("Loading Exchange Values");
     QMC.load();
     Log.debug("Loading Block IDs");
@@ -58,11 +68,14 @@ public class OpenExchange {
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
     NetworkRegistry.instance().registerGuiHandler(OpenExchange.instance, new GUIHandler());
+    if (guess) {
+      Log.debug("Adding QMC Guessers");
+      Guess.add(Crafting.class);
+    }
   }
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
-    
   }
   
   @EventHandler
@@ -77,6 +90,10 @@ public class OpenExchange {
   
   @EventHandler
   public void serverLoad(FMLServerStartingEvent event) {
+    if (guess) { // Loads at server start to make sure all recipes are registered
+      Log.debug("Guessing QMC Values");
+      Guess.load();
+    }
     event.registerServerCommand(new OECommand());
   }
 }

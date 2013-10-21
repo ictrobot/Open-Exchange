@@ -20,6 +20,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
     super(id);
     setTextureName(Items.Texture("BuildRing"));
     setCreativeTab(CreativeTabs.tabTools);
+    setUnlocalizedName("ItemBuildRing");
   }
   
   public void onUpdate(ItemStack itemStack, World world, Entity entity, int par4, boolean par5) {

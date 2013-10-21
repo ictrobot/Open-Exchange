@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public class OE_API {
   
   /**
-   * Checks if a class is extends OEInterface (Checks by looking for a method called "isOE")
+   * Checks if a class extends OEInterface (Checks by looking for a method called "isOE")
    * 
    * @param c
    * @return
@@ -18,6 +18,24 @@ public class OE_API {
     Method[] methods = c.getMethods();
     for (Method m : methods) {
       if (m.getName().equals("isOE")) {
+        hasMethod = true;
+        break;
+      }
+    }
+    return hasMethod;
+  }
+  
+  /**
+   * Checks if a class extends OEGuessable (Checks by looking for a method called "isOEGuessable")
+   * 
+   * @param c
+   * @return
+   */
+  public static boolean isOEGuessable(Class<?> c) {
+    boolean hasMethod = false;
+    Method[] methods = c.getMethods();
+    for (Method m : methods) {
+      if (m.getName().equals("isOEGuessable")) {
         hasMethod = true;
         break;
       }
