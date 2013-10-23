@@ -2,10 +2,14 @@ package oe.block.tile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.List;
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
@@ -28,12 +32,23 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
     sendChangeToClients();
   }
   
+  @SuppressWarnings("unchecked")
   @Override
   public void updateEntity() {
     double pStored = stored;
     stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
     if (pStored != stored) {
       onInventoryChanged();
+    }
+    Block block = Block.blocksList[worldObj.getBlockId(xCoord, yCoord, zCoord)];
+    AxisAlignedBB boundingBox = block.getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord);
+    int radius = 2;
+    List<EntityXPOrb> list = (List<EntityXPOrb>) worldObj.getEntitiesWithinAABB((Class<?>) EntityXPOrb.class, boundingBox.expand(radius, radius, radius));
+    for (EntityXPOrb xp : list) {
+      if (xp.xpOrbAge >= 20) {
+        increaseQMC(xp.getXpValue() * factor);
+        worldObj.removeEntity(xp);
+      }
     }
   }
   
