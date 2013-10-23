@@ -9,15 +9,18 @@ import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
+import oe.helper.ConfigHelper;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileTransfer extends TileEntity implements OETileInterface {
+public class TileExperienceConsumer extends TileEntity implements OETileInterface {
   public double stored;
-  public int tier;
+  public int factor;
   
-  public TileTransfer(int Tier) {
+  public TileExperienceConsumer() {
     super();
-    tier = Tier;
+    ConfigHelper.load();
+    factor = ConfigHelper.other("QMC", "XP to QMC Factor", 10);
+    ConfigHelper.save();
   }
   
   @Override
@@ -97,19 +100,12 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   
   @Override
   public int getTier() {
-    return tier;
+    return 2;
   }
   
   @Override
   public OEType getType() {
-    boolean target = OE_API.hasTarget(xCoord, yCoord, zCoord, worldObj);
-    OEType type;
-    if (target) {
-      type = OEType.Storage;
-    } else {
-      type = OEType.None;
-    }
-    return type;
+    return OEType.Producer;
   }
   
   @Override
@@ -117,6 +113,23 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   }
   
   public void onClick(EntityPlayer player) {
-    onInventoryChanged();
+    int Level = player.experienceLevel;
+    int xp = 0;
+    
+    if (Level == 0) {
+      return;
+    } else if (Level <= 16) {
+      xp = 17;
+    } else if (Level <= 30) {
+      xp = (3 * (Level - 16)) + 17;
+    } else {
+      xp = (7 * (Level - 30)) + 55;
+    }
+    
+    xp = xp * 10;
+    if (stored + xp <= getMaxQMC()) {
+      player.addExperienceLevel(-1);
+      increaseQMC(xp);
+    }
   }
 }

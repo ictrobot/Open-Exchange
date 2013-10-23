@@ -9,6 +9,7 @@ public class BlockIDs {
   public static int extractorID;
   public static int storageID;
   public static int transferID;
+  public static int experienceConsumerID;
   
   public static void Load() {
     ConfigHelper.load();
@@ -18,6 +19,7 @@ public class BlockIDs {
     extractorID = ConfigHelper.block("extractor");
     storageID = ConfigHelper.block("storage");
     transferID = ConfigHelper.block("transfer");
+    experienceConsumerID = ConfigHelper.block("experienceConsumer");
     
     ConfigHelper.save();
   }

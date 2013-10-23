@@ -46,7 +46,6 @@ public class Smelting extends OEGuesser {
             value = v;
           }
           if (value > 0) {
-            value = value / gd.output.stackSize;
             return value;
           }
         }

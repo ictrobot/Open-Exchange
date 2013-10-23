@@ -2,6 +2,8 @@ package oe.qmc.guess;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,22 +50,32 @@ public class Guess {
     for (int i = 0; i < Block.blocksList.length; i++) {
       if (Block.blocksList[i] != null) {
         if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
-          ItemStack stack = new ItemStack(Block.blocksList[i]);
-          if (!QMC.hasValue(stack)) {
-            recursions = -1;
-            recursionNotified = false;
-            check(stack);
+          List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+          Block.blocksList[i].getSubBlocks(0, Block.blocksList[i].getCreativeTabToDisplayOn(), subBlocks);
+          for (int m = 0; m < subBlocks.size(); m++) {
+            ItemStack stack = subBlocks.get(m);
+            stack.itemID = i;
+            if (!QMC.hasValue(stack)) {
+              recursions = -1;
+              recursionNotified = false;
+              check(stack);
+            }
           }
         }
       }
     }
     for (int i = 0; i < Item.itemsList.length; i++) {
       if (Item.itemsList[i] != null) {
-        ItemStack stack = new ItemStack(Item.itemsList[i]);
-        if (!QMC.hasValue(stack)) {
-          recursions = -1;
-          recursionNotified = false;
-          check(stack);
+        List<ItemStack> subItems = new ArrayList<ItemStack>();
+        Item.itemsList[i].getSubItems(0, Item.itemsList[i].getCreativeTab(), subItems);
+        for (int m = 0; m < subItems.size(); m++) {
+          ItemStack stack = subItems.get(m);
+          stack.itemID = i;
+          if (!QMC.hasValue(stack)) {
+            recursions = -1;
+            recursionNotified = false;
+            check(stack);
+          }
         }
       }
     }
@@ -83,7 +95,20 @@ public class Guess {
     }
     double v = checkClasses(itemstack);
     if (v > -1) {
-      QMC.add(itemstack, v);
+      ItemStack toAdd = itemstack.copy();
+      if (itemstack.isItemStackDamageable()) {
+        toAdd.setItemDamage(0);
+        QMC.addMeta(toAdd, v);
+      }
+      if (itemstack.itemID == 35) {
+        System.out.println();
+      }
+      List<ItemStack> subItems = new ArrayList<ItemStack>();
+      toAdd.getItem().getSubItems(toAdd.getItemDamage(), toAdd.getItem().getCreativeTab(), subItems);
+      if (subItems.size() > 1) {
+        QMC.addMeta(toAdd, v);
+      }
+      QMC.add(toAdd, v);
     }
     return v;
   }
@@ -100,6 +125,7 @@ public class Guess {
         double value = Double.parseDouble(r.toString());
         if (value > 0) {
           d = d + value;
+          break;
         }
       } catch (InvocationTargetException e) {
         e.getTargetException().printStackTrace();

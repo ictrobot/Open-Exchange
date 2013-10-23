@@ -18,8 +18,8 @@ public class QMC {
   
   public static void load() {
     ConfigHelper.load();
-    name = ConfigHelper.other("Values", "Name", "QMC");
-    nameFull = ConfigHelper.other("Values", "Stands For", "Quantum Matter Currency");
+    name = ConfigHelper.other("QMC", "Name", "QMC");
+    nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
     MinecraftQMC.load();
     QMCOre.load();
@@ -87,6 +87,11 @@ public class QMC {
   
   public static void add(ItemStack stack, double Value) {
     data[data.length - 1] = new QMCData(stack, Value);
+    increase();
+  }
+  
+  public static void addMeta(ItemStack stack, double Value) {
+    data[data.length - 1] = new QMCData(stack, Value, true);
     increase();
   }
   

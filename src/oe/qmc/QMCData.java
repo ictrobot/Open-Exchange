@@ -36,6 +36,16 @@ public class QMCData {
     this.metaprovided = false;
   }
   
+  public QMCData(ItemStack stack, double Value, boolean b) {
+    this.itemstackprovided = true;
+    this.itemstack = stack;
+    this.ID = stack.itemID;
+    this.type = 3;
+    this.Meta = stack.getItemDamage();
+    this.value = Value;
+    this.metaprovided = true;
+  }
+  
   public QMCData(Block block2, int meta, double Value) {
     this.block = block2;
     this.itemstackprovided = false;

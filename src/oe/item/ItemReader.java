@@ -31,7 +31,7 @@ public class ItemReader extends Item {
         if (te != null) {
           if (OE_API.isOE(te.getClass())) {
             OETileInterface oe = (OETileInterface) te;
-            player.addChatMessage("\u00A73\u00A7l " + QMC.name + " Reader:\u00A7r\u00A77 " + oe.getQMC() + " " + QMC.name + " Type: " + oe.getType());
+            player.addChatMessage("\u00A73\u00A7l" + QMC.name + " Reader:\u00A7r\u00A77 " + oe.getQMC() + " " + QMC.name + ", Type: " + oe.getType());
           }
         }
       }
