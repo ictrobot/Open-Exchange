@@ -3,7 +3,7 @@ Open-Exchange
 
 Open Exchange by ictrobot
 
-The concept is that you should be able to turn anything to the anything else of the same value. That inclues more that just items and blocks...
+The concept is that you should be able to turn anything into the anything else of the same value. That inclues more that just items and blocks...
 
 Contributing
 ------------
