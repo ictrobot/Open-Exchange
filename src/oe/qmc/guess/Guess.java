@@ -2,6 +2,8 @@ package oe.qmc.guess;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,6 +37,8 @@ public class Guess {
   }
   
   public static void load() {
+    Stopwatch timer = new Stopwatch();
+    timer.start();
     for (Class<?> c : classes) {
       try {
         Method m = c.getMethod("init");
@@ -46,6 +50,8 @@ public class Guess {
       }
     }
     checkLoop();
+    timer.stop();
+    Log.info("It took " + timer.elapsed(TimeUnit.SECONDS) + " seconds to Guess");
   }
   
   public static int[] meta(int ID) {
@@ -131,9 +137,6 @@ public class Guess {
   }
   
   public static double check(ItemStack itemstack) {
-    if (itemstack.itemID == 19416) {
-      System.out.println();
-    }
     recursions++;
     if (recursions == 0) {
       stackCheck = itemstack;

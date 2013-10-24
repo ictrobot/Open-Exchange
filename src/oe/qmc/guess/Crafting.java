@@ -13,10 +13,11 @@ import oe.api.OEGuesser;
 
 public class Crafting extends OEGuesser {
   
-  private static GuessData[] crafting = new GuessData[0];
+  private static GuessData[][] crafting = new GuessData[32000][0];
   
   public static void init() {
     Log.debug("Loading Crafting Guesser");
+    int recipes = 0;
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
       if (recipeObject instanceof IRecipe) {
         IRecipe recipe = (IRecipe) recipeObject;
@@ -24,20 +25,24 @@ public class Crafting extends OEGuesser {
         if (output != null) {
           ItemStack[] input = getCraftingInputs(recipe);
           if (input != null) {
-            increaseCrafting();
-            crafting[crafting.length - 1] = new GuessData(output, input);
+            int id = output.itemID;
+            increaseCrafting(id);
+            crafting[id][crafting[id].length - 1] = new GuessData(output, input);
+            recipes++;
           }
         }
       }
     }
+    Log.debug("Found " + recipes + " Crafting Recipes");
   }
   
   public static double check(ItemStack itemstack) {
     if (itemstack == null) {
       return -1;
     }
+    int id = itemstack.itemID;
     GuessData[] data = new GuessData[0];
-    for (GuessData gd : crafting) {
+    for (GuessData gd : crafting[id]) {
       if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == gd.output.getItemDamage()) {
         GuessData[] tmp = new GuessData[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
@@ -73,7 +78,7 @@ public class Crafting extends OEGuesser {
   public static int[] meta(int ID) {
     ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];
-    for (GuessData gd : crafting) {
+    for (GuessData gd : crafting[ID]) {
       if (gd.output.itemID == itemstack.itemID) {
         int[] tmp = new int[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
@@ -142,10 +147,10 @@ public class Crafting extends OEGuesser {
     return inputs;
   }
   
-  private static void increaseCrafting() {
-    GuessData[] tmp = new GuessData[crafting.length + 1];
-    System.arraycopy(crafting, 0, tmp, 0, crafting.length);
-    crafting = tmp;
+  private static void increaseCrafting(int id) {
+    GuessData[] tmp = new GuessData[crafting[id].length + 1];
+    System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
+    crafting[id] = tmp;
   }
   
 }

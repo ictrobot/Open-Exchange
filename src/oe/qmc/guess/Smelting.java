@@ -12,6 +12,7 @@ public class Smelting extends OEGuesser {
   @SuppressWarnings("unchecked")
   public static void init() {
     Log.debug("Loading Smelting Guesser");
+    int recipes = 0;
     Map<Integer, ItemStack> list = FurnaceRecipes.smelting().getSmeltingList();
     for (Integer i : list.keySet()) {
       increaseSmelting();
@@ -19,8 +20,10 @@ public class Smelting extends OEGuesser {
       ItemStack output = list.get(i);
       if (input != null & output != null) {
         smelting[smelting.length - 1] = new GuessData(output, input);
+        recipes++;
       }
     }
+    Log.debug("Found " + recipes + " Smelting Recipes");
   }
   
   public static double check(ItemStack itemstack) {
