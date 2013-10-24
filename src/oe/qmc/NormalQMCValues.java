@@ -1,14 +1,15 @@
 package oe.qmc;
 
 import oe.Log;
+import oe.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class MinecraftQMC extends QMC {
+public class NormalQMCValues extends QMC {
   public static void load() {
     
     int r = length();
-    
+    // Minecraft
     add(Block.cobblestone, 1);
     add(Block.stone, 1);
     add(Block.dirt, 1);
@@ -110,5 +111,17 @@ public class MinecraftQMC extends QMC {
     add(Item.recordWait, getQMC(Item.record11));
     int reg = length() - r;
     Log.info(reg + " Minecraft " + nameFull + " Values Loaded");
+    
+    config("ingotCopper", 192);
+    config("ingotTin", 192);
+    config("ingotLead", 256);
+    config("ingotSilver", 256);
+    config("gemRuby", 2048);
+    config("gemSapphire", 2048);
+    config("gemGreenSapphire", 2048);
+  }
+  
+  public static void config(String str, int normal) {
+    add(str, ConfigHelper.other("QMC", str, normal));
   }
 }

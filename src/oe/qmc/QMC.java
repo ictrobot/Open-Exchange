@@ -24,7 +24,7 @@ public class QMC {
     name = ConfigHelper.other("QMC", "Name", "QMC");
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
-    MinecraftQMC.load();
+    NormalQMCValues.load();
     loaded = true;
   }
   
