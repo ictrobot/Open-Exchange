@@ -54,6 +54,20 @@ public class Smelting extends OEGuesser {
     return -1;
   }
   
+  public static int[] meta(int ID) {
+    ItemStack itemstack = new ItemStack(ID, 0, 0);
+    int[] data = new int[0];
+    for (GuessData gd : smelting) {
+      if (gd.output.itemID == itemstack.itemID) {
+        int[] tmp = new int[data.length + 1];
+        System.arraycopy(data, 0, tmp, 0, data.length);
+        data = tmp;
+        data[data.length - 1] = gd.output.getItemDamage();
+      }
+    }
+    return data;
+  }
+  
   private static void increaseSmelting() {
     GuessData[] tmp = new GuessData[smelting.length + 1];
     System.arraycopy(smelting, 0, tmp, 0, smelting.length);

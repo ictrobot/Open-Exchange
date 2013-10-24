@@ -2,8 +2,6 @@ package oe.qmc.guess;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,9 +16,13 @@ public class Guess {
   
   // To Stop recursions
   private static int recursions = 0;
-  private static int recursionLimit = 50;
+  private static int recursionLimit = 25;
   private static boolean recursionNotified = false;
   private static ItemStack stackCheck;
+  
+  // To make meta sensitive
+  @SuppressWarnings("unused")
+  private static boolean multipleMeta;
   
   public static boolean add(Class<?> c) {
     if (OE_API.isOEGuessable(c)) {
@@ -46,19 +48,60 @@ public class Guess {
     checkLoop();
   }
   
+  public static int[] meta(int ID) {
+    int[] possible = new int[0];
+    for (Class<?> c : classes) {
+      int[] meta;
+      try {
+        Method m = c.getMethod("meta", int.class);
+        Object r = m.invoke(null, ID);
+        if (r != null) {
+          if (r instanceof int[]) {
+            meta = (int[]) r;
+            for (int i : meta) {
+              boolean exists = false;
+              for (int e : possible) {
+                if (e == i) {
+                  exists = true;
+                }
+              }
+              if (!exists) {
+                int[] tmp = new int[possible.length + 1];
+                System.arraycopy(possible, 0, tmp, 0, possible.length);
+                possible = tmp;
+                possible[possible.length - 1] = i;
+              }
+            }
+          }
+        }
+      } catch (Exception e) {
+        if (OpenExchange.debug) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return possible;
+  }
+  
   private static void checkLoop() {
+    
+    int r = QMC.length();
+    
     for (int i = 0; i < Block.blocksList.length; i++) {
       if (Block.blocksList[i] != null) {
         if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
-          List<ItemStack> subBlocks = new ArrayList<ItemStack>();
-          Block.blocksList[i].getSubBlocks(0, Block.blocksList[i].getCreativeTabToDisplayOn(), subBlocks);
-          for (int m = 0; m < subBlocks.size(); m++) {
-            ItemStack stack = subBlocks.get(m);
-            stack.itemID = i;
-            if (!QMC.hasValue(stack)) {
+          int[] Meta = meta(i);
+          if (Meta.length > 1) {
+            multipleMeta = true;
+          } else {
+            multipleMeta = false;
+          }
+          for (int m : Meta) {
+            ItemStack check = new ItemStack(Block.blocksList[i], 0, m);
+            if (!QMC.hasValue(check)) {
               recursions = -1;
               recursionNotified = false;
-              check(stack);
+              check(check);
             }
           }
         }
@@ -66,22 +109,31 @@ public class Guess {
     }
     for (int i = 0; i < Item.itemsList.length; i++) {
       if (Item.itemsList[i] != null) {
-        List<ItemStack> subItems = new ArrayList<ItemStack>();
-        Item.itemsList[i].getSubItems(0, Item.itemsList[i].getCreativeTab(), subItems);
-        for (int m = 0; m < subItems.size(); m++) {
-          ItemStack stack = subItems.get(m);
-          stack.itemID = i;
-          if (!QMC.hasValue(stack)) {
+        int[] Meta = meta(i);
+        if (Meta.length > 1) {
+          multipleMeta = true;
+        } else {
+          multipleMeta = false;
+        }
+        for (int m : Meta) {
+          ItemStack check = new ItemStack(Item.itemsList[i], 0, m);
+          if (!QMC.hasValue(check)) {
             recursions = -1;
             recursionNotified = false;
-            check(stack);
+            check(check);
           }
         }
       }
     }
+    
+    int reg = QMC.length() - r;
+    Log.info(reg + " " + QMC.nameFull + " Values Guessed");
   }
   
   public static double check(ItemStack itemstack) {
+    if (itemstack.itemID == 19416) {
+      System.out.println();
+    }
     recursions++;
     if (recursions == 0) {
       stackCheck = itemstack;
@@ -96,19 +148,14 @@ public class Guess {
     double v = checkClasses(itemstack);
     if (v > -1) {
       ItemStack toAdd = itemstack.copy();
-      if (itemstack.isItemStackDamageable()) {
-        toAdd.setItemDamage(0);
-        QMC.addMeta(toAdd, v);
-      }
-      if (itemstack.itemID == 35) {
-        System.out.println();
-      }
-      List<ItemStack> subItems = new ArrayList<ItemStack>();
-      toAdd.getItem().getSubItems(toAdd.getItemDamage(), toAdd.getItem().getCreativeTab(), subItems);
-      if (subItems.size() > 1) {
-        QMC.addMeta(toAdd, v);
-      }
-      QMC.add(toAdd, v);
+      // if (itemstack.isItemStackDamageable()) {
+      // toAdd.setItemDamage(0);
+      // QMC.addMeta(toAdd, v);
+      // } else if (multipleMeta) {
+      QMC.addMeta(toAdd, v);
+      // } else {
+      // QMC.add(toAdd, v);
+      // }
     }
     return v;
   }

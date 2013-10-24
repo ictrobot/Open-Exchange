@@ -4,11 +4,11 @@ import oe.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class DefaultOreQMC extends QMCOre {
+public class DefaultOreQMC extends QMC {
   public static void load() {
     ConfigHelper.load();
     add("logWood", QMC.getQMC(Block.wood));
-    add("plankWood", QMC.getQMC(Block.wood));
+    add("plankWood", QMC.getQMC(Block.planks));
     add("stickWood", QMC.getQMC(Item.stick));
     add("blockCobble", QMC.getQMC(Block.cobblestone));
     add("blockStone", QMC.getQMC(Block.stone));
