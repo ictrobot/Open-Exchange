@@ -7,6 +7,7 @@ import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import oe.Log;
 import oe.OpenExchange;
 import oe.api.OE_API;
@@ -15,6 +16,7 @@ import oe.qmc.QMC;
 public class Guess {
   
   public static Class<?>[] classes = new Class[0];
+  public static ItemStack[] noValue = new ItemStack[0];
   
   // To Stop recursions
   private static int recursions = 0;
@@ -22,7 +24,7 @@ public class Guess {
   private static boolean recursionNotified = false;
   private static ItemStack stackCheck;
   
-  // To make meta sensitive
+  // To make meta sensitive (Currently unused)
   @SuppressWarnings("unused")
   private static boolean multipleMeta;
   
@@ -134,13 +136,28 @@ public class Guess {
     
     int reg = QMC.length() - r;
     Log.info(reg + " " + QMC.nameFull + " Values Guessed");
+    Log.debug(noValue.length + " Items/Blocks have no value");
   }
   
   public static double check(ItemStack itemstack) {
+    if (QMC.hasValue(itemstack)) {
+      return QMC.getQMC(itemstack);
+    }
     recursions++;
+    int ore = OreDictionary.getOreID(itemstack);
+    // Stops itemstacks from being checked that have alreading been checked and returned no value;
+    for (ItemStack stack : noValue) {
+      if (itemstack.itemID == stack.itemID && itemstack.getItemDamage() == stack.getItemDamage() || (ore != -1 && ore == OreDictionary.getOreID(stack))) {
+        return -1;
+      }
+    }
+    // Tries to stop recursions before they happen
     if (recursions == 0) {
       stackCheck = itemstack;
+    } else if ((itemstack.itemID == stackCheck.itemID && itemstack.getItemDamage() == stackCheck.getItemDamage()) || (ore != -1 && ore == OreDictionary.getOreID(stackCheck))) {
+      return -1;
     }
+    // Stops recursions from carrying on
     if (recursions > recursionLimit) {
       if (!recursionNotified) {
         Log.debug("ItemStack " + stackCheck.toString() + " (ID: " + stackCheck.itemID + ") is recurring to many times");
@@ -159,14 +176,16 @@ public class Guess {
       // } else {
       // QMC.add(toAdd, v);
       // }
+    } else {
+      ItemStack[] tmp = new ItemStack[noValue.length + 1];
+      System.arraycopy(noValue, 0, tmp, 0, noValue.length);
+      noValue = tmp;
+      noValue[noValue.length - 1] = itemstack;
     }
     return v;
   }
   
   public static double checkClasses(ItemStack itemstack) {
-    if (QMC.hasValue(itemstack)) {
-      return QMC.getQMC(itemstack);
-    }
     double d = 0;
     for (Class<?> c : classes) {
       try {

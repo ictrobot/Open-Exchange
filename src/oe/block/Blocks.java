@@ -1,9 +1,6 @@
 package oe.block;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import oe.helper.Register;
 import oe.qmc.QMC;
 
@@ -32,13 +29,6 @@ public class Blocks {
     Register.Block(storage, QMC.name + " Storage", "pickaxe", 2);
     Register.Block(transfer, QMC.name + " Transfer", "pickaxe", 2);
     Register.Block(experienceConsumer, QMC.name + " Experienced Consumer", "pickaxe", 2);
-    
-    GameRegistry.addRecipe(new ItemStack(condenser), "ooo", "eee", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    GameRegistry.addRecipe(new ItemStack(charging), "ooo", "oeo", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    GameRegistry.addRecipe(new ItemStack(extractor), "ooo", "eoe", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    GameRegistry.addRecipe(new ItemStack(storage), "eee", "eee", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    GameRegistry.addRecipe(new ItemStack(transfer), "eoe", "eoe", "eoe", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    GameRegistry.addRecipe(new ItemStack(experienceConsumer), " e ", "eoe", " e ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
   }
   
   public static String Texture(String str) {

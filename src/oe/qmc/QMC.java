@@ -10,6 +10,8 @@ import oe.helper.ConfigHelper;
 
 public class QMC {
   
+  public static boolean loaded = false;
+  
   public static String name = "QMC";
   public static String nameFull = "Quantum Matter Currency";
   
@@ -23,6 +25,7 @@ public class QMC {
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
     MinecraftQMC.load();
+    loaded = true;
   }
   
   public static int length() {

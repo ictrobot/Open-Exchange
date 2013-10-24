@@ -5,6 +5,7 @@ import oe.handler.IMC;
 import oe.helper.ConfigHelper;
 import oe.item.ItemIDs;
 import oe.item.Items;
+import oe.lib.CraftingRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
@@ -77,6 +78,8 @@ public class OpenExchange {
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
+    Log.debug("Adding crafting recipes");
+    CraftingRecipes.load();
   }
   
   @EventHandler
