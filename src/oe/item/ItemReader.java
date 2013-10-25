@@ -2,7 +2,7 @@ package oe.item;
 
 import oe.api.OETileInterface;
 import oe.api.OE_API;
-import oe.helper.Sided;
+import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;

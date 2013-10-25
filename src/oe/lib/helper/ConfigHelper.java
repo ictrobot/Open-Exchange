@@ -1,4 +1,4 @@
-package oe.helper;
+package oe.lib.helper;
 
 import java.io.File;
 import net.minecraftforge.common.Configuration;

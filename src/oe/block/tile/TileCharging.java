@@ -14,7 +14,7 @@ import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
-import oe.helper.Sided;
+import oe.lib.helper.Sided;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileCharging extends TileEntity implements IInventory, ISidedInventory, OETileInterface {

@@ -3,8 +3,8 @@ package oe.qmc.guess;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import oe.Log;
 import oe.api.OEGuesser;
+import oe.lib.Log;
 
 public class Smelting extends OEGuesser {
   private static GuessData[] smelting = new GuessData[0];
@@ -41,7 +41,11 @@ public class Smelting extends OEGuesser {
     }
     if (data.length != 0) {
       for (GuessData gd : data) {
-        if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == itemstack.getItemDamage()) {
+        ItemStack output = gd.output;
+        if (output.getItemDamage() == 32767) {
+          output.setItemDamage(0);
+        }
+        if (output.itemID == itemstack.itemID && output.getItemDamage() == itemstack.getItemDamage()) {
           double value = 0;
           ItemStack stack = gd.input[0];
           if (stack != null) {

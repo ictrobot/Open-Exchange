@@ -1,4 +1,4 @@
-package oe.handler;
+package oe.lib.handler;
 
 import oe.qmc.QMC;
 import net.minecraft.item.ItemStack;
@@ -7,7 +7,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMC {
+public class IMCHandler {
   
   public static String set = "SET";
   public static String get = "GET";

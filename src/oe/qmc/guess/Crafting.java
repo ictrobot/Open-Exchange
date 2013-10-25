@@ -1,5 +1,6 @@
 package oe.qmc.guess;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -8,8 +9,9 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import oe.Log;
 import oe.api.OEGuesser;
+import oe.lib.Log;
+import oe.lib.handler.ore.OreDictionaryHandler;
 
 public class Crafting extends OEGuesser {
   
@@ -52,23 +54,21 @@ public class Crafting extends OEGuesser {
     }
     if (data.length != 0) {
       for (GuessData gd : data) {
-        if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == itemstack.getItemDamage()) {
-          double value = 0;
-          for (ItemStack stack : gd.input) {
-            if (stack != null) {
-              double v = Guess.check(stack);
-              if (v == -1) {
-                value = v;
-                break;
-              } else {
-                value = value + v;
-              }
+        double value = 0;
+        for (ItemStack stack : gd.input) {
+          if (stack != null) {
+            double v = Guess.check(stack);
+            if (v == -1) {
+              value = v;
+              break;
+            } else {
+              value = value + v;
             }
           }
-          if (value > 0) {
-            value = value / gd.output.stackSize;
-            return value;
-          }
+        }
+        if (value > 0) {
+          value = value / gd.output.stackSize;
+          return value;
         }
       }
     }
@@ -143,6 +143,47 @@ public class Crafting extends OEGuesser {
           }
         }
       }
+    } else {
+      Object o = recipe;
+      for (Field field : o.getClass().getDeclaredFields()) {
+        field.setAccessible(true);
+        Object value = null;
+        try {
+          value = field.get(o);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        if (value != null) {
+          if (value.getClass().isArray()) {
+            Object[] os = (Object[]) value;
+            for (int i = 0; i < os.length; i++) {
+              Object r = os[i];
+              if (r instanceof ItemStack) {
+                ItemStack stack = (ItemStack) r;
+                inputs[i] = stack;
+              } else if (r instanceof String) {
+                String ore = (String) r;
+                ItemStack[] stacks = OreDictionaryHandler.getItemStacks(ore);
+                if (stacks != null) {
+                  inputs[i] = stacks[0];
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+    int nullNum = 0;
+    for (ItemStack stack : inputs) {
+      if (stack == null) {
+        nullNum++;
+      }
+    }
+    if (nullNum == 9) {
+      Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
+      Log.debug("IRecipe Type: " + recipe.getClass());
+      return null; // Failed to read Recipe
     }
     return inputs;
   }

@@ -8,9 +8,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.Log;
 import oe.OpenExchange;
 import oe.api.OE_API;
+import oe.lib.Log;
 import oe.qmc.QMC;
 
 public class Guess {
@@ -168,14 +168,7 @@ public class Guess {
     double v = checkClasses(itemstack);
     if (v > -1) {
       ItemStack toAdd = itemstack.copy();
-      // if (itemstack.isItemStackDamageable()) {
-      // toAdd.setItemDamage(0);
-      // QMC.addMeta(toAdd, v);
-      // } else if (multipleMeta) {
-      QMC.addMeta(toAdd, v);
-      // } else {
-      // QMC.add(toAdd, v);
-      // }
+      QMC.add(toAdd, v);
     } else {
       ItemStack[] tmp = new ItemStack[noValue.length + 1];
       System.arraycopy(noValue, 0, tmp, 0, noValue.length);

@@ -1,4 +1,4 @@
-package oe.packet;
+package oe.network.packet;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

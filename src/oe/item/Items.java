@@ -1,7 +1,7 @@
 package oe.item;
 
 import net.minecraft.item.Item;
-import oe.helper.Register;
+import oe.lib.helper.Register;
 import oe.qmc.QMC;
 
 public class Items {

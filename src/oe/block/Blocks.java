@@ -1,7 +1,7 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import oe.helper.Register;
+import oe.lib.helper.Register;
 import oe.qmc.QMC;
 
 public class Blocks {

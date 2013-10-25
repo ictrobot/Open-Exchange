@@ -1,9 +1,9 @@
-package oe.proxy;
+package oe.network.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class CommonProxy {
+public class Server {
   
   public void registerRenderers() {
     

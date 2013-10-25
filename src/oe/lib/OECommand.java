@@ -1,8 +1,10 @@
-package oe;
+package oe.lib;
 
 import java.util.ArrayList;
 import java.util.List;
 import oe.qmc.QMC;
+import oe.qmc.QMCData;
+import oe.qmc.QMCType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -10,6 +12,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class OECommand implements ICommand {
   @SuppressWarnings("rawtypes")
@@ -43,19 +46,56 @@ public class OECommand implements ICommand {
     if (arguments.length <= 0) {
       throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
     }
-    if (arguments[0].matches("version")) {
+    if (arguments[0].toLowerCase().matches("version")) {
       commandVersion(sender, arguments);
       return;
     }
-    if (arguments[0].matches("help")) {
+    if (arguments[0].toLowerCase().matches("help")) {
       commandHelp(sender, arguments);
       return;
     }
-    if (arguments[0].matches(QMC.name)) {
+    if (arguments[0].toLowerCase().matches(QMC.name.toLowerCase())) {
       commandValue(sender, arguments);
       return;
     }
+    if (arguments[0].toLowerCase().matches("data")) {
+      commandData(sender, arguments);
+      return;
+    }
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
+  }
+  
+  private void commandData(ICommandSender sender, String[] arguments) {
+    EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
+    if (player != null) {
+      Log.info(player.username + " queried the database");
+      sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Data ---"));
+      sender.sendChatToPlayer(ChatMessageComponent.createFromText("The length of the " + QMC.nameFull + " database is " + QMC.length()));
+      ItemStack held = player.getHeldItem();
+      if (held != null) {
+        int ref = QMC.getReference(held);
+        QMCData d = QMC.getQMCData(ref);
+        if (d != null) {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Reference: " + ref + " - " + d.QMC + " " + QMC.name + " - " + d.type));
+          if (d.type != QMCType.OreDictionary) {
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText(d.itemstack.getUnlocalizedName() + " (ID:" + d.itemstack.itemID + ")"));
+          }
+          if (d.type != QMCType.Itemstack) {
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText(d.oreDictionary));
+          }
+        } else {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held item does not have a value"));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("ID: " + held.itemID + " Meta: " + held.getItemDamage()));
+          int oreID = OreDictionary.getOreID(held);
+          if (oreID != -1) {
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
+            if (QMC.hasValue(OreDictionary.getOreName(oreID))) {
+              sender.sendChatToPlayer(ChatMessageComponent.createFromText("However the database value for " + OreDictionary.getOreName(oreID) + " is " + QMC.getQMC(OreDictionary.getOreName(oreID))));
+            }
+          }
+        }
+      }
+    }
   }
   
   private void commandValue(ICommandSender sender, String[] arguments) {

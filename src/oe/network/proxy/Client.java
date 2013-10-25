@@ -1,8 +1,8 @@
-package oe.proxy;
+package oe.network.proxy;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
-public class ClientProxy extends CommonProxy {
+public class Client extends Server {
   @Override
   public void registerRenderers() {
     

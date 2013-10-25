@@ -1,7 +1,8 @@
-package oe;
+package oe.lib;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import oe.OpenExchange;
 
 public class Log {
   

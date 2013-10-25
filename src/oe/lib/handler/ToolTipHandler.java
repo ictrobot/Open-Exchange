@@ -1,11 +1,11 @@
-package oe.client;
+package oe.lib.handler;
 
 import java.text.DecimalFormat;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import oe.qmc.*;
 
-public class ToolTip {
+public class ToolTipHandler {
   
   DecimalFormat df = new DecimalFormat("0.00");
   

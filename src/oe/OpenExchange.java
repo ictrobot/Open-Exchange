@@ -1,18 +1,23 @@
 package oe;
 
 import java.io.File;
-import oe.handler.IMC;
-import oe.helper.ConfigHelper;
 import oe.item.ItemIDs;
 import oe.item.Items;
 import oe.lib.CraftingRecipes;
+import oe.lib.Log;
+import oe.lib.OECommand;
+import oe.lib.Reference;
+import oe.lib.handler.IMCHandler;
+import oe.lib.handler.ToolTipHandler;
+import oe.lib.handler.ore.OreDictionaryHandler;
+import oe.lib.helper.ConfigHelper;
+import oe.network.packet.*;
+import oe.network.proxy.Server;
 import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
 import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
-import oe.client.ToolTip;
-import oe.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -24,7 +29,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import oe.packet.*;
 import oe.qmc.QMC;
 import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
@@ -38,8 +42,8 @@ public class OpenExchange {
   
   public static boolean debug; // Debug Enabled
   
-  @SidedProxy(clientSide = "oe.proxy.ClientProxy", serverSide = "oe.proxy.CommonProxy")
-  public static CommonProxy proxy;
+  @SidedProxy(clientSide = "oe.network.proxy.Client", serverSide = "oe.network.proxy.Server")
+  public static Server proxy;
   
   @Instance("OE")
   public static OpenExchange instance;
@@ -53,6 +57,9 @@ public class OpenExchange {
     if (debug) {
       Log.info("Debugging Enabled");
     }
+    Log.debug("Registering Handlers");
+    MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
+    MinecraftForge.EVENT_BUS.register(new OreDictionaryHandler());
     Log.debug("Loading Exchange Values");
     QMC.load();
     Log.debug("Loading Block IDs");
@@ -84,12 +91,11 @@ public class OpenExchange {
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
-    MinecraftForge.EVENT_BUS.register(new ToolTip());
   }
   
   @EventHandler
   public void handleIMCMessages(IMCEvent event) {
-    IMC.processIMCMessages(event);
+    IMCHandler.processIMCMessages(event);
   }
   
   @EventHandler

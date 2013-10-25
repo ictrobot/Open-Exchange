@@ -1,7 +1,7 @@
 package oe.qmc;
 
-import oe.Log;
-import oe.helper.ConfigHelper;
+import oe.lib.Log;
+import oe.lib.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
@@ -23,7 +23,7 @@ public class NormalQMCValues extends QMC {
     add(Block.sapling, 8);
     add(Block.leaves, 1);
     add(Block.wood, 32);
-    add(Item.dyePowder, 4, 256);
+    add(Item.dyePowder, 256);
     add(Item.dyePowder, 8);
     add(Block.plantRed, 8);
     add(Block.plantYellow, 8);
@@ -35,10 +35,10 @@ public class NormalQMCValues extends QMC {
     add(Block.deadBush, 8);
     add(Block.mushroomBrown, 4);
     add(Block.mushroomRed, 4);
-    add(Block.cloth, 0, 48); // Wool
+    add(Block.cloth, 48); // Wool
     add(Item.gunpowder, 256);
-    add(Item.coal, 0, 128); // Coal
-    add(Item.coal, 1, 32); // Charcoal
+    add(Item.coal, 128); // Coal
+    add(Item.coal, 32); // Charcoal
     add(Block.cobblestoneMossy, 128);
     add(Item.leather, 12);
     add(Block.reed, 16);

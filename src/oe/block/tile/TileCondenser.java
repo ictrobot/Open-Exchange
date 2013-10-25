@@ -12,7 +12,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.helper.Sided;
+import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 

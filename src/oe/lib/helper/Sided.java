@@ -1,4 +1,4 @@
-package oe.helper;
+package oe.lib.helper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
