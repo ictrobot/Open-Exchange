@@ -7,8 +7,8 @@
   </tstamp>
   <property file="build.properties" prefix="build"/>
   <property name="mc.version" value="1.6.4"/>
-	<property name="forge.version" value="9.11.1.916"/>
-	<property name="forge.name" value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
+  <property name="forge.version" value="9.11.1.916"/>
+  <property name="forge.name" value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
   <property name="forge.latest" value="minecraftforge/minecraftforge-src-latest.zip"/>
   <property name="v" value="${build.build_type}-${build.build_number}"/>
   <property name="output.file" value="${basedir}\jars\Open-Exchange ${v}.jar"/>
@@ -20,12 +20,12 @@
     <get src="http://files.minecraftforge.net/${forge.name}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
     <unzip src="${basedir}/temp/forge.zip" dest="${basedir}/temp/" failOnEmptyArchive="true" />
     <exec dir="${basedir}\temp\forge\" executable="cmd" osfamily="windows">
-			<arg line="/c install.cmd" />
-		</exec>
-		<exec dir="${basedir}\temp\forge\" executable="bash" osfamily="unix">
-			<arg line="install.sh" />
-		</exec>
-	</target>
+      <arg line="/c install.cmd" />
+    </exec>
+    <exec dir="${basedir}\temp\forge\" executable="bash" osfamily="unix">
+      <arg line="install.sh" />
+    </exec>
+  </target>
   
   <target name="forgelatest">
     <delete dir="${basedir}/temp/" />
@@ -33,62 +33,62 @@
     <get src="http://files.minecraftforge.net/${forge.latest}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
     <unzip src="${basedir}/temp/forge.zip" dest="${basedir}/temp/" failOnEmptyArchive="true" />
     <exec dir="${basedir}\temp\forge\" executable="cmd" osfamily="windows">
-			<arg line="/c install.cmd" />
-		</exec>
-		<exec dir="${basedir}\temp\forge\" executable="bash" osfamily="unix">
-			<arg line="install.sh" />
-		</exec>
-	</target>
+      <arg line="/c install.cmd" />
+    </exec>
+    <exec dir="${basedir}\temp\forge\" executable="bash" osfamily="unix">
+      <arg line="install.sh" />
+    </exec>
+  </target>
   
-	<target name="clean">
-		<delete dir="${basedir}\temp\" />
-	</target>
+  <target name="clean">
+    <delete dir="${basedir}\temp\" />
+  </target>
   
-	<target name="cleanlocal">
+  <target name="cleanlocal">
     <delete file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" />
-		<delete dir="${basedir}\temp\forge\mcp\src\minecraft\oe" />
+    <delete dir="${basedir}\temp\forge\mcp\src\minecraft\oe" />
     <delete dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
-	</target>
+  </target>
   
   <target name="copy">
-		<copy todir="${basedir}\temp\forge\mcp\src\minecraft">
-			<fileset dir="${basedir}\src\"/>
-		</copy>
-	</target>
+    <copy todir="${basedir}\temp\forge\mcp\src\minecraft">
+      <fileset dir="${basedir}\src\"/>
+    </copy>
+  </target>
   
   <target name="replace_tokens">
-		<replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
-  	<replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSIONSPACES@" value="${build.build_type} ${build.build_number}" />
-		<replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@BUILD_NUMBER@" value="${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSIONSPACES@" value="${build.build_type} ${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@BUILD_NUMBER@" value="${build.build_number}" />
     <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@MC@" value="${mc.version}" />
-		<replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@FORGE@" value="${forge.version}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@FORGE@" value="${forge.version}" />
     <replace file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
-		<replace file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" token="@BUILD_NUMBER@" value="${build.build_number}" />
-	</target>
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" token="@BUILD_NUMBER@" value="${build.build_number}" />
+  </target>
   
   <target name="increment_build_number">
-		<propertyfile file="${basedir}\build.properties">
-			<entry key="build_number" type="int" operation="+" default="1"/>
-		</propertyfile>
-	</target>
+    <propertyfile file="${basedir}\build.properties">
+      <entry key="build_number" type="int" operation="+" default="1"/>
+    </propertyfile>
+  </target>
   
   <target name="recompile">
-		<exec dir="${basedir}\temp\forge\mcp" executable="cmd" osfamily="windows">
-			<arg line="/c recompile.bat" />
-		</exec>
-		<exec dir="${basedir}\temp\forge\mcp" executable="bash" osfamily="unix">
-			<arg line="recompile.sh" />
-		</exec>
-	</target>
+    <exec dir="${basedir}\temp\forge\mcp" executable="cmd" osfamily="windows">
+      <arg line="/c recompile.bat" />
+    </exec>
+    <exec dir="${basedir}\temp\forge\mcp" executable="bash" osfamily="unix">
+      <arg line="recompile.sh" />
+    </exec>
+  </target>
   
   <target name="reobfuscate">
-		<exec dir="${basedir}\temp\forge\mcp" executable="cmd" osfamily="windows">
-			<arg line="/c reobfuscate_srg.bat" />
-		</exec>
-		<exec dir="${basedir}\temp\forge\mcp" executable="bash" osfamily="unix">
-			<arg line="reobfuscate_srg.sh" />
-		</exec>
-	</target>
+    <exec dir="${basedir}\temp\forge\mcp" executable="cmd" osfamily="windows">
+      <arg line="/c reobfuscate_srg.bat" />
+    </exec>
+    <exec dir="${basedir}\temp\forge\mcp" executable="bash" osfamily="unix">
+      <arg line="reobfuscate_srg.sh" />
+    </exec>
+  </target>
   
   <target name="file">
     <delete file="${basedir}\temp\build.txt" />
@@ -122,39 +122,42 @@ Environment:
   <target name="Build">
     <echo message="Starting to build Open-Exchange"/>
     <echo message="NORMAL BUILD - Download + Install Forge/MCP"/>
-		<!-- Prep for the build -->
+    
+    <!-- Prep for the build -->
     <antcall target="increment_build_number" />	
     <antcall target="clean" />
-		<antcall target="forge" />
-		<antcall target="copy" />
+    <antcall target="forge" />
+    <antcall target="copy" />
     <antcall target="replace_tokens" />
-		<antcall target="recompile" />		
-  	<antcall target="reobfuscate" />
-  	<antcall target="file" />
+    <antcall target="recompile" />		
+    <antcall target="reobfuscate" />
+    <antcall target="file" />
+    
     <!-- Build the jar -->
-		<mkdir dir="${basedir}\jars\" />
-		<jar destfile="${output.file}">
-			<fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
-			<fileset dir="${basedir}\resources"/>
+    <mkdir dir="${basedir}\jars\" />
+    <jar destfile="${output.file}">
+      <fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
+      <fileset dir="${basedir}\resources"/>
       <fileset dir="${basedir}" includes="LICENSE" />
       <fileset dir="${basedir}" includes="CREDITS" />
       <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
       <fileset dir="${basedir}\temp\" includes="build.txt" />
-		</jar>
+    </jar>
 
-		<!-- Clean up the Temp source now that we are done -->
-		<antcall target="clean" />
+    <!-- Clean up the Temp source now that we are done -->
+    <antcall target="clean" />
     
   </target>
   
   <target name="Latest">
     <echo message="Starting to build Open-Exchange"/>
     <echo message="LATEST BUILD - Download + Install LATEST Forge/MCP"/>
-		<!-- Prep for the build -->
+    
+    <!-- Prep for the build -->
     <antcall target="increment_build_number" />	
     <antcall target="clean" />
-		<antcall target="forgelatest" />
-		<antcall target="copy" />
+    <antcall target="forgelatest" />
+<antcall target="copy" />
     <antcall target="replace_tokens" />
 		<antcall target="recompile" />		
   	<antcall target="reobfuscate" />
