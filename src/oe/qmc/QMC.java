@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.helper.ConfigHelper;
+import oe.qmc.file.CustomValuesFileReader;
 
 public class QMC {
   

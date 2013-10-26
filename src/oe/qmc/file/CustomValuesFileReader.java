@@ -12,7 +12,6 @@ public class CustomValuesFileReader {
   
   public static void read() {
     read(new File(OpenExchange.configdir + "/OpenExchange/CustomValues.cfg"), true);
-    CustomValuesBuiltInLoader.instance.load();
   }
   
   public static void read(File file) {
