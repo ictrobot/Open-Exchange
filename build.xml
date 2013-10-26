@@ -12,6 +12,7 @@
   <property name="forge.latest" value="minecraftforge/minecraftforge-src-latest.zip"/>
   <property name="v" value="${build.build_type}-${build.build_number}"/>
   <property name="output.file" value="${basedir}\jars\Open-Exchange ${v}.jar"/>
+  <property name="output.test" value="${basedir}\jars\Open-Exchange TEST.jar"/>
   
   <target name="forge">
     <delete dir="${basedir}/temp/" />
@@ -119,7 +120,7 @@ Environment:
   </target> 
   
   <target name="Build">
-    <echo message="Starting to build Gems"/>
+    <echo message="Starting to build Open-Exchange"/>
     <echo message="NORMAL BUILD - Download + Install Forge/MCP"/>
 		<!-- Prep for the build -->
     <antcall target="increment_build_number" />	
@@ -147,7 +148,7 @@ Environment:
   </target>
   
   <target name="Latest">
-    <echo message="Starting to build Gems"/>
+    <echo message="Starting to build Open-Exchange"/>
     <echo message="LATEST BUILD - Download + Install LATEST Forge/MCP"/>
 		<!-- Prep for the build -->
     <antcall target="increment_build_number" />	
@@ -175,7 +176,7 @@ Environment:
   
   <target name="Local">
     <!-- LOCAL BUILDS - MCP already installed -->
-    <echo message="Starting to build Gems"/>
+    <echo message="Starting to build Open-Exchange"/>
     <echo message="LOCAL BUILD - Forge/MCP already installed"/>
 		<!-- Prep for the build -->
     <antcall target="increment_build_number" />	
@@ -195,6 +196,29 @@ Environment:
       <fileset dir="${basedir}" includes="CREDITS" />
       <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
       <fileset dir="${basedir}\temp\" includes="build.txt" />
+		</jar>
+
+		<!-- Clean up the Temp source now that we are done -->
+		<antcall target="cleanlocal" />
+	</target>
+
+  <target name="Test">
+    <!-- LOCAL BUILDS - MCP already installed -->
+    <echo message="Starting to Test Build Open-Exchange"/>
+    <echo message="LOCAL BUILD - Forge/MCP already installed"/>
+		<!-- Prep for the build -->
+    <antcall target="cleanlocal" />
+		<antcall target="copy" />
+		<antcall target="recompile" />		
+		<antcall target="reobfuscate" />
+
+		<!-- Build the jar -->
+		<mkdir dir="${basedir}\jars\" />
+    <delete file="${output.test}" />
+		<jar destfile="${output.test}">
+			<fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft\" />
+			<fileset dir="${basedir}\resources"/>
+      <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
 		</jar>
 
 		<!-- Clean up the Temp source now that we are done -->
