@@ -93,6 +93,8 @@
     <delete file="${basedir}\temp\build.txt" />
     <property file="${basedir}\temp\forge\forgeversion.properties" prefix="forgefile"/>
     <echo file="${basedir}\temp\build.txt" append="true">
+Open-Exchange ${v}
+
 Minecraft
   ${mc.version}
 
