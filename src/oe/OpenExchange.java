@@ -6,6 +6,7 @@ import oe.item.Items;
 import oe.lib.CraftingRecipes;
 import oe.lib.Log;
 import oe.lib.OECommand;
+import oe.lib.QMCFuelHandler;
 import oe.lib.Reference;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.ToolTipHandler;
@@ -29,6 +30,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import oe.qmc.QMC;
 import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
@@ -53,6 +55,7 @@ public class OpenExchange {
     configdir = event.getModConfigurationDirectory();
     ConfigHelper.load();
     debug = ConfigHelper.other("DEBUG", "Debug enabled", false);
+    boolean fuelHandler = ConfigHelper.other("FuelHandler", "Allow any item to be burnt if it has a QMC value", false);
     ConfigHelper.save();
     if (debug) {
       Log.info("Debugging Enabled");
@@ -81,6 +84,10 @@ public class OpenExchange {
     Log.debug("Adding QMC Guessers");
     Guess.add(Crafting.class);
     Guess.add(Smelting.class);
+    if (fuelHandler) {
+      Log.debug("Loading Fuel Handler");
+      GameRegistry.registerFuelHandler(new QMCFuelHandler());
+    }
   }
   
   @EventHandler
