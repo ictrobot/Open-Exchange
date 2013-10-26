@@ -20,6 +20,10 @@ public class TileTransfer extends TileEntity implements OETileInterface {
     tier = Tier;
   }
   
+  public TileTransfer() {
+    super();
+  }
+  
   @Override
   public void onInventoryChanged() {
     sendChangeToClients();
@@ -38,12 +42,14 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   public void readFromNBT(NBTTagCompound TagCompound) {
     super.readFromNBT(TagCompound);
     stored = TagCompound.getDouble("OE_Stored_Value");
+    tier = TagCompound.getInteger("OE_Tier");
   }
   
   @Override
   public void writeToNBT(NBTTagCompound TagCompound) {
     super.writeToNBT(TagCompound);
     TagCompound.setDouble("OE_Stored_Value", stored);
+    TagCompound.setInteger("OE_Tier", tier);
   }
   
   public void sendChangeToClients() {
