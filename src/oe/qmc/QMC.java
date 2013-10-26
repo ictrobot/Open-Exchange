@@ -26,6 +26,7 @@ public class QMC {
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
     NormalQMCValues.load();
+    FileReader.read();
     loaded = true;
   }
   
@@ -109,6 +110,42 @@ public class QMC {
     return getQMC(stack) >= 0;
   }
   
+  // BlackList
+  /**
+   * BlackLists ore
+   */
+  public static void blacklist(String ore) {
+    remove(ore);
+    add(ore, -1);
+  }
+  
+  /**
+   * BlackLists stack
+   */
+  public static void blacklist(ItemStack stack) {
+    remove(stack);
+    add(stack, -1);
+  }
+  
+  // Remove
+  /**
+   * Removes ore
+   */
+  public static void remove(String ore) {
+    if (hasValue(ore)) {
+      remove(getReference(ore));
+    }
+  }
+  
+  /**
+   * Removes stack
+   */
+  public static void remove(ItemStack stack) {
+    if (hasValue(stack)) {
+      remove(getReference(stack));
+    }
+  }
+  
   /**
    * @return If the OreDictionary value has a QMC value in the database
    */
@@ -179,6 +216,20 @@ public class QMC {
   private static void increase() {
     QMCData[] tmp = new QMCData[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
+    data = tmp;
+  }
+  
+  /**
+   * Removes reference from database
+   */
+  private static void remove(int Reference) {
+    QMCData[] tmp = new QMCData[data.length - 1];
+    if (Reference > 0) {
+      System.arraycopy(data, 0, tmp, 0, Reference - 1);
+    }
+    if (Reference < data.length - 1) {
+      System.arraycopy(data, Reference + 1, tmp, Reference + 1, data.length - Reference - 1);
+    }
     data = tmp;
   }
 }

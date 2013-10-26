@@ -16,7 +16,7 @@ public class ConfigHelper {
   static Configuration config;
   
   public static void load() {
-    File configfile = new File(OpenExchange.configdir, "OpenExchange.cfg");
+    File configfile = new File(OpenExchange.configdir, "/OpenExchange/OpenExchange.cfg");
     
     config = new Configuration(configfile);
     config.load();
