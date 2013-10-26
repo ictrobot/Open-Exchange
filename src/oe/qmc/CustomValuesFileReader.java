@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.io.FileUtils;
 import oe.OpenExchange;
 
-public class FileReader {
+public class CustomValuesFileReader {
   public static void read() {
     File file = new File(OpenExchange.configdir + "/OpenExchange/CustomValues.cfg");
     try {
@@ -15,17 +15,34 @@ public class FileReader {
         file.createNewFile();
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
+        bw.write("######################");
+        bw.newLine();
+        bw.write("# Open-Exchange      #");
+        bw.newLine();
+        bw.write("# Custom Values File #");
+        bw.newLine();
+        bw.write("######################");
+        bw.newLine();
+        bw.newLine();
         bw.write("# To add a value");
         bw.newLine();
         bw.write("# a [ID] [Value]");
+        bw.newLine();
+        bw.write("# a [OreDictionary] [Value]");
+        bw.newLine();
         bw.newLine();
         bw.write("# To remove a value");
         bw.newLine();
         bw.write("# r [ID]");
         bw.newLine();
-        bw.write("# To blacklist an item/block");
+        bw.write("# r [OreDictionary]");
+        bw.newLine();
+        bw.newLine();
+        bw.write("# To blacklist");
         bw.newLine();
         bw.write("# b [ID]");
+        bw.newLine();
+        bw.write("# b [OreDictionary]");
         bw.newLine();
         bw.newLine();
         bw.close();

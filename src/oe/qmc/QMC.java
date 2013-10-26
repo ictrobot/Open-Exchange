@@ -26,7 +26,7 @@ public class QMC {
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
     NormalQMCValues.load();
-    FileReader.read();
+    CustomValuesFileReader.read();
     loaded = true;
   }
   
