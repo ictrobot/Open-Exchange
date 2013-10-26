@@ -157,7 +157,7 @@ Environment:
     <antcall target="increment_build_number" />	
     <antcall target="clean" />
     <antcall target="forgelatest" />
-<antcall target="copy" />
+    <antcall target="copy" />
     <antcall target="replace_tokens" />
 		<antcall target="recompile" />		
   	<antcall target="reobfuscate" />
@@ -209,6 +209,7 @@ Environment:
     <!-- LOCAL BUILDS - MCP already installed -->
     <echo message="Starting to Test Build Open-Exchange"/>
     <echo message="LOCAL BUILD - Forge/MCP already installed"/>
+    
 		<!-- Prep for the build -->
     <antcall target="cleanlocal" />
 		<antcall target="copy" />
