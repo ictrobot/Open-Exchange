@@ -1,11 +1,6 @@
 package oe.item;
 
 import java.util.List;
-import oe.api.OEItemInterface;
-import oe.api.lib.OEType;
-import oe.lib.helper.BlockItem;
-import oe.lib.helper.Sided;
-import oe.qmc.QMC;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +8,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import oe.api.OEItemInterface;
+import oe.api.lib.OEType;
+import oe.lib.helper.BlockItem;
+import oe.lib.helper.Sided;
+import oe.qmc.QMC;
 
 public class ItemBuildRing extends Item implements OEItemInterface {
   

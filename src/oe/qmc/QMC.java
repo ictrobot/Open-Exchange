@@ -56,6 +56,25 @@ public class QMC {
     int r = getReference(itemstack);
     if (r != -1) {
       return data[r].QMC;
+    } else {
+      // Damaged Items
+      if (itemstack.isItemStackDamageable()) {
+        for (int i = 0; i < data.length; i++) {
+          QMCData check = data[i];
+          if (check.type != QMCType.OreDictionary) {
+            if (check.itemstack.isItemStackDamageable()) {
+              if (check.itemstack.itemID == itemstack.itemID) {
+                double qmc = data[i].QMC;
+                double maxDamage = itemstack.getMaxDamage();
+                double damage = itemstack.getItemDamage();
+                double totalDamage = maxDamage - damage;
+                double percent = totalDamage / maxDamage;
+                return qmc * percent;
+              }
+            }
+          }
+        }
+      }
     }
     return -1;
   }

@@ -1,9 +1,9 @@
 package oe.qmc;
 
-import oe.lib.Log;
-import oe.lib.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import oe.lib.Log;
+import oe.lib.helper.ConfigHelper;
 
 public class NormalQMCValues extends QMC {
   public static void load() {

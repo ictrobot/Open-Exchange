@@ -1,8 +1,8 @@
 package oe.lib;
 
+import net.minecraft.item.ItemStack;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.QMC;
-import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.IFuelHandler;
 
 public class QMCFuelHandler implements IFuelHandler {

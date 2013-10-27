@@ -2,16 +2,25 @@ package oe.qmc.guess;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import oe.OpenExchange;
 import oe.api.OEGuesser;
+import oe.lib.FakeContainer;
 import oe.lib.Log;
 import oe.lib.handler.ore.OreDictionaryHandler;
+import oe.qmc.QMC;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Crafting extends OEGuesser {
   
@@ -29,7 +38,8 @@ public class Crafting extends OEGuesser {
           if (input != null) {
             int id = output.itemID;
             increaseCrafting(id);
-            crafting[id][crafting[id].length - 1] = new GuessData(output, input);
+            CheckData cd = afterCrafting(recipe, input, output);
+            crafting[id][crafting[id].length - 1] = new GuessData(output, input, cd);
             recipes++;
           }
         }
@@ -55,14 +65,32 @@ public class Crafting extends OEGuesser {
     if (data.length != 0) {
       for (GuessData gd : data) {
         double value = 0;
-        for (ItemStack stack : gd.input) {
+        CheckData cd = gd.after;
+        for (int i = 0; i < gd.input.length; i++) {
+          ItemStack stack = gd.input[i];
+          ItemStack check = cd.after[i];
           if (stack != null) {
-            double v = Guess.check(stack);
-            if (v == -1) {
-              value = v;
-              break;
+            if (stack.equals(check)) {
+              double v = checkQMC(stack);
+              if (v == -1) {
+                value = v;
+                break;
+              } else {
+                value = value + v;
+              }
             } else {
-              value = value + v;
+              double v = checkQMC(stack);
+              if (v == -1) {
+                value = v;
+                break;
+              } else {
+                double c = checkQMC(check);
+                if (c == -1) {
+                  value = v;
+                  break;
+                }
+                value = value + v - c;
+              }
             }
           }
         }
@@ -73,6 +101,18 @@ public class Crafting extends OEGuesser {
       }
     }
     return -1;
+  }
+  
+  private static double checkQMC(ItemStack stack) {
+    double v = QMC.getQMC(stack);
+    if (v == -1) {
+      if (stack.getItemDamage() == 32768 || stack.getItemDamage() == 32767) {
+        ItemStack tmp = stack.copy();
+        tmp.setItemDamage(0);
+        return checkQMC(tmp);
+      }
+    }
+    return v;
   }
   
   public static int[] meta(int ID) {
@@ -178,6 +218,8 @@ public class Crafting extends OEGuesser {
     for (ItemStack stack : inputs) {
       if (stack == null) {
         nullNum++;
+      } else if (stack.getItemDamage() == 32767 || stack.getItemDamage() == 32768) {
+        stack.setItemDamage(0);
       }
     }
     if (nullNum == 9) {
@@ -194,4 +236,36 @@ public class Crafting extends OEGuesser {
     crafting[id] = tmp;
   }
   
+  private static CheckData afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+    boolean changed = false;
+    try {
+      FakeContainer fake = new FakeContainer();
+      InventoryCrafting ic = new InventoryCrafting(fake, 3, 3);
+      for (int i = 0; i < inputs.length; i++) {
+        if (inputs[i] != null) {
+          ic.setInventorySlotContents(i, inputs[i]);
+        }
+      }
+      World[] worlds = MinecraftServer.getServer().worldServers;
+      World world = worlds[0];
+      EntityPlayer player = new FakePlayer(world, "[OE]");
+      GameRegistry.onItemCrafted(player, output, ic);
+      for (int i = 0; i < inputs.length; i++) {
+        if (inputs[i] != null) {
+          if (inputs[i] != ic.getStackInSlot(i)) {
+            changed = true;
+            inputs[i] = ic.getStackInSlot(i);
+          }
+        }
+      }
+    } catch (Exception e) {
+      if (OpenExchange.debug) {
+        e.printStackTrace();
+      }
+    }
+    CheckData cd = new CheckData();
+    cd.changed = changed;
+    cd.after = inputs;
+    return cd;
+  }
 }

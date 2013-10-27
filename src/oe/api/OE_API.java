@@ -1,9 +1,9 @@
 package oe.api;
 
 import java.lang.reflect.Method;
-import oe.api.lib.OEType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import oe.api.lib.OEType;
 
 public class OE_API {
   

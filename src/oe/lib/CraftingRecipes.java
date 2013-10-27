@@ -1,11 +1,11 @@
 package oe.lib;
 
-import oe.block.Blocks;
-import oe.item.Items;
-import oe.lib.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import oe.block.Blocks;
+import oe.item.Items;
+import oe.lib.helper.ConfigHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingRecipes {

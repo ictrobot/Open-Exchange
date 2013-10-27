@@ -2,10 +2,6 @@ package oe.lib;
 
 import java.util.ArrayList;
 import java.util.List;
-import oe.qmc.QMC;
-import oe.qmc.QMCData;
-import oe.qmc.QMCType;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -13,6 +9,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.qmc.QMC;
+import oe.qmc.QMCData;
+import oe.qmc.QMCType;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class OECommand implements ICommand {
   @SuppressWarnings("rawtypes")

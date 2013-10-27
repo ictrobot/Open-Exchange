@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.io.FileUtils;
 import oe.OpenExchange;
 import oe.qmc.QMC;
+import org.apache.commons.io.FileUtils;
 
 public class CustomValuesFileReader {
   

@@ -3,7 +3,6 @@ package oe.qmc.guess;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
-import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,6 +11,7 @@ import oe.OpenExchange;
 import oe.api.OE_API;
 import oe.lib.Log;
 import oe.qmc.QMC;
+import com.google.common.base.Stopwatch;
 
 public class Guess {
   
@@ -136,7 +136,7 @@ public class Guess {
     
     int reg = QMC.length() - r;
     Log.info(reg + " " + QMC.nameFull + " Values Guessed");
-    Log.debug(noValue.length + " Items/Blocks have no value");
+    Log.info(noValue.length + " Items/Blocks have no value");
   }
   
   public static double check(ItemStack itemstack) {

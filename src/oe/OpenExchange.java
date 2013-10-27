@@ -1,6 +1,11 @@
 package oe;
 
 import java.io.File;
+import net.minecraftforge.common.MinecraftForge;
+import oe.block.BlockIDs;
+import oe.block.Blocks;
+import oe.block.gui.GUIHandler;
+import oe.block.tile.TileEntities;
 import oe.item.ItemIDs;
 import oe.item.Items;
 import oe.lib.CraftingRecipes;
@@ -12,29 +17,25 @@ import oe.lib.handler.IMCHandler;
 import oe.lib.handler.ToolTipHandler;
 import oe.lib.handler.ore.OreDictionaryHandler;
 import oe.lib.helper.ConfigHelper;
-import oe.network.packet.*;
+import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
-import net.minecraftforge.common.MinecraftForge;
-import oe.block.BlockIDs;
-import oe.block.Blocks;
-import oe.block.gui.GUIHandler;
-import oe.block.tile.TileEntities;
+import oe.qmc.QMC;
+import oe.qmc.guess.Crafting;
+import oe.qmc.guess.Guess;
+import oe.qmc.guess.Smelting;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import oe.qmc.QMC;
-import oe.qmc.guess.Crafting;
-import oe.qmc.guess.Guess;
-import oe.qmc.guess.Smelting;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe" }, packetHandler = PacketHandler.class)
@@ -107,8 +108,12 @@ public class OpenExchange {
   
   @EventHandler
   public void serverLoad(FMLServerStartingEvent event) {
+    event.registerServerCommand(new OECommand());
+  }
+  
+  @EventHandler
+  public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Guessing QMC Values");
     Guess.load();
-    event.registerServerCommand(new OECommand());
   }
 }
