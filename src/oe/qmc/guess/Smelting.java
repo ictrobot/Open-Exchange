@@ -26,9 +26,9 @@ public class Smelting extends OEGuesser {
     Log.debug("Found " + recipes + " Smelting Recipes");
   }
   
-  public static double check(ItemStack itemstack) {
+  public static GuessReturn check(ItemStack itemstack) {
     if (itemstack == null) {
-      return -1;
+      return null;
     }
     GuessData[] data = new GuessData[0];
     for (GuessData gd : smelting) {
@@ -53,12 +53,15 @@ public class Smelting extends OEGuesser {
             value = v;
           }
           if (value > 0) {
-            return value;
+            double[] values = new double[1];
+            values[0] = value;
+            GuessReturn toReturn = new GuessReturn(gd.input, values, value, 1);
+            return toReturn;
           }
         }
       }
     }
-    return -1;
+    return null;
   }
   
   public static int[] meta(int ID) {

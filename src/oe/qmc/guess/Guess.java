@@ -7,8 +7,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.OpenExchange;
 import oe.api.OE_API;
+import oe.lib.Debug;
 import oe.lib.Log;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
@@ -46,9 +46,7 @@ public class Guess {
         Method m = c.getMethod("init");
         m.invoke(null);
       } catch (Exception e) {
-        if (OpenExchange.debug) {
-          e.printStackTrace();
-        }
+        Debug.handleException(e);
       }
     }
     checkLoop();
@@ -83,9 +81,7 @@ public class Guess {
           }
         }
       } catch (Exception e) {
-        if (OpenExchange.debug) {
-          e.printStackTrace();
-        }
+        Debug.handleException(e);
       }
     }
     return possible;
@@ -140,6 +136,7 @@ public class Guess {
   }
   
   public static double check(ItemStack itemstack) {
+    GuessReturn data;
     if (QMC.hasValue(itemstack)) {
       return QMC.getQMC(itemstack);
     }
@@ -165,43 +162,39 @@ public class Guess {
       }
       return -1;
     }
-    double v = checkClasses(itemstack);
-    if (v > -1) {
-      ItemStack toAdd = itemstack.copy();
-      QMC.add(toAdd, v);
-    } else {
-      ItemStack[] tmp = new ItemStack[noValue.length + 1];
-      System.arraycopy(noValue, 0, tmp, 0, noValue.length);
-      noValue = tmp;
-      noValue[noValue.length - 1] = itemstack;
+    data = checkClasses(itemstack);
+    if (data != null) {
+      if (data.totalQMC > -1) {
+        ItemStack toAdd = itemstack.copy();
+        QMC.addGuessed(toAdd, data);
+      } else {
+        ItemStack[] tmp = new ItemStack[noValue.length + 1];
+        System.arraycopy(noValue, 0, tmp, 0, noValue.length);
+        noValue = tmp;
+        noValue[noValue.length - 1] = itemstack;
+      }
     }
-    return v;
+    if (data != null) {
+      return data.totalQMC;
+    }
+    return -1;
   }
   
-  public static double checkClasses(ItemStack itemstack) {
-    double d = 0;
+  public static GuessReturn checkClasses(ItemStack itemstack) {
     for (Class<?> c : classes) {
       try {
         Method m = c.getMethod("check", ItemStack.class);
         Object r = m.invoke(null, itemstack);
-        double value = Double.parseDouble(r.toString());
-        if (value > 0) {
-          d = d + value;
-          break;
+        if (r instanceof GuessReturn) {
+          return (GuessReturn) r;
         }
       } catch (InvocationTargetException e) {
         e.getTargetException().printStackTrace();
       } catch (Exception e) {
-        if (OpenExchange.debug) {
-          e.printStackTrace();
-        }
+        Debug.handleException(e);
       }
     }
-    if (d == 0) {
-      return -1;
-    } else {
-      return d;
-    }
+    return null;
   }
   
   private static void increaseClasses() {

@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomValuesFileReader;
+import oe.qmc.guess.GuessReturn;
 
 public class QMC {
   
@@ -122,6 +123,17 @@ public class QMC {
     data[data.length - 1] = new QMCData(ore, Value);
   }
   
+  /**
+   * Adds a guessed value to the database;
+   */
+  public static void addGuessed(ItemStack stack, GuessReturn guessdata) {
+    if (guessdata == null) {
+      return;
+    }
+    increase();
+    data[data.length - 1] = new QMCData(stack, guessdata);
+  }
+  
   // Check for QMC value
   /**
    * @return If the Itemstack has a QMC value in the database
@@ -185,6 +197,33 @@ public class QMC {
    * @return Reference for the itemstack in the database
    */
   public static int getReference(ItemStack itemstack) {
+    for (int i = 0; i < data.length; i++) {
+      QMCData check = data[i];
+      if (check.type != QMCType.OreDictionary) {
+        if (check.itemstack.isItemEqual(itemstack)) {
+          return i;
+        }
+      }
+      if (check.type != QMCType.Itemstack) {
+        int oreID = OreDictionary.getOreID(itemstack);
+        if (oreID != -1) {
+          if (check.oreDictionary == OreDictionary.getOreName(oreID)) {
+            return i;
+          }
+        }
+      }
+    }
+    return -1;
+  }
+  
+  /**
+   * @return Reference for the itemstack that is damaged in the database, E.G a damaged wood shovel
+   *         would still return the wood shovel reference;
+   */
+  public static int getReferenceDamaged(ItemStack itemstack) {
+    if (!itemstack.isItemStackDamageable()) {
+      return getReference(itemstack);
+    }
     for (int i = 0; i < data.length; i++) {
       QMCData check = data[i];
       if (check.type != QMCType.OreDictionary) {

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import net.minecraft.item.ItemStack;
 import oe.OpenExchange;
+import oe.lib.Debug;
 import oe.qmc.QMC;
 import org.apache.commons.io.FileUtils;
 
@@ -78,9 +79,7 @@ public class CustomValuesFileReader {
         }
       }
     } catch (Exception e) {
-      if (OpenExchange.debug) {
-        e.printStackTrace();
-      }
+      Debug.handleException(e);
     }
   }
   

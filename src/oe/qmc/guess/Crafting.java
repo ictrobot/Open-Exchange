@@ -14,8 +14,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import oe.OpenExchange;
 import oe.api.OEGuesser;
+import oe.lib.Debug;
 import oe.lib.FakeContainer;
 import oe.lib.Log;
 import oe.lib.handler.ore.OreDictionaryHandler;
@@ -48,9 +48,9 @@ public class Crafting extends OEGuesser {
     Log.debug("Found " + recipes + " Crafting Recipes");
   }
   
-  public static double check(ItemStack itemstack) {
+  public static GuessReturn check(ItemStack itemstack) {
     if (itemstack == null) {
-      return -1;
+      return null;
     }
     int id = itemstack.itemID;
     GuessData[] data = new GuessData[0];
@@ -65,17 +65,21 @@ public class Crafting extends OEGuesser {
     if (data.length != 0) {
       for (GuessData gd : data) {
         double value = 0;
+        double[] values = new double[gd.input.length];
         CheckData cd = gd.after;
         for (int i = 0; i < gd.input.length; i++) {
           ItemStack stack = gd.input[i];
           ItemStack check = cd.after[i];
           if (stack != null) {
+            // Log.info("B: " + stack.itemID + ":" + stack.getItemDamage() + "x" + stack.stackSize);
+            // Log.info("A: " + check.itemID + ":" + check.getItemDamage() + "x" + check.stackSize);
             if (stack.equals(check)) {
               double v = checkQMC(stack);
               if (v == -1) {
                 value = v;
                 break;
               } else {
+                values[i] = v;
                 value = value + v;
               }
             } else {
@@ -89,6 +93,7 @@ public class Crafting extends OEGuesser {
                   value = v;
                   break;
                 }
+                values[i] = v;
                 value = value + v - c;
               }
             }
@@ -96,11 +101,12 @@ public class Crafting extends OEGuesser {
         }
         if (value > 0) {
           value = value / gd.output.stackSize;
-          return value;
+          GuessReturn toReturn = new GuessReturn(gd.input, values, value, gd.output.stackSize);
+          return toReturn;
         }
       }
     }
-    return -1;
+    return null;
   }
   
   private static double checkQMC(ItemStack stack) {
@@ -237,6 +243,7 @@ public class Crafting extends OEGuesser {
   }
   
   private static CheckData afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+    ItemStack[] toReturn = new ItemStack[inputs.length];
     boolean changed = false;
     try {
       FakeContainer fake = new FakeContainer();
@@ -254,18 +261,16 @@ public class Crafting extends OEGuesser {
         if (inputs[i] != null) {
           if (inputs[i] != ic.getStackInSlot(i)) {
             changed = true;
-            inputs[i] = ic.getStackInSlot(i);
           }
+          toReturn[i] = ic.getStackInSlot(i);
         }
       }
     } catch (Exception e) {
-      if (OpenExchange.debug) {
-        e.printStackTrace();
-      }
+      Debug.handleException(e);
     }
     CheckData cd = new CheckData();
     cd.changed = changed;
-    cd.after = inputs;
+    cd.after = toReturn;
     return cd;
   }
 }

@@ -1,5 +1,6 @@
 package oe.api;
 
+import oe.qmc.guess.GuessReturn;
 import net.minecraft.item.ItemStack;
 
 public class OEGuesser {
@@ -30,7 +31,7 @@ public class OEGuesser {
   /**
    * Check a ItemStack
    */
-  public static double check(ItemStack itemstack) {
-    return -1;
+  public static GuessReturn check(ItemStack itemstack) {
+    return null;
   }
 }
