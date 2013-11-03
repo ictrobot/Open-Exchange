@@ -4,14 +4,20 @@ import oe.lib.helper.ConfigHelper;
 
 public class ItemIDs {
   
-  public static int buildRingID;
-  public static int readerID;
+  public static int buildRing;
+  public static int reader;
+  public static int pickaxe;
+  public static int axe;
+  public static int shovel;
   
   public static void Load() {
     ConfigHelper.load();
     
-    buildRingID = ConfigHelper.item("buildRing");
-    readerID = ConfigHelper.item("reader");
+    buildRing = ConfigHelper.item("buildRing");
+    reader = ConfigHelper.item("reader");
+    pickaxe = ConfigHelper.item("pickaxe");
+    axe = ConfigHelper.item("axe");
+    shovel = ConfigHelper.item("shovel");
     
     ConfigHelper.save();
   }

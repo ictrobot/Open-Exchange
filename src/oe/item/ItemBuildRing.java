@@ -100,14 +100,26 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   @Override
   public void increaseQMC(double value, ItemStack stack) {
     if (stack.getTagCompound() != null) {
-      stack.getTagCompound().setDouble("Value", stack.getTagCompound().getDouble("Value") + value);
+      double current = stack.getTagCompound().getDouble("Value");
+      if (current + value > getMaxQMC()) {
+        current = getMaxQMC();
+      } else {
+        current = current + value;
+      }
+      stack.getTagCompound().setDouble("Value", current);
     }
   }
   
   @Override
   public void decreaseQMC(double value, ItemStack stack) {
     if (stack.getTagCompound() != null) {
-      stack.getTagCompound().setDouble("Value", stack.getTagCompound().getDouble("Value") - value);
+      double current = stack.getTagCompound().getDouble("Value");
+      if (current - value < 0) {
+        current = 0;
+      } else {
+        current = current - value;
+      }
+      stack.getTagCompound().setDouble("Value", current);
     }
   }
   

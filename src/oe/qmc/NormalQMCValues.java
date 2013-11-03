@@ -114,6 +114,7 @@ public class NormalQMCValues extends QMC {
     
     config("ingotCopper", 192);
     config("ingotTin", 192);
+    config("ingotBronze", 192);
     config("ingotLead", 256);
     config("ingotSilver", 256);
     config("gemRuby", 2048);

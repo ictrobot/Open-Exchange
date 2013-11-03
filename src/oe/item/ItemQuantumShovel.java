@@ -1,0 +1,162 @@
+package oe.item;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.List;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemSpade;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.World;
+import oe.api.OEItemInterface;
+import oe.api.lib.OEType;
+import oe.lib.Debug;
+import oe.lib.helper.Sided;
+import oe.qmc.QMC;
+
+public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
+  
+  public ItemQuantumShovel(int id) {
+    super(id, Items.quantum);
+    setTextureName(Items.Texture("QuantumShovel"));
+    setCreativeTab(CreativeTabs.tabTools);
+    setUnlocalizedName("ItemQuantumShovel");
+    setMaxDamage(0);
+    setNoRepair();
+  }
+  
+  public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
+    return false;
+  }
+  
+  public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
+    checkNBT(itemstack);
+  }
+  
+  public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLivingBase par7EntityLivingBase) {
+    decreaseQMC(1, par1ItemStack);
+    return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, par7EntityLivingBase);
+  }
+  
+  private void checkNBT(ItemStack itemstack) {
+    if (itemstack.getTagCompound() == null) {
+      itemstack.setTagCompound(new NBTTagCompound());
+      itemstack.getTagCompound().setDouble("Value", 0);
+    }
+  }
+  
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+    if (itemStack.getTagCompound() != null) {
+      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
+    }
+  }
+  
+  public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
+    if (Sided.isClient()) {
+      if (Minecraft.getMinecraft().objectMouseOver != null) {
+        int x = Minecraft.getMinecraft().objectMouseOver.blockX;
+        int y = Minecraft.getMinecraft().objectMouseOver.blockY;
+        int z = Minecraft.getMinecraft().objectMouseOver.blockZ;
+        packet(x, y, z, player);
+        decreaseQMC(1, itemstack);
+      }
+    }
+    return itemstack;
+  }
+  
+  private void packet(int x, int y, int z, EntityPlayer tmpplayer) {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+    DataOutputStream outputStream = new DataOutputStream(bos);
+    try {
+      outputStream.writeInt(x);
+      outputStream.writeInt(y);
+      outputStream.writeInt(z);
+    } catch (Exception e) {
+      Debug.handleException(e);
+    }
+    
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+    packet.channel = "oeQD";
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+    EntityClientPlayerMP player = (EntityClientPlayerMP) tmpplayer;
+    player.sendQueue.addToSendQueue(packet);
+  }
+  
+  @Override
+  public float getStrVsBlock(ItemStack stack, Block block, int meta) {
+    if (getQMC(stack) < 1) {
+      return 0.5F;
+    }
+    return super.getStrVsBlock(stack, block, meta);
+  }
+  
+  @Override
+  public double getQMC(ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      return stack.getTagCompound().getDouble("Value");
+    } else {
+      return -1;
+    }
+  }
+  
+  @Override
+  public void setQMC(double qmc, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      stack.getTagCompound().setDouble("Value", qmc);
+    }
+  }
+  
+  @Override
+  public void increaseQMC(double value, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      double current = stack.getTagCompound().getDouble("Value");
+      if (current + value > getMaxQMC()) {
+        current = getMaxQMC();
+      } else {
+        current = current + value;
+      }
+      stack.getTagCompound().setDouble("Value", current);
+    }
+  }
+  
+  @Override
+  public void decreaseQMC(double value, ItemStack stack) {
+    if (stack.getTagCompound() != null) {
+      double current = stack.getTagCompound().getDouble("Value");
+      if (current - value < 0) {
+        current = 0;
+      } else {
+        current = current - value;
+      }
+      stack.getTagCompound().setDouble("Value", current);
+    }
+  }
+  
+  @Override
+  public int getMaxQMC() {
+    return 100000;
+  }
+  
+  @Override
+  public int getTier() {
+    return 2;
+  }
+  
+  @Override
+  public OEType getType() {
+    return OEType.Consumer;
+  }
+  
+  @Override
+  public void isOE() {
+  }
+}

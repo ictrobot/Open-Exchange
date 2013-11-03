@@ -44,6 +44,25 @@ public class OE_API {
   }
   
   /**
+   * Checks if a class implements OEBeforeGuess (Checks by looking for a method called
+   * "isOEBeforeGuess")
+   * 
+   * @param c
+   * @return
+   */
+  public static boolean isOEBeforeGuess(Class<?> c) {
+    boolean hasMethod = false;
+    Method[] methods = c.getMethods();
+    for (Method m : methods) {
+      if (m.getName().equals("isOEBeforeGuess")) {
+        hasMethod = true;
+        break;
+      }
+    }
+    return hasMethod;
+  }
+  
+  /**
    * Provide other blocks with QMC, Coords are for the block providing
    * 
    * @param x

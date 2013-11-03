@@ -15,7 +15,7 @@ import oe.lib.QMCFuelHandler;
 import oe.lib.Reference;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.ToolTipHandler;
-import oe.lib.handler.ore.OreDictionaryHandler;
+import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.helper.ConfigHelper;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
@@ -38,7 +38,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeQD" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -63,7 +63,7 @@ public class OpenExchange {
     }
     Log.debug("Registering Handlers");
     MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
-    MinecraftForge.EVENT_BUS.register(new OreDictionaryHandler());
+    MinecraftForge.EVENT_BUS.register(new OreDictionaryHelper());
     Log.debug("Loading Exchange Values");
     QMC.load();
     Log.debug("Loading Block IDs");

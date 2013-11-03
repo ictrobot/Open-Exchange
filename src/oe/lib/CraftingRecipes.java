@@ -18,6 +18,11 @@ public class CraftingRecipes {
     if (ConfigHelper.other("item", "readerEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Items.reader), "   ", "eoe", "   ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
     }
+    if (ConfigHelper.other("item", "toolsEnabled", true)) {
+      GameRegistry.addRecipe(new ItemStack(Items.pickaxe), "ttt", " s ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
+      GameRegistry.addRecipe(new ItemStack(Items.axe), "tt ", "ts ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
+      GameRegistry.addRecipe(new ItemStack(Items.shovel), " t ", " s ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
+    }
     // Blocks
     if (ConfigHelper.other("block", "condenserEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.condenser), "ooo", "eee", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
@@ -30,9 +35,6 @@ public class CraftingRecipes {
     }
     if (ConfigHelper.other("block", "storageEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.storage), "eee", "eee", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
-    }
-    if (ConfigHelper.other("block", "transferEnabled", true)) {
-      GameRegistry.addRecipe(new ItemStack(Blocks.transfer), "eoe", "eoe", "eoe", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));
     }
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.experienceConsumer), " e ", "eoe", " e ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.enderPearl));

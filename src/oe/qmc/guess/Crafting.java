@@ -18,7 +18,7 @@ import oe.api.OEGuesser;
 import oe.lib.Debug;
 import oe.lib.FakeContainer;
 import oe.lib.Log;
-import oe.lib.handler.ore.OreDictionaryHandler;
+import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -55,7 +55,7 @@ public class Crafting extends OEGuesser {
     int id = itemstack.itemID;
     GuessData[] data = new GuessData[0];
     for (GuessData gd : crafting[id]) {
-      if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == gd.output.getItemDamage()) {
+      if (itemstack.getItemDamage() == gd.output.getItemDamage()) {
         GuessData[] tmp = new GuessData[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
         data = tmp;
@@ -209,7 +209,7 @@ public class Crafting extends OEGuesser {
                 inputs[i] = stack;
               } else if (r instanceof String) {
                 String ore = (String) r;
-                ItemStack[] stacks = OreDictionaryHandler.getItemStacks(ore);
+                ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
                 if (stacks != null) {
                   inputs[i] = stacks[0];
                 }

@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.qmc.QMC;
 import oe.qmc.QMCData;
 import oe.qmc.QMCType;
@@ -62,6 +63,10 @@ public class OECommand implements ICommand {
       commandData(sender, arguments);
       return;
     }
+    if (arguments[0].toLowerCase().matches("ore")) {
+      commandOre(sender, arguments);
+      return;
+    }
     if (arguments[0].toLowerCase().matches("length")) {
       commandLength(sender, arguments);
       return;
@@ -69,11 +74,31 @@ public class OECommand implements ICommand {
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
   }
   
-  private void commandLength(ICommandSender sender, String[] arguments) {
+  private void commandOre(ICommandSender sender, String[] arguments) {
     EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
     if (player != null) {
-      sender.sendChatToPlayer(ChatMessageComponent.createFromText("The length of the " + QMC.nameFull + " database is " + QMC.length()));
+      ItemStack held = player.getHeldItem();
+      if (held != null) {
+        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Ore Data ---"));
+        int oreID = OreDictionary.getOreID(held);
+        if (oreID != -1) {
+          String ore = OreDictionary.getOreName(oreID);
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + ore));
+          ItemStack[] oreStacks = OreDictionaryHelper.getItemStacks(ore);
+          if (oreStacks != null) {
+            for (ItemStack stack : oreStacks) {
+              sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + stack.getUnlocalizedName() + " (ID:" + stack.itemID + " Meta:" + stack.getItemDamage() + ")"));
+            }
+          }
+        } else {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held itemstack is not registered in the Ore Dictionary"));
+        }
+      }
     }
+  }
+  
+  private void commandLength(ICommandSender sender, String[] arguments) {
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("The length of the " + QMC.nameFull + " database is " + QMC.length()));
   }
   
   private void commandData(ICommandSender sender, String[] arguments) {
@@ -138,7 +163,9 @@ public class OECommand implements ICommand {
   
   private void commandHelp(ICommandSender sender, String[] arguments) {
     sender.sendChatToPlayer(ChatMessageComponent.createFromText("Usage"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe version -  Returns Open Exchange version"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe version - Returns Open Exchange version"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe data - Returns info about the item in your hand"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe length - Returns the length of the QMC database"));
   }
   
   private void commandVersion(ICommandSender sender, String[] arguments) {

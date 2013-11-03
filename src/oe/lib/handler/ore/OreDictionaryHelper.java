@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 
-public class OreDictionaryHandler {
+public class OreDictionaryHelper {
   
   private static OreData[] data = new OreData[0];
   
@@ -25,7 +25,7 @@ public class OreDictionaryHandler {
     data[r].itemstacks[data[r].itemstacks.length - 1] = event.Ore;
   }
   
-  public int getReference(String name) {
+  public static int getReference(String name) {
     for (int i = 0; i < data.length; i++) {
       if (data[i].ore == name) {
         return i;
@@ -41,5 +41,9 @@ public class OreDictionaryHandler {
       }
     }
     return null;
+  }
+  
+  public static boolean exists(String name) {
+    return getReference(name) != -1;
   }
 }

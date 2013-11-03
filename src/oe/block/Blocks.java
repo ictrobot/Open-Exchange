@@ -11,7 +11,6 @@ public class Blocks {
   public static Block charging;
   public static Block extractor;
   public static Block storage;
-  public static Block transfer;
   public static Block experienceConsumer;
   
   public static void Load() {
@@ -27,9 +26,6 @@ public class Blocks {
     }
     if (ConfigHelper.other("block", "storageEnabled", true)) {
       storage = new BlockStorage(BlockIDs.storageID);
-    }
-    if (ConfigHelper.other("block", "transferEnabled", true)) {
-      transfer = new BlockTransfer(BlockIDs.transferID, 3);
     }
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
       experienceConsumer = new BlockExperienceConsumer(BlockIDs.experienceConsumerID);
@@ -51,11 +47,8 @@ public class Blocks {
     if (ConfigHelper.other("block", "storageEnabled", true)) {
       Register.Block(storage, QMC.name + " Storage", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "transferEnabled", true)) {
-      Register.Block(transfer, QMC.name + " Transfer", "pickaxe", 2);
-    }
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
-      Register.Block(experienceConsumer, QMC.name + " Experienced Consumer", "pickaxe", 2);
+      Register.Block(experienceConsumer, QMC.name + " Experience Consumer", "pickaxe", 2);
     }
     ConfigHelper.save();
   }

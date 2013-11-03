@@ -9,8 +9,10 @@ public class PacketHandler implements IPacketHandler {
   
   @Override
   public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerEntity) {
-    if (packet.channel == "oe" || packet.channel == "OE") {
+    if (packet.channel == "oe") {
       InternalPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel == "oeQD") {
+      QuantumDestructionPacket.packet(manager, packet, playerEntity);
     }
   }
 }
