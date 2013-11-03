@@ -19,7 +19,6 @@ import oe.lib.Debug;
 import oe.lib.FakeContainer;
 import oe.lib.Log;
 import oe.lib.handler.ore.OreDictionaryHelper;
-import oe.qmc.QMC;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Crafting extends OEGuesser {
@@ -110,7 +109,7 @@ public class Crafting extends OEGuesser {
   }
   
   private static double checkQMC(ItemStack stack) {
-    double v = QMC.getQMC(stack);
+    double v = Guess.check(stack);
     if (v == -1) {
       if (stack.getItemDamage() == 32768 || stack.getItemDamage() == 32767) {
         ItemStack tmp = stack.copy();
