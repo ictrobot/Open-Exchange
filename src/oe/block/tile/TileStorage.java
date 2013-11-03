@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
+import oe.lib.Debug;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileStorage extends TileEntity implements OETileInterface {
@@ -54,7 +55,7 @@ public class TileStorage extends TileEntity implements OETileInterface {
       outputStream.writeInt(this.zCoord);
       outputStream.writeDouble(this.stored);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      Debug.handleException(ex);
     }
     
     Packet250CustomPayload packet = new Packet250CustomPayload();

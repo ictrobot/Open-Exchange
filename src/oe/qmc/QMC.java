@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.helper.ConfigHelper;
-import oe.qmc.file.CustomValuesFileReader;
+import oe.qmc.file.CustomQMCValuesReader;
 import oe.qmc.guess.GuessReturn;
 
 public class QMC {
@@ -27,7 +27,7 @@ public class QMC {
     name = ConfigHelper.other("QMC", "Name", "QMC");
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
-    CustomValuesFileReader.read();
+    CustomQMCValuesReader.read();
     NormalQMCValues.load();
     loaded = true;
   }

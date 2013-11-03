@@ -9,7 +9,7 @@ import oe.lib.Debug;
 import oe.qmc.QMC;
 import org.apache.commons.io.FileUtils;
 
-public class CustomValuesFileReader {
+public class CustomQMCValuesReader {
   
   public static void read() {
     read(new File(OpenExchange.configdir + "/OpenExchange/CustomValues.cfg"), true);

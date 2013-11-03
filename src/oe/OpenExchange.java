@@ -20,6 +20,7 @@ import oe.lib.helper.ConfigHelper;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.QMC;
+import oe.qmc.file.QMCValuesWriter;
 import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.Smelting;
@@ -115,5 +116,7 @@ public class OpenExchange {
   public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Guessing QMC Values");
     Guess.load();
+    Log.debug("Writing QMC Values to a file");
+    QMCValuesWriter.write();
   }
 }

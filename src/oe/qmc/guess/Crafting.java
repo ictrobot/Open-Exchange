@@ -196,7 +196,7 @@ public class Crafting extends OEGuesser {
         try {
           value = field.get(o);
         } catch (Exception e) {
-          e.printStackTrace();
+          Debug.handleException(e);
         }
         if (value != null) {
           if (value.getClass().isArray()) {

@@ -14,6 +14,7 @@ import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
+import oe.lib.Debug;
 import oe.lib.helper.Sided;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -222,7 +223,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
       outputStream.writeInt(this.zCoord);
       outputStream.writeDouble(this.stored);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      Debug.handleException(ex);
     }
     
     Packet250CustomPayload packet = new Packet250CustomPayload();

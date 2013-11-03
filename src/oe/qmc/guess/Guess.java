@@ -1,6 +1,5 @@
 package oe.qmc.guess;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.block.Block;
@@ -188,8 +187,6 @@ public class Guess {
         if (r instanceof GuessReturn) {
           return (GuessReturn) r;
         }
-      } catch (InvocationTargetException e) {
-        e.getTargetException().printStackTrace();
       } catch (Exception e) {
         Debug.handleException(e);
       }

@@ -12,6 +12,7 @@ import oe.block.tile.TileCondenser;
 import oe.block.tile.TileExtractor;
 import oe.block.tile.TileStorage;
 import oe.block.tile.TileTransfer;
+import oe.lib.Debug;
 import cpw.mods.fml.common.network.Player;
 
 public class InternalPacket {
@@ -24,7 +25,7 @@ public class InternalPacket {
     try {
       packetSender = inputStream.readInt();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     if (playerEntity instanceof EntityPlayer) {
@@ -57,7 +58,7 @@ public class InternalPacket {
       z = inputStream.readInt();
       stored = inputStream.readDouble();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
@@ -81,7 +82,7 @@ public class InternalPacket {
       z = inputStream.readInt();
       stored = inputStream.readDouble();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
@@ -105,7 +106,7 @@ public class InternalPacket {
       z = inputStream.readInt();
       stored = inputStream.readDouble();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
@@ -129,7 +130,7 @@ public class InternalPacket {
       z = inputStream.readInt();
       stored = inputStream.readDouble();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
@@ -155,7 +156,7 @@ public class InternalPacket {
       stored = inputStream.readDouble();
       hasTarget = inputStream.readBoolean();
     } catch (IOException e) {
-      e.printStackTrace();
+      Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);

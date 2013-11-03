@@ -12,6 +12,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.lib.Debug;
 import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -300,7 +301,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       outputStream.writeDouble(this.stored);
       outputStream.writeBoolean(this.hasTarget);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      Debug.handleException(ex);
     }
     
     Packet250CustomPayload packet = new Packet250CustomPayload();
