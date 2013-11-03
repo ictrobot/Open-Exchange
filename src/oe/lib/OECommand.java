@@ -135,9 +135,6 @@ public class OECommand implements ICommand {
           int oreID = OreDictionary.getOreID(held);
           if (oreID != -1) {
             sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
-            if (QMC.hasValue(OreDictionary.getOreName(oreID))) {
-              sender.sendChatToPlayer(ChatMessageComponent.createFromText("However the database value for " + OreDictionary.getOreName(oreID) + " is " + QMC.getQMC(OreDictionary.getOreName(oreID))));
-            }
           }
         }
       }

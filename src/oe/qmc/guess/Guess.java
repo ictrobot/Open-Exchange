@@ -102,7 +102,7 @@ public class Guess {
           }
           for (int m : Meta) {
             ItemStack check = new ItemStack(Block.blocksList[i], 0, m);
-            if (!QMC.hasValue(check)) {
+            if (!QMC.hasQMC(check)) {
               recursions = -1;
               recursionNotified = false;
               check(check);
@@ -121,7 +121,7 @@ public class Guess {
         }
         for (int m : Meta) {
           ItemStack check = new ItemStack(Item.itemsList[i], 0, m);
-          if (!QMC.hasValue(check)) {
+          if (!QMC.hasQMC(check)) {
             recursions = -1;
             recursionNotified = false;
             check(check);
@@ -137,7 +137,7 @@ public class Guess {
   
   public static double check(ItemStack itemstack) {
     GuessReturn data;
-    if (QMC.hasValue(itemstack)) {
+    if (QMC.hasQMC(itemstack)) {
       return QMC.getQMC(itemstack);
     }
     recursions++;

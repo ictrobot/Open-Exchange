@@ -27,8 +27,8 @@ public class QMC {
     name = ConfigHelper.other("QMC", "Name", "QMC");
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
-    NormalQMCValues.load();
     CustomValuesFileReader.read();
+    NormalQMCValues.load();
     loaded = true;
   }
   
@@ -110,17 +110,21 @@ public class QMC {
    * Adds an Itemstack to the database
    */
   public static void add(ItemStack stack, double Value) {
-    stack.stackSize = 1;
-    increase();
-    data[data.length - 1] = new QMCData(stack, Value);
+    if (!hasQMC(stack)) {
+      stack.stackSize = 1;
+      increase();
+      data[data.length - 1] = new QMCData(stack, Value);
+    }
   }
   
   /**
    * Adds an OreDictionary string to the database
    */
   public static void add(String ore, double Value) {
-    increase();
-    data[data.length - 1] = new QMCData(ore, Value);
+    if (!hasQMC(ore)) {
+      increase();
+      data[data.length - 1] = new QMCData(ore, Value);
+    }
   }
   
   /**
@@ -138,8 +142,15 @@ public class QMC {
   /**
    * @return If the Itemstack has a QMC value in the database
    */
-  public static boolean hasValue(ItemStack stack) {
+  public static boolean hasQMC(ItemStack stack) {
     return getQMC(stack) >= 0;
+  }
+  
+  /**
+   * @return If the OreDictionary value has a QMC value in the database
+   */
+  public static boolean hasQMC(String ore) {
+    return getQMC(ore) >= 0;
   }
   
   // BlackList
@@ -164,7 +175,7 @@ public class QMC {
    * Removes ore
    */
   public static void remove(String ore) {
-    if (hasValue(ore)) {
+    if (hasQMC(ore)) {
       remove(getReference(ore));
     }
   }
@@ -173,16 +184,9 @@ public class QMC {
    * Removes stack
    */
   public static void remove(ItemStack stack) {
-    if (hasValue(stack)) {
+    if (hasQMC(stack)) {
       remove(getReference(stack));
     }
-  }
-  
-  /**
-   * @return If the OreDictionary value has a QMC value in the database
-   */
-  public static boolean hasValue(String ore) {
-    return getQMC(ore) >= 0;
   }
   
   // Advanced access to database

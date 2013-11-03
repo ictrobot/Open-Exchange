@@ -33,7 +33,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
           if (held != null) {
             if (BlockItem.isBlock(held.itemID)) {
               if (held.stackSize == 1) {
-                if (QMC.hasValue(held)) {
+                if (QMC.hasQMC(held)) {
                   double v = itemStack.getTagCompound().getDouble("Value");
                   if (v >= QMC.getQMC(held)) {
                     itemStack.getTagCompound().setDouble("Value", itemStack.getTagCompound().getDouble("Value") - QMC.getQMC(held));

@@ -41,7 +41,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
         for (int i = 1; i <= 4; i++) {
           int slot = -1;
           for (int s = 0; s < size; s++) {
-            if (getStackInSlot(s) != null && slot == -1 && QMC.hasValue(getStackInSlot(s)) && QMC.getQMC(getStackInSlot(s).copy()) + stored <= getMaxQMC()) {
+            if (getStackInSlot(s) != null && slot == -1 && QMC.hasQMC(getStackInSlot(s)) && QMC.getQMC(getStackInSlot(s).copy()) + stored <= getMaxQMC()) {
               slot = s;
               break;
             }

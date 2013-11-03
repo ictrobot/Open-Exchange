@@ -53,7 +53,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           if (getStackInSlot(0) != null) {
             ItemStack target = getStackInSlot(0).copy();
             target.stackSize = 1;
-            if (QMC.hasValue(target)) {
+            if (QMC.hasQMC(target)) {
               hasTarget = true;
               onInventoryChanged();
               double V = QMC.getQMC(target);
@@ -88,7 +88,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       if (getStackInSlot(0) != null) {
         ItemStack target = getStackInSlot(0).copy();
         target.stackSize = 1;
-        if (QMC.hasValue(target)) {
+        if (QMC.hasQMC(target)) {
           double V = QMC.getQMC(target);
           double per = (double) stored / (double) V;
           per = 100 * per;
@@ -260,7 +260,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       target.stackSize = 1;
       for (int slot = 1; slot < size; slot++) {
         if (getStackInSlot(slot) != null) {
-          if (QMC.hasValue(getStackInSlot(slot)) && isDifferent[slot]) {
+          if (QMC.hasQMC(getStackInSlot(slot)) && isDifferent[slot]) {
             return slot;
           }
         }
