@@ -46,4 +46,8 @@ public class OreDictionaryHelper {
   public static boolean exists(String name) {
     return getReference(name) != -1;
   }
+  
+  public static OreData[] oreDataArray() {
+    return data;
+  }
 }

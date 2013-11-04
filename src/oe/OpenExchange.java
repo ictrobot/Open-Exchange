@@ -16,6 +16,7 @@ import oe.lib.Reference;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.ToolTipHandler;
 import oe.lib.handler.ore.OreDictionaryHelper;
+import oe.lib.handler.ore.OreDictionaryWriter;
 import oe.lib.helper.ConfigHelper;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
@@ -118,5 +119,7 @@ public class OpenExchange {
     Guess.load();
     Log.debug("Writing QMC Values to a file");
     QMCValuesWriter.write();
+    Log.debug("Writing OreDictionary Values to a file");
+    OreDictionaryWriter.write();
   }
 }
