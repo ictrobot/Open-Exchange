@@ -14,6 +14,7 @@ public class Items {
   public static Item pickaxe;
   public static Item shovel;
   public static Item axe;
+  public static Item transmutation;
   
   public static EnumToolMaterial quantum = EnumHelper.addToolMaterial("quantum", 3, 0, 8.0F, 3.0F, 10);
   
@@ -30,6 +31,9 @@ public class Items {
       axe = new ItemQuantumAxe(ItemIDs.axe);
       shovel = new ItemQuantumShovel(ItemIDs.shovel);
     }
+    if (ConfigHelper.other("item", "transmutationEnabled", true)) {
+      transmutation = new ItemTransmutation(ItemIDs.transmutation);
+    }
     ConfigHelper.save();
   }
   
@@ -45,6 +49,9 @@ public class Items {
       Register.Item(pickaxe, "Quantum Pickaxe");
       Register.Item(axe, "Quantum Axe");
       Register.Item(shovel, "Quantum Shovel");
+    }
+    if (ConfigHelper.other("item", "transmutationEnabled", true)) {
+      Register.Item(transmutation, QMC.name + " Transmutation");
     }
   }
   

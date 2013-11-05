@@ -13,6 +13,8 @@ public class PacketHandler implements IPacketHandler {
       InternalPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel == "oeQD") {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel == "oeTransmutation") {
+      TransmutationPacket.packet(manager, packet, playerEntity);
     }
   }
 }

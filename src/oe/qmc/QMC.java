@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomQMCValuesReader;
 import oe.qmc.guess.GuessReturn;
@@ -270,6 +271,32 @@ public class QMC {
       return data[Reference];
     }
     return null;
+  }
+  
+  /**
+   * @return ItemStacks with the QMC value
+   */
+  public static ItemStack[] getItemStacksFromQMC(Double value) {
+    ItemStack[] toReturn = new ItemStack[0];
+    for (QMCData d : data) {
+      if (d.QMC == value) {
+        if (d.type != QMCType.OreDictionary) {
+          ItemStack[] tmp = new ItemStack[toReturn.length + 1];
+          System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+          toReturn = tmp;
+          toReturn[toReturn.length - 1] = d.itemstack;
+        } else {
+          ItemStack[] ore = OreDictionaryHelper.getItemStacks(d.oreDictionary);
+          ItemStack[] tmp = new ItemStack[toReturn.length + ore.length];
+          System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+          toReturn = tmp;
+          for (int i = 1; i < (data.length + 1); i++) {
+            toReturn[toReturn.length - i] = ore[i - 1];
+          }
+        }
+      }
+    }
+    return toReturn;
   }
   
   // Private

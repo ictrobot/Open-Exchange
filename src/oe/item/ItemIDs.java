@@ -9,6 +9,7 @@ public class ItemIDs {
   public static int pickaxe;
   public static int axe;
   public static int shovel;
+  public static int transmutation;
   
   public static void Load() {
     ConfigHelper.load();
@@ -18,6 +19,7 @@ public class ItemIDs {
     pickaxe = ConfigHelper.item("pickaxe");
     axe = ConfigHelper.item("axe");
     shovel = ConfigHelper.item("shovel");
+    transmutation = ConfigHelper.item("transmutation");
     
     ConfigHelper.save();
   }
