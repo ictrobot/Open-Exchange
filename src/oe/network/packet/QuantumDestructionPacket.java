@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import oe.api.OEItemInterface;
 import oe.api.OE_API;
+import oe.lib.Debug;
 import oe.lib.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,54 +58,58 @@ public class QuantumDestructionPacket {
   }
   
   private static void blockBreak(int x, int y, int z, EntityPlayer player, int times, int ID, int meta) {
-    if (times == 5) {
-      return;
-    }
-    World world = player.worldObj;
-    Block block = Block.blocksList[ID];
-    if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
-      ItemStack newStack = new ItemStack(block.idDropped(meta, world.rand, 0), block.quantityDropped(world.rand), block.damageDropped(meta));
-      if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {
-        OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
-        if (oe.getQMC(player.getHeldItem()) > QMCNeeded) {
-          if (player.inventory.addItemStackToInventory(newStack)) {
-            oe.decreaseQMC(QMCNeeded, player.getHeldItem());
-            world.setBlockToAir(x, y, z);
+    try {
+      if (times == 5) {
+        return;
+      }
+      World world = player.worldObj;
+      Block block = Block.blocksList[ID];
+      if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
+        ItemStack newStack = new ItemStack(block.idDropped(meta, world.rand, 0), block.quantityDropped(world.rand), block.damageDropped(meta));
+        if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {
+          OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
+          if (oe.getQMC(player.getHeldItem()) > QMCNeeded) {
+            if (player.inventory.addItemStackToInventory(newStack)) {
+              oe.decreaseQMC(QMCNeeded, player.getHeldItem());
+              world.setBlockToAir(x, y, z);
+            } else {
+              return;
+            }
           } else {
             return;
           }
         } else {
           return;
         }
-      } else {
-        return;
       }
-    }
-    for (int c = 0; c < 6; c++) {
-      int targetX = x;
-      int targetY = y;
-      int targetZ = z;
-      switch (c) {
-        case 0:
-          targetY++;
-          break;
-        case 1:
-          targetY--;
-          break;
-        case 2:
-          targetZ++;
-          break;
-        case 3:
-          targetZ--;
-          break;
-        case 4:
-          targetX++;
-          break;
-        case 5:
-          targetX--;
-          break;
+      for (int c = 0; c < 6; c++) {
+        int targetX = x;
+        int targetY = y;
+        int targetZ = z;
+        switch (c) {
+          case 0:
+            targetY++;
+            break;
+          case 1:
+            targetY--;
+            break;
+          case 2:
+            targetZ++;
+            break;
+          case 3:
+            targetZ--;
+            break;
+          case 4:
+            targetX++;
+            break;
+          case 5:
+            targetX--;
+            break;
+        }
+        blockBreak(targetX, targetY, targetZ, player, times + 1, ID, meta);
       }
-      blockBreak(targetX, targetY, targetZ, player, times + 1, ID, meta);
+    } catch (Exception e) {
+      Debug.handleException(e);
     }
   }
 }
