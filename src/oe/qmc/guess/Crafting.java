@@ -227,7 +227,7 @@ public class Crafting extends OEGuesser {
         stack.setItemDamage(0);
       }
     }
-    if (nullNum == 9) {
+    if (nullNum == inputs.length) {
       Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       return null; // Failed to read Recipe
@@ -258,6 +258,9 @@ public class Crafting extends OEGuesser {
       GameRegistry.onItemCrafted(player, output, ic);
       for (int i = 0; i < inputs.length; i++) {
         if (inputs[i] != null) {
+          if (ic.getStackInSlot(i).getItem().hasContainerItem()) {
+            ic.setInventorySlotContents(i, new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
+          }
           if (inputs[i] != ic.getStackInSlot(i)) {
             changed = true;
           }

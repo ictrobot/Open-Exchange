@@ -3,6 +3,7 @@ package oe.network.packet;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import oe.lib.Debug;
 import oe.lib.Log;
 import oe.qmc.QMC;
 import net.minecraft.block.Block;
@@ -64,10 +65,12 @@ public class TransmutationPacket {
                 pos++;
               }
               ItemStack toSet = stacks[pos];
-              if (toSet.itemID < 4096) {
-                if (isValid(toSet)) {
-                  world.setBlock(x, y, z, toSet.itemID, toSet.getItemDamage(), 3);
-                  break;
+              if (toSet != null) {
+                if (toSet.itemID < 4096) {
+                  if (isValid(toSet)) {
+                    world.setBlock(x, y, z, toSet.itemID, toSet.getItemDamage(), 3);
+                    break;
+                  }
                 }
               }
             }
@@ -76,7 +79,7 @@ public class TransmutationPacket {
       }
     } catch (Exception e) {
       Log.severe("Error occurred while transmuting block at X:" + x + " Y:" + y + " Z:" + z);
-      e.printStackTrace();
+      Debug.handleException(e);
     }
   }
   

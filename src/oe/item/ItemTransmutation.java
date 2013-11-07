@@ -23,7 +23,14 @@ public class ItemTransmutation extends Item {
     setTextureName(Items.Texture("Transmutation"));
     setCreativeTab(CreativeTabs.tabTools);
     setUnlocalizedName("ItemTransmutation");
+    setMaxStackSize(1);
     setFull3D();
+    setContainerItem(this);
+  }
+  
+  @Override
+  public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemStack) {
+    return false;
   }
   
   public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {

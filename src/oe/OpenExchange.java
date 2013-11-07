@@ -13,6 +13,7 @@ import oe.lib.Log;
 import oe.lib.OECommand;
 import oe.lib.QMCFuelHandler;
 import oe.lib.Reference;
+import oe.lib.TransmutationRecipes;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.ToolTipHandler;
 import oe.lib.handler.ore.OreDictionaryHelper;
@@ -117,6 +118,8 @@ public class OpenExchange {
   public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Guessing QMC Values");
     Guess.load();
+    Log.debug("Adding Transmutation Recipes");
+    TransmutationRecipes.init();
     Log.debug("Writing QMC Values to a file");
     QMCValuesWriter.write();
     Log.debug("Writing OreDictionary Values to a file");

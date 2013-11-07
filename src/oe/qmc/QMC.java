@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.api.OEItemInterface;
+import oe.api.OE_API;
 import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomQMCValuesReader;
@@ -52,12 +54,13 @@ public class QMC {
    * @return QMC value of the itemstack
    */
   public static double getQMC(ItemStack itemstack) {
+    double value = -1;
     if (itemstack == null) {
       return -1;
     }
     int r = getReference(itemstack);
     if (r != -1) {
-      return data[r].QMC;
+      value = data[r].QMC;
     } else {
       // Damaged Items
       if (itemstack.isItemStackDamageable()) {
@@ -71,14 +74,18 @@ public class QMC {
                 double damage = itemstack.getItemDamage();
                 double totalDamage = maxDamage - damage;
                 double percent = totalDamage / maxDamage;
-                return qmc * percent;
+                value = qmc * percent;
               }
             }
           }
         }
       }
     }
-    return -1;
+    if (OE_API.isOE(itemstack.getItem().getClass()) && value != -1) {
+      OEItemInterface oe = (OEItemInterface) itemstack.getItem();
+      value = value + oe.getQMC(itemstack);
+    }
+    return value;
   }
   
   /**
@@ -285,18 +292,29 @@ public class QMC {
           System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
           toReturn = tmp;
           toReturn[toReturn.length - 1] = d.itemstack;
-        } else {
+        }
+        if (d.type != QMCType.Itemstack) {
           ItemStack[] ore = OreDictionaryHelper.getItemStacks(d.oreDictionary);
-          ItemStack[] tmp = new ItemStack[toReturn.length + ore.length];
-          System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
-          toReturn = tmp;
-          for (int i = 1; i < (data.length + 1); i++) {
-            toReturn[toReturn.length - i] = ore[i - 1];
+          if (ore != null) {
+            int curLength = data.length;
+            ItemStack[] tmp = new ItemStack[toReturn.length + ore.length];
+            System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+            toReturn = tmp;
+            for (int i = curLength; i < data.length; i++) {
+              toReturn[i] = ore[curLength - i];
+            }
           }
         }
       }
     }
     return toReturn;
+  }
+  
+  /**
+   * @return The whole database
+   */
+  public static QMCData[] getDataBase() {
+    return data;
   }
   
   // Private
