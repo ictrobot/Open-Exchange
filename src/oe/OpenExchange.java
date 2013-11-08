@@ -11,16 +11,17 @@ import oe.item.Items;
 import oe.lib.CraftingRecipes;
 import oe.lib.Log;
 import oe.lib.OECommand;
-import oe.lib.QMCFuelHandler;
 import oe.lib.Reference;
 import oe.lib.TransmutationRecipes;
 import oe.lib.handler.IMCHandler;
+import oe.lib.handler.QMCFuelHandler;
 import oe.lib.handler.ToolTipHandler;
 import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.handler.ore.OreDictionaryWriter;
 import oe.lib.helper.ConfigHelper;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
+import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
 import oe.qmc.file.QMCValuesWriter;
 import oe.qmc.guess.Crafting;
@@ -102,6 +103,8 @@ public class OpenExchange {
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
+    Log.debug("Loading Mod Integration");
+    ModIntegration.init();
   }
   
   @EventHandler

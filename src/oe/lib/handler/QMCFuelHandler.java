@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.lib.handler;
 
 import net.minecraft.item.ItemStack;
 import oe.lib.helper.ConfigHelper;

@@ -131,7 +131,7 @@ public class OECommand implements ICommand {
           }
         } else {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held item does not have a value"));
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("ID: " + held.itemID + " Meta: " + held.getItemDamage()));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText(held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
           int oreID = OreDictionary.getOreID(held);
           if (oreID != -1) {
             sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
