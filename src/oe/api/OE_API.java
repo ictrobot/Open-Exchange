@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
 
 public class OE_API {
   
@@ -20,7 +19,6 @@ public class OE_API {
       method = c.getDeclaredMethod("isOE", Object.class);
       return method != null;
     } catch (Exception e) {
-      Debug.handleException(e);
       return false;
     }
   }
