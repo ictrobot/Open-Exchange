@@ -11,6 +11,7 @@ public class ItemIDs {
   public static int shovel;
   public static int transmutation;
   public static int repair;
+  public static int blockMover;
   
   public static void Load() {
     ConfigHelper.load();
@@ -22,6 +23,7 @@ public class ItemIDs {
     shovel = ConfigHelper.item("shovel");
     transmutation = ConfigHelper.item("transmutation");
     repair = ConfigHelper.item("repair");
+    blockMover = ConfigHelper.item("blockMover");
     
     ConfigHelper.save();
   }

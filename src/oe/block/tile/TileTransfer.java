@@ -120,7 +120,7 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
   
   public void onClick(EntityPlayer player) {

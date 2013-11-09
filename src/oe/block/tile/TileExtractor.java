@@ -264,7 +264,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
   
 }

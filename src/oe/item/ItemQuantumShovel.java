@@ -157,6 +157,6 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
 }

@@ -16,6 +16,7 @@ public class Items {
   public static Item axe;
   public static Item transmutation;
   public static Item repair;
+  public static Item blockMover;
   
   public static EnumToolMaterial quantum = EnumHelper.addToolMaterial("quantum", 3, 0, 8.0F, 3.0F, 10);
   
@@ -38,6 +39,9 @@ public class Items {
     if (ConfigHelper.other("item", "repairEnabled", true)) {
       repair = new ItemRepair(ItemIDs.repair);
     }
+    if (ConfigHelper.other("item", "blockManipulatorEnabled", true)) {
+      blockMover = new ItemBlockMover(ItemIDs.blockMover);
+    }
     ConfigHelper.save();
   }
   
@@ -59,6 +63,9 @@ public class Items {
     }
     if (ConfigHelper.other("item", "repairEnabled", true)) {
       Register.Item(repair, QMC.name + " Repair");
+    }
+    if (ConfigHelper.other("item", "blockManipulatorEnabled", true)) {
+      Register.Item(blockMover, "Block Manipulator");
     }
   }
   

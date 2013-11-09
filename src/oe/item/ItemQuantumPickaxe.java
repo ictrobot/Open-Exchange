@@ -157,6 +157,6 @@ public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
 }

@@ -157,6 +157,6 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
 }

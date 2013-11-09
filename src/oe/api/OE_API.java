@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.lib.OEType;
+import oe.lib.Debug;
 
 public class OE_API {
   
@@ -14,15 +15,14 @@ public class OE_API {
    * @return
    */
   public static boolean isOE(Class<?> c) {
-    boolean hasMethod = false;
-    Method[] methods = c.getMethods();
-    for (Method m : methods) {
-      if (m.getName().equals("isOE")) {
-        hasMethod = true;
-        break;
-      }
+    Method method = null;
+    try {
+      method = c.getDeclaredMethod("isOE", Object.class);
+      return method != null;
+    } catch (Exception e) {
+      Debug.handleException(e);
+      return false;
     }
-    return hasMethod;
   }
   
   /**

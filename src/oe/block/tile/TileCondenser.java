@@ -425,7 +425,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
   
 }

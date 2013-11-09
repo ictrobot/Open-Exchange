@@ -1,6 +1,7 @@
 package oe.item;
 
 import java.util.List;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,74 +11,43 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.helper.Sided;
-import oe.qmc.QMC;
 
-public class ItemRepair extends Item implements OEItemInterface {
+public class ItemBlockMover extends Item implements OEItemInterface {
   
-  public ItemRepair(int id) {
+  public ItemBlockMover(int id) {
     super(id);
-    setTextureName(Items.Texture("Repair"));
+    setTextureName(Items.Texture("BlockMover"));
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemRepair");
+    setUnlocalizedName("ItemBlockMover");
   }
   
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemstack);
-    if (Sided.isServer()) {
-      if (itemstack.getTagCompound().getBoolean("Enabled")) {
-        if (entity instanceof EntityPlayer) {
-          EntityPlayer player = (EntityPlayer) entity;
-          for (ItemStack stack : player.inventory.mainInventory) {
-            if (stack != null) {
-              if (stack.isItemStackDamageable() && stack.getMaxStackSize() == 1) {
-                if (stack.getItemDamage() > 0) {
-                  ItemStack normal = new ItemStack(stack.itemID, 1, 0);
-                  double repairCost = (QMC.getQMC(normal) - QMC.getQMC(stack)) / stack.getItemDamage();
-                  if (getQMC(itemstack) >= repairCost) {
-                    decreaseQMC(repairCost, itemstack);
-                    stack.setItemDamage(stack.getItemDamage() - 1);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  }
+  
+  public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+    return itemStack;
   }
   
   private void checkNBT(ItemStack itemstack) {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
-      itemstack.getTagCompound().setDouble("Value", 0);
     }
   }
   
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
     if (itemStack.getTagCompound() != null) {
-      if (itemStack.getTagCompound().getBoolean("Enabled")) {
-        list.add("\u00A77Enabled");
-      } else {
-        list.add("\u00A77Disabled");
-      }
-      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
-    }
-  }
-  
-  public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    NBTTagCompound tag = itemStack.getTagCompound();
-    if (Sided.isServer()) {
-      if (tag.getBoolean("Enabled")) {
-        tag.setBoolean("Enabled", false);
-        player.addChatMessage("\u00A73\u00A7lRepair:\u00A7r\u00A77 Disabled");
-      } else {
-        tag.setBoolean("Enabled", true);
-        player.addChatMessage("\u00A73\u00A7lRepair:\u00A7r\u00A77 Enabled");
+      // list.add(QMC.name + ": " + itemStack.stackTagCompound.getDouble("Value")); Because Charging
+      // currently does nothing
+      if (itemStack.stackTagCompound.getBoolean("hasBlock")) {
+        NBTTagCompound nbtBlock = itemStack.stackTagCompound.getCompoundTag("block");
+        if (nbtBlock != null) {
+          Block block = Block.blocksList[nbtBlock.getInteger("BlockID")];
+          list.add("Currently Holding: " + block.getLocalizedName());
+        }
       }
     }
-    return itemStack;
   }
   
   @Override

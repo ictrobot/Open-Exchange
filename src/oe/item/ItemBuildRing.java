@@ -139,6 +139,6 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
 }

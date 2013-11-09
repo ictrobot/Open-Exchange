@@ -307,7 +307,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   }
   
   @Override
-  public void isOE() {
+  public void isOE(Object o) {
   }
   
 }

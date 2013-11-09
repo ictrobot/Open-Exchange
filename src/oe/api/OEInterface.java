@@ -6,7 +6,7 @@ public interface OEInterface {
   /**
    * This just needs to exist
    */
-  public void isOE();
+  public void isOE(Object o);
   
   /**
    * Returns max QMC Storable

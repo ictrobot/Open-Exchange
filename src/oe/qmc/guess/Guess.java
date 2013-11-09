@@ -136,12 +136,15 @@ public class Guess {
   
   public static double check(ItemStack itemstack) {
     GuessReturn data;
+    if (itemstack == null) {
+      return -1;
+    }
     if (QMC.hasQMC(itemstack)) {
       return QMC.getQMC(itemstack);
     }
     recursions++;
     int ore = OreDictionary.getOreID(itemstack);
-    // Stops itemstacks from being checked that have alreading been checked and returned no value;
+    // Stops itemstacks from being checked that have already been checked and returned no value;
     for (ItemStack stack : noValue) {
       if (itemstack.itemID == stack.itemID && itemstack.getItemDamage() == stack.getItemDamage() || (ore != -1 && ore == OreDictionary.getOreID(stack))) {
         return -1;
