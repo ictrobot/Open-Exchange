@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEItemInterface;
 import oe.api.OE_API;
+import oe.lib.Log;
 import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomQMCValuesReader;
@@ -308,6 +309,25 @@ public class QMC {
       }
     }
     return toReturn;
+  }
+  
+  /**
+   * Update Ore Dictionary Values
+   */
+  public static void updateOreDictionary() {
+    Log.debug("Updating Ore Dictionary Values in QMC Database");
+    for (QMCData d : data) {
+      if (d.type != QMCType.OreDictionary) {
+        int oreID = OreDictionary.getOreID(d.itemstack);
+        if (oreID != -1) {
+          d.oreDictionary = OreDictionary.getOreName(oreID);
+          d.type = QMCType.OreDictionary_Itemstack;
+        } else {
+          d.oreDictionary = "NONE";
+          d.type = QMCType.Itemstack;
+        }
+      }
+    }
   }
   
   /**

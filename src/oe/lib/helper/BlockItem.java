@@ -5,7 +5,13 @@ import net.minecraft.item.Item;
 
 public class BlockItem {
   public static boolean isItem(int ID) {
-    return Item.itemsList[ID] != null;
+    if (isBlock(ID)) {
+      return false;
+    }
+    if (Item.itemsList[ID] == null) {
+      return false;
+    }
+    return true;
   }
   
   public static boolean isBlock(int ID) {
@@ -13,6 +19,9 @@ public class BlockItem {
       return false;
     }
     if (Block.blocksList[ID].getUnlocalizedName() == "ForgeFiller") {
+      return false;
+    }
+    if (Block.blocksList[ID] == null) {
       return false;
     }
     return true;

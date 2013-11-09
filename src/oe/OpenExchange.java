@@ -103,6 +103,7 @@ public class OpenExchange {
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
+    QMC.updateOreDictionary();
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
   }

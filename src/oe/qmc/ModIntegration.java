@@ -22,7 +22,7 @@ public class ModIntegration {
   private static Data[] data = new Data[0];
   
   public static void init() {
-    setMod("IC2");
+    mod("IC2");
     add("itemRubber", 24); // Rubber
     add("blockRubSapling", 8); // Rubber Tree Sapling
     loop();
@@ -40,7 +40,7 @@ public class ModIntegration {
   
   static String mod;
   
-  static void setMod(String Mod) {
+  static void mod(String Mod) {
     mod = Mod;
   }
   

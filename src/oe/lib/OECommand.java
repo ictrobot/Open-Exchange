@@ -2,18 +2,22 @@ package oe.lib;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.handler.ore.OreDictionaryHelper;
+import oe.lib.helper.BlockItem;
 import oe.qmc.QMC;
 import oe.qmc.QMCData;
 import oe.qmc.QMCType;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class OECommand implements ICommand {
   @SuppressWarnings("rawtypes")
@@ -67,11 +71,45 @@ public class OECommand implements ICommand {
       commandOre(sender, arguments);
       return;
     }
+    if (arguments[0].toLowerCase().matches("mod")) {
+      commandMod(sender, arguments);
+      return;
+    }
     if (arguments[0].toLowerCase().matches("length")) {
       commandLength(sender, arguments);
       return;
     }
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
+  }
+  
+  private void commandMod(ICommandSender sender, String[] arguments) {
+    EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
+    if (player != null) {
+      ItemStack held = player.getHeldItem();
+      if (held != null) {
+        GameRegistry.UniqueIdentifier id = null;
+        if (BlockItem.isBlock(held.itemID)) {
+          Block block = Block.blocksList[held.itemID];
+          if (block == null) {
+            return;
+          }
+          id = GameRegistry.findUniqueIdentifierFor(block);
+        } else if (BlockItem.isItem(held.itemID)) {
+          Item item = Item.itemsList[held.itemID];
+          if (item == null) {
+            return;
+          }
+          id = GameRegistry.findUniqueIdentifierFor(item);
+        }
+        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- ItemStack Mod Data ---"));
+        if (id != null) {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Mod: " + id.modId));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Name: " + id.name));
+        } else {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held ItemStack is not registered correctly in the GameRegistery"));
+        }
+      }
+    }
   }
   
   private void commandOre(ICommandSender sender, String[] arguments) {
