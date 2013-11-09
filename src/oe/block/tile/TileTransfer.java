@@ -98,7 +98,7 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 1000000000;
   }
   
@@ -117,10 +117,6 @@ public class TileTransfer extends TileEntity implements OETileInterface {
       type = OEType.None;
     }
     return type;
-  }
-  
-  @Override
-  public void isOE(Object o) {
   }
   
   public void onClick(EntityPlayer player) {

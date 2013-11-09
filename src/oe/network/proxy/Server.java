@@ -18,4 +18,8 @@ public class Server {
       return;
     ((EntityPlayerMP) player).playerNetServerHandler.ticksForFloatKick = 0;
   }
+  
+  public boolean isSinglePlayer() {
+    return false;
+  }
 }

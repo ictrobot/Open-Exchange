@@ -410,7 +410,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 10000000;
   }
   
@@ -423,9 +423,4 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public OEType getType() {
     return OEType.Consumer;
   }
-  
-  @Override
-  public void isOE(Object o) {
-  }
-  
 }

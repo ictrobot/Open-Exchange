@@ -4,12 +4,9 @@ import oe.qmc.guess.GuessReturn;
 import net.minecraft.item.ItemStack;
 
 public class OEGuesser {
-  /**
-   * This is inherited so OE_API detects as a valid OEGuessable
+  /*
+   * Not Interface because it needs to be static
    */
-  public static void isOEGuessable() {
-    
-  }
   
   /**
    * Load values

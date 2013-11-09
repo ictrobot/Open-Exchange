@@ -109,6 +109,9 @@ public class Crafting extends OEGuesser {
   }
   
   private static double checkQMC(ItemStack stack) {
+    if (stack == null) {
+      return -1;
+    }
     double v = Guess.check(stack);
     if (v == -1) {
       if (stack.getItemDamage() == 32768 || stack.getItemDamage() == 32767) {

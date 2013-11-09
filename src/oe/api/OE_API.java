@@ -1,6 +1,5 @@
 package oe.api;
 
-import java.lang.reflect.Method;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.lib.OEType;
@@ -14,13 +13,21 @@ public class OE_API {
    * @return
    */
   public static boolean isOE(Class<?> c) {
-    Method method = null;
-    try {
-      method = c.getDeclaredMethod("isOE", Object.class);
-      return method != null;
-    } catch (Exception e) {
-      return false;
+    /*
+     * try {
+     * Method method = c.getDeclaredMethod("isOE", Object.class);
+     * return method != null;
+     * } catch (Exception e) {
+     * return false;
+     * }
+     */
+    Class<?>[] classes = c.getInterfaces();
+    for (Class<?> i : classes) {
+      if (i.getName().contains("OE") && i.getName().contains("Interface")) {
+        return true;
+      }
     }
+    return false;
   }
   
   /**
@@ -30,34 +37,11 @@ public class OE_API {
    * @return
    */
   public static boolean isOEGuessable(Class<?> c) {
-    boolean hasMethod = false;
-    Method[] methods = c.getMethods();
-    for (Method m : methods) {
-      if (m.getName().equals("isOEGuessable")) {
-        hasMethod = true;
-        break;
-      }
+    Class<?> e = c.getSuperclass();
+    if (e == null) {
+      return false;
     }
-    return hasMethod;
-  }
-  
-  /**
-   * Checks if a class implements OEBeforeGuess (Checks by looking for a method called
-   * "isOEBeforeGuess")
-   * 
-   * @param c
-   * @return
-   */
-  public static boolean isOEBeforeGuess(Class<?> c) {
-    boolean hasMethod = false;
-    Method[] methods = c.getMethods();
-    for (Method m : methods) {
-      if (m.getName().equals("isOEBeforeGuess")) {
-        hasMethod = true;
-        break;
-      }
-    }
-    return hasMethod;
+    return e.getName().contains("OEGuesser");
   }
   
   /**

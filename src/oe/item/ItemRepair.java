@@ -123,7 +123,7 @@ public class ItemRepair extends Item implements OEItemInterface {
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 10000;
   }
   
@@ -135,9 +135,5 @@ public class ItemRepair extends Item implements OEItemInterface {
   @Override
   public OEType getType() {
     return OEType.Consumer;
-  }
-  
-  @Override
-  public void isOE(Object o) {
   }
 }

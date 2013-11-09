@@ -142,7 +142,7 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 100000;
   }
   
@@ -154,9 +154,5 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
   @Override
   public OEType getType() {
     return OEType.Consumer;
-  }
-  
-  @Override
-  public void isOE(Object o) {
   }
 }

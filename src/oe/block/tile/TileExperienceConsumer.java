@@ -110,7 +110,7 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 1000000000;
   }
   
@@ -122,10 +122,6 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
   @Override
   public OEType getType() {
     return OEType.Producer;
-  }
-  
-  @Override
-  public void isOE(Object o) {
   }
   
   public void onClick(EntityPlayer player) {

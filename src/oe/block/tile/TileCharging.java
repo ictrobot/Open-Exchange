@@ -292,7 +292,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 10000;
   }
   
@@ -305,9 +305,4 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   public OEType getType() {
     return OEType.Consumer;
   }
-  
-  @Override
-  public void isOE(Object o) {
-  }
-  
 }

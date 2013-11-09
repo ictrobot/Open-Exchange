@@ -249,7 +249,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 10000000;
   }
   
@@ -262,9 +262,4 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   public OEType getType() {
     return OEType.Producer;
   }
-  
-  @Override
-  public void isOE(Object o) {
-  }
-  
 }

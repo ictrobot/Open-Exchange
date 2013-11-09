@@ -4,14 +4,9 @@ import oe.api.lib.OEType;
 
 public interface OEInterface {
   /**
-   * This just needs to exist
-   */
-  public void isOE(Object o);
-  
-  /**
    * Returns max QMC Storable
    */
-  public int getMaxQMC();
+  public double getMaxQMC();
   
   /**
    * Return Tier (Devices are only meant to interact with devices at the same tier or less)

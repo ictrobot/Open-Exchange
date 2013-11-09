@@ -1,6 +1,7 @@
 package oe.qmc;
 
 import java.text.DecimalFormat;
+import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,7 @@ public class QMC {
    * Load
    */
   public static void load() {
+    data = new QMCData[0];
     ConfigHelper.load();
     name = ConfigHelper.other("QMC", "Name", "QMC");
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
@@ -326,6 +328,12 @@ public class QMC {
           d.oreDictionary = "NONE";
           d.type = QMCType.Itemstack;
         }
+      } else {
+        ItemStack[] stacks = OreDictionaryHelper.getItemStacks(d.oreDictionary);
+        if (stacks != null) {
+          d.itemstack = stacks[0];
+          d.type = QMCType.OreDictionary_Itemstack;
+        }
       }
     }
   }
@@ -335,6 +343,18 @@ public class QMC {
    */
   public static QMCData[] getDataBase() {
     return data;
+  }
+  
+  public static void removeGuessed() {
+    for (int i = 0; i < data.length; i++) {
+      Log.info("R: " + i);
+      GuessReturn gd = data[i].guess;
+      if (gd != null) {
+        remove(i);
+        removeGuessed();
+        break;
+      }
+    }
   }
   
   // Private
@@ -350,14 +370,7 @@ public class QMC {
   /**
    * Removes reference from database
    */
-  private static void remove(int Reference) {
-    QMCData[] tmp = new QMCData[data.length - 1];
-    if (Reference > 0) {
-      System.arraycopy(data, 0, tmp, 0, Reference - 1);
-    }
-    if (Reference < data.length - 1) {
-      System.arraycopy(data, Reference + 1, tmp, Reference + 1, data.length - Reference - 1);
-    }
-    data = tmp;
+  private static void remove(int i) {
+    data = ArrayUtils.removeElement(data, data[i]);
   }
 }

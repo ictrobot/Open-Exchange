@@ -90,7 +90,7 @@ public class TileStorage extends TileEntity implements OETileInterface {
   }
   
   @Override
-  public int getMaxQMC() {
+  public double getMaxQMC() {
     return 1000000000;
   }
   
@@ -102,10 +102,6 @@ public class TileStorage extends TileEntity implements OETileInterface {
   @Override
   public OEType getType() {
     return OEType.Storage;
-  }
-  
-  @Override
-  public void isOE(Object o) {
   }
   
   public void onClick(EntityPlayer player) {

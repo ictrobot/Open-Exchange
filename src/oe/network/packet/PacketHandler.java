@@ -9,14 +9,18 @@ public class PacketHandler implements IPacketHandler {
   
   @Override
   public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerEntity) {
-    if (packet.channel == "oe") {
+    if (packet.channel.contentEquals("oe")) {
       InternalPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel == "oeQD") {
+    } else if (packet.channel.contentEquals("oeQD")) {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel == "oeTransmutation") {
+    } else if (packet.channel.contentEquals("oeTransmutation")) {
       TransmutationPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel == "oeBM") {
+    } else if (packet.channel.contentEquals("oeBM")) {
       BlockMoverPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel.contentEquals("oeQMC")) {
+      QMCSynchronizationPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel.contentEquals("oeQMCWipe")) {
+      QMCWipePacket.packet(manager, packet, playerEntity);
     }
   }
 }
