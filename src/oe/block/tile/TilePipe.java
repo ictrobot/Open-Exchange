@@ -6,22 +6,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
-import oe.api.OETileInterface;
-import oe.api.OE_API;
-import oe.api.lib.OEType;
+import oe.api.OEPipeInterface;
 import oe.lib.Debug;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileTransfer extends TileEntity implements OETileInterface {
-  public double stored;
-  public int tier;
+public class TilePipe extends TileEntity implements OEPipeInterface {
+  public double passThrough;
   
-  public TileTransfer(int Tier) {
-    super();
-    tier = Tier;
-  }
-  
-  public TileTransfer() {
+  public TilePipe() {
     super();
   }
   
@@ -32,25 +24,17 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   
   @Override
   public void updateEntity() {
-    double pStored = stored;
-    stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
-    if (pStored != stored) {
-      onInventoryChanged();
-    }
+    passThrough = 0;
   }
   
   @Override
   public void readFromNBT(NBTTagCompound TagCompound) {
     super.readFromNBT(TagCompound);
-    stored = TagCompound.getDouble("OE_Stored_Value");
-    tier = TagCompound.getInteger("OE_Tier");
   }
   
   @Override
   public void writeToNBT(NBTTagCompound TagCompound) {
     super.writeToNBT(TagCompound);
-    TagCompound.setDouble("OE_Stored_Value", stored);
-    TagCompound.setInteger("OE_Tier", tier);
   }
   
   public void sendChangeToClients() {
@@ -61,7 +45,7 @@ public class TileTransfer extends TileEntity implements OETileInterface {
       outputStream.writeInt(this.xCoord);
       outputStream.writeInt(this.yCoord);
       outputStream.writeInt(this.zCoord);
-      outputStream.writeDouble(this.stored);
+      outputStream.writeDouble(this.passThrough);
     } catch (Exception ex) {
       Debug.handleException(ex);
     }
@@ -75,51 +59,26 @@ public class TileTransfer extends TileEntity implements OETileInterface {
   }
   
   @Override
-  public double getQMC() {
-    return stored;
-  }
-  
-  @Override
-  public void setQMC(double value) {
-    stored = value;
-    onInventoryChanged();
-  }
-  
-  @Override
-  public void increaseQMC(double value) {
-    stored = stored + value;
-    onInventoryChanged();
-  }
-  
-  @Override
-  public void decreaseQMC(double value) {
-    stored = stored - value;
-    onInventoryChanged();
-  }
-  
-  @Override
   public double getMaxQMC() {
-    return 1000000000;
-  }
-  
-  @Override
-  public int getTier() {
-    return tier;
-  }
-  
-  @Override
-  public OEType getType() {
-    boolean target = OE_API.hasTarget(xCoord, yCoord, zCoord, worldObj);
-    OEType type;
-    if (target) {
-      type = OEType.Storage;
-    } else {
-      type = OEType.None;
-    }
-    return type;
+    return 100;
   }
   
   public void onClick(EntityPlayer player) {
-    onInventoryChanged();
+    
   }
+  
+  @Override
+  public double increasePassThrough(double amount) {
+    passThrough = passThrough + amount;
+    if (passThrough > getMaxQMC()) {
+      passThrough = getMaxQMC();
+    }
+    return passThrough;
+  }
+  
+  @Override
+  public double passThroughLeft() {
+    return getMaxQMC() - passThrough;
+  }
+  
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import oe.OpenExchange;
 import oe.lib.Debug;
+import oe.lib.Log;
 import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import oe.qmc.QMCData;
@@ -19,10 +20,11 @@ public class PlayerTracker implements IPlayerTracker {
   @Override
   public void onPlayerLogin(EntityPlayer player) {
     if (Sided.isServer()) {
-      sendWipe(player);
       if (OpenExchange.proxy.isSinglePlayer()) {
         return;
       }
+      sendWipe(player);
+      int i = 0;
       for (QMCData d : QMC.getDataBase()) {
         if (d.type != QMCType.OreDictionary) {
           ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
@@ -39,8 +41,10 @@ public class PlayerTracker implements IPlayerTracker {
           packet.data = bos.toByteArray();
           packet.length = bos.size();
           PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
+          i++;
         }
       }
+      Log.debug("Sent " + i + " QMC packets to " + player.username);
     }
   }
   
@@ -57,6 +61,7 @@ public class PlayerTracker implements IPlayerTracker {
     packet.data = bos.toByteArray();
     packet.length = bos.size();
     PacketDispatcher.sendPacketToPlayer(packet, (Player) Player);
+    Log.debug("Sent QMCWipe packet to " + Player.username);
   }
   
   @Override

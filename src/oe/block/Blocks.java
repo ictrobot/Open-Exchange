@@ -12,23 +12,27 @@ public class Blocks {
   public static Block extractor;
   public static Block storage;
   public static Block experienceConsumer;
+  public static Block pipe;
   
   public static void Load() {
     ConfigHelper.load();
     if (ConfigHelper.other("block", "condenserEnabled", true)) {
-      condenser = new BlockCondenser(BlockIDs.condenserID);
+      condenser = new BlockCondenser(BlockIDs.condenser);
     }
     if (ConfigHelper.other("block", "chargingEnabled", true)) {
-      charging = new BlockCharging(BlockIDs.chargingID);
+      charging = new BlockCharging(BlockIDs.charging);
     }
     if (ConfigHelper.other("block", "extractorEnabled", true)) {
-      extractor = new BlockExtractor(BlockIDs.extractorID);
+      extractor = new BlockExtractor(BlockIDs.extractor);
     }
     if (ConfigHelper.other("block", "storageEnabled", true)) {
-      storage = new BlockStorage(BlockIDs.storageID);
+      storage = new BlockStorage(BlockIDs.storage);
     }
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
-      experienceConsumer = new BlockExperienceConsumer(BlockIDs.experienceConsumerID);
+      experienceConsumer = new BlockExperienceConsumer(BlockIDs.experienceConsumer);
+    }
+    if (ConfigHelper.other("block", "pipeEnabled", true)) {
+      pipe = new BlockPipe(BlockIDs.pipe);
     }
     ConfigHelper.save();
   }
@@ -49,6 +53,9 @@ public class Blocks {
     }
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
       Register.Block(experienceConsumer, QMC.name + " Experience Consumer", "pickaxe", 2);
+    }
+    if (ConfigHelper.other("block", "pipeEnabled", true)) {
+      Register.Block(pipe, QMC.name + " Pipe", "pickaxe", 2);
     }
     ConfigHelper.save();
   }

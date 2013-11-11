@@ -275,19 +275,33 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public void setQMC(double value) {
-    stored = value;
+    if (value > getMaxQMC()) {
+      stored = getMaxQMC();
+    } else if (stored < 0) {
+      stored = 0;
+    } else {
+      stored = value;
+    }
     onInventoryChanged();
   }
   
   @Override
   public void increaseQMC(double value) {
     stored = stored + value;
+    if (stored > getMaxQMC()) {
+      stored = getMaxQMC();
+    } else if (stored < 0) {
+      stored = 0;
+    }
     onInventoryChanged();
   }
   
   @Override
   public void decreaseQMC(double value) {
     stored = stored - value;
+    if (stored < 0) {
+      stored = 0;
+    }
     onInventoryChanged();
   }
   

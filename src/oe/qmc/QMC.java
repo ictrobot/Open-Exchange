@@ -347,7 +347,6 @@ public class QMC {
   
   public static void removeGuessed() {
     for (int i = 0; i < data.length; i++) {
-      Log.info("R: " + i);
       GuessReturn gd = data[i].guess;
       if (gd != null) {
         remove(i);

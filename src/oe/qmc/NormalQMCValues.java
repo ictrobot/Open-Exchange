@@ -2,6 +2,7 @@ package oe.qmc;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import oe.lib.Log;
 import oe.lib.helper.ConfigHelper;
 
@@ -23,10 +24,8 @@ public class NormalQMCValues extends QMC {
     add(Block.sapling, 8);
     add(Block.leaves, 1);
     add(Block.wood, 32);
-    add(Item.dyePowder, 256);
-    add(Item.dyePowder, 8);
-    add(Block.plantRed, 8);
-    add(Block.plantYellow, 8);
+    add(Block.plantRed, 16);
+    add(Block.plantYellow, 16);
     add(Item.glowstone, 64);
     add(Item.slimeBall, 64);
     add(Item.clay, 32);
@@ -36,6 +35,7 @@ public class NormalQMCValues extends QMC {
     add(Block.mushroomBrown, 4);
     add(Block.mushroomRed, 4);
     add(Block.cloth, 48); // Wool
+    add(Item.silk, 12); // String
     add(Item.gunpowder, 256);
     add(Item.coal, 128); // Coal
     add(Item.coal, 32); // Charcoal
@@ -86,15 +86,20 @@ public class NormalQMCValues extends QMC {
     add(Item.spiderEye, 12);
     add(Item.fishRaw, 32);
     
-    // Values required for OreDictionart before guessing
+    int[] dyeValues = new int[] { 8, 8, 8, 8, 768, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
+    for (int i = 0; i < dyeValues.length; i++) {
+      ItemStack stack = new ItemStack(351, 1, i);
+      add(stack, dyeValues[i]);
+    }
+    
+    // Values required for OreDictionary before guessing
     add(Block.planks, getQMC(Block.wood) / 4);
     add(Item.stick, getQMC(Block.planks) / 2);
     
-    // Other Values that are not from crafting/smeltinh etc;
+    // Other Values that are not from crafting/smelting etc;
     add(Item.bucketMilk, (getQMC(Item.ingotIron) * 3) + 32);
     add(Item.bucketWater, (getQMC(Item.ingotIron) * 3) + 2);
     add(Item.bucketLava, (getQMC(Item.ingotIron) * 3) + 16);
-    
     add(Item.netherStar, getQMC(Item.diamond) * 64);
     
     add(Item.record13, 8192);

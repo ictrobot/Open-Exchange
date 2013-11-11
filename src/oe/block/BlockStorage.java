@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
+import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,14 +34,16 @@ public class BlockStorage extends BlockContainer {
   
   @Override
   public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int i1, float f1, float f2, float f3) {
-    TileEntity te = world.getBlockTileEntity(i, j, k);
-    if (te == null || !(te instanceof TileStorage) || world.isRemote) {
-      return true;
+    if (Sided.isServer()) {
+      TileEntity te = world.getBlockTileEntity(i, j, k);
+      if (te == null || !(te instanceof TileStorage) || world.isRemote) {
+        return true;
+      }
+      TileStorage storage = (TileStorage) te;
+      storage.onInventoryChanged();
+      player.addChatMessage("Stored " + storage.getQMC() + " Maximum " + storage.getMaxQMC() + " Percentage " + QMC.formatter.format(storage.stored / storage.getMaxQMC() * 100));
+      storage.onClick(player);
     }
-    TileStorage storage = (TileStorage) te;
-    storage.onInventoryChanged();
-    player.addChatMessage("Stored " + storage.stored + " Maximum " + storage.getMaxQMC() + " Percentage " + QMC.formatter.format(storage.stored / storage.getMaxQMC() * 100));
-    storage.onClick(player);
     return true;
   }
   

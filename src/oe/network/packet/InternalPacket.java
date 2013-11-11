@@ -10,8 +10,8 @@ import net.minecraft.tileentity.TileEntity;
 import oe.block.tile.TileCharging;
 import oe.block.tile.TileCondenser;
 import oe.block.tile.TileExtractor;
+import oe.block.tile.TilePipe;
 import oe.block.tile.TileStorage;
-import oe.block.tile.TileTransfer;
 import oe.lib.Debug;
 import cpw.mods.fml.common.network.Player;
 
@@ -39,32 +39,32 @@ public class InternalPacket {
       } else if (packetSender == 13) {
         updateStorage(manager, packet, player);
       } else if (packetSender == 14) {
-        updateTransfer(manager, packet, player);
+        updatePipe(manager, packet, player);
       }
     }
   }
   
   @SuppressWarnings("unused")
-  private static void updateTransfer(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player) {
+  private static void updatePipe(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player) {
     DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
     int x;
     int y;
     int z;
-    double stored;
+    double pass;
     try {
       int sender = inputStream.readInt();
       x = inputStream.readInt();
       y = inputStream.readInt();
       z = inputStream.readInt();
-      stored = inputStream.readDouble();
+      pass = inputStream.readDouble();
     } catch (IOException e) {
       Debug.handleException(e);
       return;
     }
     TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
-    if (te instanceof TileTransfer) {
-      TileTransfer storage = (TileTransfer) te;
-      storage.stored = stored;
+    if (te instanceof TilePipe) {
+      TilePipe pipe = (TilePipe) te;
+      pipe.passThrough = pass;
     }
   }
   
