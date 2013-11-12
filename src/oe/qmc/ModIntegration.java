@@ -25,6 +25,27 @@ public class ModIntegration {
     mod("IC2");
     add("itemRubber", 24); // Rubber
     add("blockRubSapling", 8); // Rubber Tree Sapling
+    mod("Thaumcraft");
+    add("ItemShard", 0, 512);
+    add("ItemShard", 1, 512);
+    add("ItemShard", 2, 512);
+    add("ItemShard", 3, 512);
+    add("ItemShard", 4, 512);
+    add("ItemShard", 5, 512);
+    add("ItemWispEssence", 512);
+    add("blockMagicalLog", 0, 512);
+    add("blockMagicalLog", 1, 512);
+    mod("Railcraft");
+    add("tile.railcraft.brick.quarried", 2, 16);
+    add("tile.railcraft.brick.quarried", 5, 16);
+    add("tile.railcraft.brick.bloodstained", 2, 16);
+    add("tile.railcraft.brick.bloodstained", 5, 16);
+    add("tile.railcraft.brick.frostbound", 2, 16);
+    add("tile.railcraft.brick.frostbound", 5, 16);
+    add("tile.railcraft.brick.nether", 2, 16);
+    add("tile.railcraft.brick.nether", 5, 16);
+    add("tile.railcraft.brick.abyssal", 2, 16);
+    add("tile.railcraft.brick.abyssal", 5, 16);
     loop();
   }
   
