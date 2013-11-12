@@ -26,17 +26,17 @@ public class ModIntegration {
     add("itemRubber", 24); // Rubber
     add("blockRubSapling", 8); // Rubber Tree Sapling
     mod("Thaumcraft");
-    add("ItemShard", 0, 512);
+    add("ItemShard", 0, 512); // Shards
     add("ItemShard", 1, 512);
     add("ItemShard", 2, 512);
     add("ItemShard", 3, 512);
     add("ItemShard", 4, 512);
     add("ItemShard", 5, 512);
-    add("ItemWispEssence", 512);
-    add("blockMagicalLog", 0, 512);
+    add("ItemWispEssence", 2048); // Wisp
+    add("blockMagicalLog", 0, 512); // Thaumcraft wood
     add("blockMagicalLog", 1, 512);
     mod("Railcraft");
-    add("tile.railcraft.brick.quarried", 2, 16);
+    add("tile.railcraft.brick.quarried", 2, 16); // Railcraft Stones
     add("tile.railcraft.brick.quarried", 5, 16);
     add("tile.railcraft.brick.bloodstained", 2, 16);
     add("tile.railcraft.brick.bloodstained", 5, 16);
@@ -46,6 +46,9 @@ public class ModIntegration {
     add("tile.railcraft.brick.nether", 5, 16);
     add("tile.railcraft.brick.abyssal", 2, 16);
     add("tile.railcraft.brick.abyssal", 5, 16);
+    mod("AppliedEnergistics");
+    add("AppEngMaterials", 7, 512); // Quartz Dust
+    add("AppEngMaterials", 6, 512); // Quartz
     loop();
   }
   
