@@ -18,7 +18,7 @@ public class BlockItem {
     if (ID > 4096) {
       return false;
     }
-    if (Block.blocksList[ID].getUnlocalizedName() == "ForgeFiller") {
+    if (Block.blocksList[ID].getUnlocalizedName().contains("ForgeFiller")) {
       return false;
     }
     if (Block.blocksList[ID] == null) {

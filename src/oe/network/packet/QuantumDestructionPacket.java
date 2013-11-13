@@ -6,6 +6,7 @@ import java.io.IOException;
 import oe.api.OEItemInterface;
 import oe.api.OE_API;
 import oe.lib.Debug;
+import oe.lib.QuantumToolBlackList;
 import oe.lib.helper.ConfigHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,6 +65,9 @@ public class QuantumDestructionPacket {
       }
       World world = player.worldObj;
       Block block = Block.blocksList[ID];
+      if (QuantumToolBlackList.isBlackListed(block)) {
+        return;
+      }
       if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
         ItemStack newStack = new ItemStack(block.idDropped(meta, world.rand, 0), block.quantityDropped(world.rand), block.damageDropped(meta));
         if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {

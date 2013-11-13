@@ -6,6 +6,7 @@ import java.io.IOException;
 import oe.item.ItemIDs;
 import oe.lib.Debug;
 import oe.lib.Log;
+import oe.lib.QuantumToolBlackList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
@@ -40,6 +41,10 @@ public class BlockMoverPacket {
           return;
         }
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
+          Block block = Block.blocksList[world.getBlockId(x, y, z)];
+          if (QuantumToolBlackList.isBlackListed(block)) {
+            return;
+          }
           NBTTagCompound nbt = new NBTTagCompound();
           nbt.setInteger("BlockID", world.getBlockId(x, y, z));
           nbt.setInteger("BlockMeta", world.getBlockMetadata(x, y, z));

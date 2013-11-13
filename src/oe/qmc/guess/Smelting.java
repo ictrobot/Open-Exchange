@@ -1,5 +1,6 @@
 package oe.qmc.guess;
 
+import java.util.List;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -14,11 +15,26 @@ public class Smelting extends OEGuesser {
   public static void init() {
     Log.debug("Loading Smelting Guesser");
     int recipes = 0;
-    Map<Integer, ItemStack> list = FurnaceRecipes.smelting().getSmeltingList();
-    for (Integer i : list.keySet()) {
+    Map<Integer, ItemStack> normal = FurnaceRecipes.smelting().getSmeltingList();
+    for (Integer i : normal.keySet()) {
       increaseSmelting();
       ItemStack input = new ItemStack(i, 1, 0);
-      ItemStack output = list.get(i);
+      ItemStack output = normal.get(i);
+      if (input != null & output != null) {
+        smelting[smelting.length - 1] = new GuessData(output, input);
+        recipes++;
+      }
+    }
+    Map<List<Integer>, ItemStack> meta = FurnaceRecipes.smelting().getMetaSmeltingList();
+    for (List<Integer> idPair : meta.keySet()) {
+      int ID = idPair.get(0);
+      int Meta = 0;
+      if (idPair.size() == 2) {
+        Meta = idPair.get(1);
+      }
+      ItemStack input = new ItemStack(ID, 1, Meta);
+      ItemStack output = meta.get(idPair);
+      increaseSmelting();
       if (input != null & output != null) {
         smelting[smelting.length - 1] = new GuessData(output, input);
         recipes++;

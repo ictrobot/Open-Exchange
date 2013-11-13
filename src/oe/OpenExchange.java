@@ -11,6 +11,7 @@ import oe.item.Items;
 import oe.lib.CraftingRecipes;
 import oe.lib.Log;
 import oe.lib.OECommand;
+import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
 import oe.lib.TransmutationRecipes;
 import oe.lib.handler.IMCHandler;
@@ -97,6 +98,8 @@ public class OpenExchange {
       Log.debug("Loading Fuel Handler");
       GameRegistry.registerFuelHandler(new QMCFuelHandler());
     }
+    Log.debug("Loading Quantum Tool Blacklist");
+    QuantumToolBlackList.init();
   }
   
   @EventHandler
