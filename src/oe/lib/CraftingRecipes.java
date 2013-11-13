@@ -48,6 +48,9 @@ public class CraftingRecipes {
     if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.experienceConsumer), " e ", "eoe", " e ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotGold));
     }
+    if (ConfigHelper.other("block", "pipeEnabled", true)) {
+      GameRegistry.addRecipe(new ItemStack(Blocks.pipe, 16), "eee", "ooo", "eee", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotGold));
+    }
     ConfigHelper.save();
     
   }

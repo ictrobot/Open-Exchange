@@ -10,6 +10,7 @@ public class BlockIDs {
   public static int storage;
   public static int experienceConsumer;
   public static int pipe;
+  public static int drill;
   
   public static void Load() {
     ConfigHelper.load();
@@ -20,6 +21,7 @@ public class BlockIDs {
     storage = ConfigHelper.block("storage");
     experienceConsumer = ConfigHelper.block("experienceConsumer");
     pipe = ConfigHelper.block("pipe");
+    drill = ConfigHelper.block("drill");
     
     ConfigHelper.save();
   }

@@ -13,6 +13,7 @@ public class Blocks {
   public static Block storage;
   public static Block experienceConsumer;
   public static Block pipe;
+  public static Block drill;
   
   public static void Load() {
     ConfigHelper.load();
@@ -33,6 +34,9 @@ public class Blocks {
     }
     if (ConfigHelper.other("block", "pipeEnabled", true)) {
       pipe = new BlockPipe(BlockIDs.pipe);
+    }
+    if (ConfigHelper.other("block", "drillEnabled", true)) {
+      drill = new BlockDrill(BlockIDs.drill);
     }
     ConfigHelper.save();
   }
@@ -56,6 +60,9 @@ public class Blocks {
     }
     if (ConfigHelper.other("block", "pipeEnabled", true)) {
       Register.Block(pipe, QMC.name + " Pipe", "pickaxe", 2);
+    }
+    if (ConfigHelper.other("block", "drillEnabled", true)) {
+      Register.Block(drill, QMC.name + " Drill", "pickaxe", 2);
     }
     ConfigHelper.save();
   }

@@ -9,6 +9,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.block.tile.TileCharging;
 import oe.block.tile.TileCondenser;
+import oe.block.tile.TileDrill;
 import oe.block.tile.TileExtractor;
 import oe.block.tile.TilePipe;
 import oe.block.tile.TileStorage;
@@ -40,7 +41,33 @@ public class InternalPacket {
         updateStorage(manager, packet, player);
       } else if (packetSender == 14) {
         updatePipe(manager, packet, player);
+      } else if (packetSender == 15) {
+        updateDrill(manager, packet, player);
       }
+    }
+  }
+  
+  @SuppressWarnings("unused")
+  private static void updateDrill(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player) {
+    DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+    int x;
+    int y;
+    int z;
+    double stored;
+    try {
+      int sender = inputStream.readInt();
+      x = inputStream.readInt();
+      y = inputStream.readInt();
+      z = inputStream.readInt();
+      stored = inputStream.readDouble();
+    } catch (IOException e) {
+      Debug.handleException(e);
+      return;
+    }
+    TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
+    if (te instanceof TileDrill) {
+      TileDrill drill = (TileDrill) te;
+      drill.stored = stored;
     }
   }
   
