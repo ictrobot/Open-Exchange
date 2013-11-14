@@ -32,6 +32,9 @@ public class CraftingRecipes {
     if (ConfigHelper.other("item", "blockManipulatorEnabled", true)) {
       GameRegistry.addShapelessRecipe(new ItemStack(Items.blockMover), new ItemStack(Block.obsidian), new ItemStack(Item.ingotIron));
     }
+    if (ConfigHelper.other("block", "drillEnabled", true)) {
+      GameRegistry.addRecipe(new ItemStack(Blocks.drill), "oro", "rdr", "oro", 'o', new ItemStack(Block.obsidian), 'r', new ItemStack(Block.blockRedstone), 'd', new ItemStack(Item.diamond));
+    }
     // Blocks
     if (ConfigHelper.other("block", "condenserEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.condenser), "ooo", "eee", "ooo", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotGold));

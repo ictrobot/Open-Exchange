@@ -19,8 +19,8 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class TileDrill extends TileEntity implements OETileInterface {
   public double stored;
   int facing;
-  double mineCost = 100;
-  int range = 5;
+  double mineCost = 256;
+  int range = 8;
   int delayTicks = 100;
   int currTicks = 0;
   
