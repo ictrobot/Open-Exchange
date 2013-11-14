@@ -1,5 +1,6 @@
 package oe.lib;
 
+import oe.block.Blocks;
 import net.minecraft.block.Block;
 
 public class QuantumToolBlackList {
@@ -7,6 +8,7 @@ public class QuantumToolBlackList {
   
   public static void init() {
     add(Block.bedrock);
+    add(Blocks.drill);
   }
   
   public static void add(Block block) {

@@ -13,6 +13,7 @@ import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
 import oe.lib.helper.ConfigHelper;
+import oe.lib.helper.Sided;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileDrill extends TileEntity implements OETileInterface {
@@ -41,34 +42,37 @@ public class TileDrill extends TileEntity implements OETileInterface {
   }
   
   private void drill() {
-    currTicks++;
-    if (getQMC() < mineCost) {
-      return;
-    }
-    if (currTicks >= delayTicks) {
-      currTicks = 0;
-    } else {
-      return;
-    }
-    for (int y = 1; y < yCoord; y++) {
-      for (int x = xCoord - range; x <= (xCoord + range); x++) {
-        for (int z = zCoord - range; z <= (zCoord + range); z++) {
-          int id = worldObj.getBlockId(x, y, z);
-          if (id != 0) {
-            Block block = Block.blocksList[id];
-            int meta = worldObj.getBlockMetadata(x, y, z);
-            int oreID = OreDictionary.getOreID(new ItemStack(id, 1, meta));
-            if (oreID != -1) {
-              if (OreDictionary.getOreName(oreID).toLowerCase().startsWith("ore")) {
-                for (Object o : block.getBlockDropped(worldObj, x, y, x, meta, 0).toArray()) {
-                  if (o != null && o instanceof ItemStack) {
-                    EntityItem entityitem = new EntityItem(worldObj, xCoord, yCoord + 1, zCoord, (ItemStack) o);
-                    worldObj.spawnEntityInWorld(entityitem);
+    if (Sided.isServer()) {
+      currTicks++;
+      if (getQMC() < mineCost) {
+        return;
+      }
+      if (currTicks >= delayTicks) {
+        currTicks = 0;
+      } else {
+        return;
+      }
+      for (int y = 1; y < yCoord; y++) {
+        for (int x = xCoord - range; x <= (xCoord + range); x++) {
+          for (int z = zCoord - range; z <= (zCoord + range); z++) {
+            int id = worldObj.getBlockId(x, y, z);
+            if (id != 0) {
+              Block block = Block.blocksList[id];
+              int meta = worldObj.getBlockMetadata(x, y, z);
+              int oreID = OreDictionary.getOreID(new ItemStack(id, 1, meta));
+              if (oreID != -1) {
+                if (OreDictionary.getOreName(oreID).toLowerCase().startsWith("ore")) {
+                  Object[] drops = block.getBlockDropped(worldObj, x, y, x, meta, 0).toArray();
+                  for (Object o : drops) {
+                    if (o != null && o instanceof ItemStack) {
+                      EntityItem entityitem = new EntityItem(worldObj, xCoord, yCoord + 1, zCoord, (ItemStack) o);
+                      worldObj.spawnEntityInWorld(entityitem);
+                    }
                   }
+                  worldObj.setBlockToAir(x, y, z);
+                  decreaseQMC(mineCost);
+                  return;
                 }
-                worldObj.setBlockToAir(x, y, z);
-                decreaseQMC(mineCost);
-                return;
               }
             }
           }
