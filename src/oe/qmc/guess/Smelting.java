@@ -10,7 +10,6 @@ import oe.lib.Log;
 public class Smelting extends OEGuesser {
   private static GuessData[] smelting = new GuessData[0];
   
-  // TODO Fix Smelting guesser
   @SuppressWarnings("unchecked")
   public static void init() {
     Log.debug("Loading Smelting Guesser");

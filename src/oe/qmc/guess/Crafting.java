@@ -2,18 +2,15 @@ package oe.qmc.guess;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import oe.OpenExchange;
 import oe.api.OEGuesser;
 import oe.lib.Debug;
 import oe.lib.FakeContainer;
@@ -204,7 +201,7 @@ public class Crafting extends OEGuesser {
         if (value != null) {
           if (value.getClass().isArray()) {
             Object[] os = (Object[]) value;
-            for (int i = 0; i < os.length; i++) {
+            for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
               if (r instanceof ItemStack) {
                 ItemStack stack = (ItemStack) r;
@@ -233,6 +230,7 @@ public class Crafting extends OEGuesser {
     if (nullNum == inputs.length) {
       Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
+      Debug.printObject(recipe);
       return null; // Failed to read Recipe
     }
     return inputs;
@@ -255,13 +253,10 @@ public class Crafting extends OEGuesser {
           ic.setInventorySlotContents(i, inputs[i]);
         }
       }
-      World[] worlds = MinecraftServer.getServer().worldServers;
-      World world = worlds[0];
-      EntityPlayer player = new FakePlayer(world, "[OE]");
-      GameRegistry.onItemCrafted(player, output, ic);
+      GameRegistry.onItemCrafted(OpenExchange.fakePlayer, output, ic);
       for (int i = 0; i < inputs.length; i++) {
         if (inputs[i] != null) {
-          if (ic.getStackInSlot(i).getItem().hasContainerItem()) {
+          if (ic.getStackInSlot(i).getItem().hasContainerItem() && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
             ic.setInventorySlotContents(i, new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
           }
           if (inputs[i] != ic.getStackInSlot(i)) {
@@ -271,6 +266,8 @@ public class Crafting extends OEGuesser {
         }
       }
     } catch (Exception e) {
+      Log.debug("After Crafting Failed for " + output.toString());
+      Debug.printObject(recipe);
       Debug.handleException(e);
     }
     CheckData cd = new CheckData();

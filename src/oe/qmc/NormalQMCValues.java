@@ -26,7 +26,7 @@ public class NormalQMCValues extends QMC {
     add(Block.wood, 32);
     add(Block.plantRed, 16);
     add(Block.plantYellow, 16);
-    add(Item.glowstone, 64);
+    add(Item.glowstone, 256);
     add(Item.slimeBall, 64);
     add(Item.clay, 32);
     add(Block.web, 8);
@@ -38,7 +38,6 @@ public class NormalQMCValues extends QMC {
     add(Item.silk, 12); // String
     add(Item.gunpowder, 256);
     add(Item.coal, 128); // Coal
-    add(Item.coal, 32); // Charcoal
     add(Block.cobblestoneMossy, 128);
     add(Item.leather, 12);
     add(Block.reed, 16);
@@ -85,6 +84,7 @@ public class NormalQMCValues extends QMC {
     add(Item.ghastTear, 2048);
     add(Item.spiderEye, 12);
     add(Item.fishRaw, 32);
+    add(Item.seeds, 24);
     
     int[] dyeValues = new int[] { 8, 8, 8, 8, 768, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
     for (int i = 0; i < dyeValues.length; i++) {
@@ -102,7 +102,7 @@ public class NormalQMCValues extends QMC {
     add(Item.bucketLava, (getQMC(Item.ingotIron) * 3) + 16);
     add(Item.netherStar, getQMC(Item.diamond) * 64);
     
-    add(Item.record13, 8192);
+    add(Item.record13, 16384);
     add(Item.recordCat, getQMC(Item.record11));
     add(Item.recordBlocks, getQMC(Item.record11));
     add(Item.recordChirp, getQMC(Item.record11));

@@ -1,6 +1,7 @@
 package oe;
 
 import java.io.File;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import oe.block.BlockIDs;
 import oe.block.Blocks;
@@ -14,6 +15,7 @@ import oe.lib.OECommand;
 import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
 import oe.lib.TransmutationRecipes;
+import oe.lib.fakeplayer.OEFakePlayer;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
@@ -54,6 +56,8 @@ public class OpenExchange {
   
   @SidedProxy(clientSide = "oe.network.proxy.Client", serverSide = "oe.network.proxy.Server")
   public static Server proxy;
+  
+  public static EntityPlayerMP fakePlayer;
   
   @Instance("OE")
   public static OpenExchange instance;
@@ -127,6 +131,8 @@ public class OpenExchange {
   
   @EventHandler
   public void serverStarted(FMLServerStartedEvent event) {
+    Log.debug("Loading Fake Player");
+    fakePlayer = new OEFakePlayer();
     Log.debug("Guessing QMC Values");
     Guess.load();
     Log.debug("Adding Transmutation Recipes");
