@@ -12,10 +12,10 @@ import oe.item.Items;
 import oe.lib.CraftingRecipes;
 import oe.lib.Log;
 import oe.lib.OECommand;
+import oe.lib.OEFakePlayer;
 import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
 import oe.lib.TransmutationRecipes;
-import oe.lib.fakeplayer.OEFakePlayer;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
@@ -132,7 +132,7 @@ public class OpenExchange {
   @EventHandler
   public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Loading Fake Player");
-    fakePlayer = new OEFakePlayer();
+    fakePlayer = (EntityPlayerMP) new OEFakePlayer();
     Log.debug("Guessing QMC Values");
     Guess.load();
     Log.debug("Adding Transmutation Recipes");

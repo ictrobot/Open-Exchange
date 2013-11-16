@@ -1,4 +1,4 @@
-package oe.lib.fakeplayer;
+package oe.lib;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.StatBase;
