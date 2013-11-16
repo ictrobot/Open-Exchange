@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
+import oe.lib.helper.ConfigHelper;
 import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -26,9 +27,13 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public boolean hasTarget;
   public int percent = 0; // CLIENT SIDE
   public boolean[] isDifferent = new boolean[size];
+  public boolean shouldEat = false;
   
   public TileCondenser() {
     super();
+    ConfigHelper.load();
+    shouldEat = ConfigHelper.other("block", "Condenser turns items other than the target into QMC", false);
+    ConfigHelper.save();
     this.chestContents = new ItemStack[getSizeInventory()];
   }
   
@@ -41,6 +46,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public void updateEntity() {
     updateDifferent();
     if (Sided.isServer()) {
+      onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         if (prevStored != stored) {
           onInventoryChanged();
@@ -71,18 +77,20 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           }
           updateDifferent();
           
-          int slot = ValueSlot();
-          if (slot == -1) {
-            return;
+          if (shouldEat) {
+            int slot = ValueSlot();
+            if (slot == -1) {
+              return;
+            }
+            ItemStack itemstack = getStackInSlot(slot).copy();
+            if (itemstack == null) {
+              return;
+            }
+            double V = QMC.getQMC(itemstack);
+            stored = stored + V;
+            decrStackSize(slot, 1);
+            sendChangeToClients();
           }
-          ItemStack itemstack = getStackInSlot(slot).copy();
-          if (itemstack == null) {
-            return;
-          }
-          double V = QMC.getQMC(itemstack);
-          stored = stored + V;
-          decrStackSize(slot, 1);
-          sendChangeToClients();
         }
       }
     } else {

@@ -54,7 +54,7 @@ public class ContainerExtractor extends Container {
         }
       } else if (!tileEntity.isItemValidForSlot(slot.slotNumber, itemstack1)) {
         return null;
-      } else if (!mergeItemStack(itemstack1, 1, size, false)) {
+      } else if (!mergeItemStack(itemstack1, 0, size, false)) { // 0 First Slot
         return null;
       }
       if (itemstack1.stackSize == 0) {

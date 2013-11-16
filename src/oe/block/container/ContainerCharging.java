@@ -16,15 +16,14 @@ public class ContainerCharging extends Container {
     tileEntity = te;
     size = te.size;
     int slot = 0;
-    int offset;
     for (int y = 0; y < 3; ++y) {
-      for (int x = 0; x < 6; ++x) {
-        if (x > 2) {
-          offset = 54;
-        } else {
-          offset = 0;
-        }
-        addSlotToContainer(new Slot(tileEntity, slot++, 8 + offset + x * 18, 23 + y * 18));
+      for (int x = 0; x < 3; ++x) {
+        addSlotToContainer(new Slot(tileEntity, slot++, 8 + x * 18, 23 + y * 18));
+      }
+    }
+    for (int y = 0; y < 3; ++y) {
+      for (int x = 0; x < 3; ++x) {
+        addSlotToContainer(new Slot(tileEntity, slot++, 116 + x * 18, 23 + y * 18));
       }
     }
     bindPlayerInventory(inventoryPlayer);
@@ -60,7 +59,7 @@ public class ContainerCharging extends Container {
         }
       } else if (!tileEntity.isItemValidForSlot(slot.slotNumber, itemstack1)) {
         return null;
-      } else if (!mergeItemStack(itemstack1, 1, size, false)) {
+      } else if (!mergeItemStack(itemstack1, 0, 9, false)) { // 0 First Slot, 9 Last
         return null;
       }
       if (itemstack1.stackSize == 0) {
