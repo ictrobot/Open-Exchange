@@ -41,7 +41,7 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
       }
       TileDrillRemoteReceiver drill = (TileDrillRemoteReceiver) te;
       Location loc = RemoteDrillData.getLocationDrill(drill.RemoteID);
-      player.addChatMessage("ID " + drill.RemoteID + " Stored " + RemoteDrillData.getQMC(drill.RemoteID) + " DrillX " + loc.x + " DrillY " + loc.y + " DrillZ " + loc.z);
+      player.addChatMessage("ID " + drill.RemoteID + ", Stored " + RemoteDrillData.getQMC(drill.RemoteID) + ", DrillX " + loc.x + ", DrillY " + loc.y + ", DrillZ " + loc.z);
     }
     return true;
   }

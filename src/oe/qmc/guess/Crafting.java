@@ -67,8 +67,6 @@ public class Crafting extends OEGuesser {
           ItemStack stack = gd.input[i];
           ItemStack check = cd.after[i];
           if (stack != null) {
-            // Log.info("B: " + stack.itemID + ":" + stack.getItemDamage() + "x" + stack.stackSize);
-            // Log.info("A: " + check.itemID + ":" + check.getItemDamage() + "x" + check.stackSize);
             if (stack.equals(check)) {
               double v = checkQMC(stack);
               if (v == -1) {
@@ -203,15 +201,9 @@ public class Crafting extends OEGuesser {
             Object[] os = (Object[]) value;
             for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
-              if (r instanceof ItemStack) {
-                ItemStack stack = (ItemStack) r;
-                inputs[i] = stack;
-              } else if (r instanceof String) {
-                String ore = (String) r;
-                ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
-                if (stacks != null) {
-                  inputs[i] = stacks[0];
-                }
+              ItemStack fromObject = getItemStackFromObject(r);
+              if (fromObject != null) {
+                inputs[i] = fromObject;
               }
             }
             break;
@@ -234,6 +226,22 @@ public class Crafting extends OEGuesser {
       return null; // Failed to read Recipe
     }
     return inputs;
+  }
+  
+  private static ItemStack getItemStackFromObject(Object o) {
+    if (o instanceof ItemStack) {
+      ItemStack stack = (ItemStack) o;
+      return stack;
+    } else if (o instanceof String) {
+      String ore = (String) o;
+      ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
+      if (stacks != null) {
+        return stacks[0];
+      }
+    } else if (o instanceof ArrayList) {
+      return getItemStackFromObject(((ArrayList<?>) o).toArray()[0]);
+    }
+    return null;
   }
   
   private static void increaseCrafting(int id) {
