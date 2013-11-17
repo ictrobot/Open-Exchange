@@ -235,7 +235,7 @@ public class Crafting extends OEGuesser {
     } else if (o instanceof String) {
       String ore = (String) o;
       ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
-      if (stacks != null) {
+      if (stacks != null && stacks.length > 1) {
         return stacks[0];
       }
     } else if (o instanceof ArrayList) {

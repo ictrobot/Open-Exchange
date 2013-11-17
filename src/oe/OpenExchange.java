@@ -16,7 +16,6 @@ import oe.lib.OECommand;
 import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
 import oe.lib.RemoteDrillData;
-import oe.lib.TransmutationRecipes;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
@@ -32,6 +31,7 @@ import oe.qmc.QMC;
 import oe.qmc.file.QMCValuesWriter;
 import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
+import oe.qmc.guess.Ore;
 import oe.qmc.guess.Smelting;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -79,7 +79,7 @@ public class OpenExchange {
     MinecraftForge.EVENT_BUS.register(new OreDictionaryHelper());
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
     GameRegistry.registerPlayerTracker(new PlayerTracker());
-    Log.debug("Loading Exchange Values");
+    Log.debug("Loading QMC Values");
     QMC.load();
     Log.debug("Loading Block IDs");
     BlockIDs.Load();
@@ -100,6 +100,7 @@ public class OpenExchange {
     Log.debug("Adding QMC Guessers");
     Guess.add(Crafting.class);
     Guess.add(Smelting.class);
+    Guess.add(Ore.class);
     if (fuelHandler) {
       Log.debug("Loading Fuel Handler");
       GameRegistry.registerFuelHandler(new QMCFuelHandler());
@@ -110,15 +111,16 @@ public class OpenExchange {
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
-    Log.debug("Adding crafting recipes");
+    Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
-    QMC.updateOreDictionary();
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
+    Log.debug("Updating Database Ore Dictionary Values");
+    QMC.updateOreDictionary();
   }
   
   @EventHandler
@@ -140,8 +142,6 @@ public class OpenExchange {
     fakePlayer = new FakePlayer.OEFakePlayer();
     Log.debug("Guessing QMC Values");
     Guess.load();
-    Log.debug("Adding Transmutation Recipes");
-    TransmutationRecipes.init();
     Log.debug("Writing QMC Values to a file");
     QMCValuesWriter.write();
     Log.debug("Writing OreDictionary Values to a file");
@@ -153,5 +153,6 @@ public class OpenExchange {
     if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
       RemoteDrillData.saveNBT();
     }
+    fakePlayer = null;
   }
 }

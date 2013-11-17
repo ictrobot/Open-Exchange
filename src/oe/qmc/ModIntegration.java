@@ -9,6 +9,7 @@ public class ModIntegration {
     public String mod;
     public String name;
     public double value;
+    public boolean isOre;
     public int meta;
     
     public Data(String Mod, String Name, int Meta, double Value) {
@@ -16,6 +17,13 @@ public class ModIntegration {
       this.name = Name;
       this.meta = Meta;
       this.value = Value;
+      isOre = false;
+    }
+    
+    public Data(String ore, double Value) {
+      this.name = ore;
+      this.value = Value;
+      this.isOre = true;
     }
   }
   
@@ -23,8 +31,9 @@ public class ModIntegration {
   
   public static void init() {
     mod("IC2");
-    add("itemRubber", 24); // Rubber
-    add("blockRubSapling", 8); // Rubber Tree Sapling
+    add("itemRubber", 0, 24); // Rubber
+    add("blockRubSapling", 0, 8); // Rubber Tree Sapling
+    
     mod("Thaumcraft");
     add("ItemShard", 0, 512); // Shards
     add("ItemShard", 1, 512);
@@ -32,9 +41,10 @@ public class ModIntegration {
     add("ItemShard", 3, 512);
     add("ItemShard", 4, 512);
     add("ItemShard", 5, 512);
-    add("ItemWispEssence", 2048); // Wisp
+    add("ItemWispEssence", 0, 2048); // Wisp
     add("blockMagicalLog", 0, 512); // Thaumcraft wood
     add("blockMagicalLog", 1, 512);
+    
     mod("Railcraft");
     add("tile.railcraft.brick.quarried", 2, 16); // Railcraft Stones
     add("tile.railcraft.brick.quarried", 5, 16);
@@ -49,15 +59,35 @@ public class ModIntegration {
     mod("AppliedEnergistics");
     add("AppEngMaterials", 7, 512); // Quartz Dust
     add("AppEngMaterials", 6, 512); // Quartz
+    
+    ore("ingotPlatinum", 4096); // Thermal Expansion 3
+    ore("ingotElectrum", 1152);
+    ore("ingotInvar", 512);
+    ore("ingotEnderium", 13376);
+    
+    ore("ingotCopper", 192);
+    ore("ingotTin", 192);
+    ore("ingotBronze", 192);
+    ore("ingotLead", 256);
+    ore("ingotSilver", 256);
+    ore("ingotNickel", 1024);
+    ore("gemRuby", 2048);
+    ore("gemSapphire", 2048);
+    ore("gemGreenSapphire", 2048);
+    
     loop();
   }
   
   private static void loop() {
     for (Data d : data) {
-      ItemStack stack = GameRegistry.findItemStack(d.mod, d.name, 1);
-      if (stack != null) {
-        stack.setItemDamage(d.meta);
-        QMC.add(stack, d.value);
+      if (d.isOre) {
+        QMC.add(d.name, d.value);
+      } else {
+        ItemStack stack = GameRegistry.findItemStack(d.mod, d.name, 1);
+        if (stack != null) {
+          stack.setItemDamage(d.meta);
+          QMC.add(stack, d.value);
+        }
       }
     }
   }
@@ -68,10 +98,25 @@ public class ModIntegration {
     mod = Mod;
   }
   
-  static void add(String Name, double Value) {
-    add(Name, 0, Value);
+  /**
+   * Ore Dictionary
+   * 
+   * @param Name
+   * @param Value
+   */
+  static void ore(String Name, double Value) {
+    Data[] tmp = new Data[data.length + 1];
+    System.arraycopy(data, 0, tmp, 0, data.length);
+    data = tmp;
+    data[data.length - 1] = new Data(Name, Value);
   }
   
+  /**
+   * Mod Item
+   * 
+   * @param Name
+   * @param Value
+   */
   static void add(String Name, int Meta, double Value) {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);

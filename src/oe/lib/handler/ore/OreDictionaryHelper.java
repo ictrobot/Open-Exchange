@@ -1,7 +1,9 @@
 package oe.lib.handler.ore;
 
+import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 
 public class OreDictionaryHelper {
@@ -35,16 +37,24 @@ public class OreDictionaryHelper {
   }
   
   public static ItemStack[] getItemStacks(String ore) {
-    for (OreData od : data) {
-      if (od.ore == ore) {
-        return od.itemstacks;
+    /*
+     * for (OreData od : data) {
+     * if (od.ore.contentEquals(ore)) {
+     * return od.itemstacks;
+     * }
+     * }
+     */
+    ArrayList<ItemStack> stacks = OreDictionary.getOres(ore);
+    ItemStack[] toReturn = new ItemStack[0];
+    for (Object o : stacks) {
+      if (o instanceof ItemStack) {
+        ItemStack[] tmp = new ItemStack[toReturn.length + 1];
+        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+        toReturn = tmp;
+        toReturn[toReturn.length - 1] = (ItemStack) o;
       }
     }
-    return null;
-  }
-  
-  public static boolean exists(String name) {
-    return getReference(name) != -1;
+    return toReturn;
   }
   
   public static OreData[] oreDataArray() {

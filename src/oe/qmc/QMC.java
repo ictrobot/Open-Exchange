@@ -330,7 +330,7 @@ public class QMC {
         }
       } else {
         ItemStack[] stacks = OreDictionaryHelper.getItemStacks(d.oreDictionary);
-        if (stacks != null) {
+        if (stacks != null && stacks.length > 1) {
           d.itemstack = stacks[0];
           d.type = QMCType.OreDictionary_Itemstack;
         }

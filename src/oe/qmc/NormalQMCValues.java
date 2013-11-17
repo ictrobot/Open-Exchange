@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import oe.lib.Log;
-import oe.lib.helper.ConfigHelper;
 import oe.lib.helper.Register;
 
 public class NormalQMCValues extends QMC {
@@ -118,19 +117,6 @@ public class NormalQMCValues extends QMC {
     int reg = length() - r;
     Log.info(reg + " Minecraft " + nameFull + " Values Loaded");
     
-    config("ingotCopper", 192);
-    config("ingotTin", 192);
-    config("ingotBronze", 192);
-    config("ingotLead", 256);
-    config("ingotSilver", 256);
-    config("gemRuby", 2048);
-    config("gemSapphire", 2048);
-    config("gemGreenSapphire", 2048);
-    
     Register.Ore("oreCoal", Block.oreCoal);
-  }
-  
-  public static void config(String str, int normal) {
-    add(str, ConfigHelper.other("QMC", str, normal));
   }
 }

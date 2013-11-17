@@ -6,21 +6,22 @@ import oe.OpenExchange;
 public class Debug {
   
   public static boolean debug = OpenExchange.debug;
+  public static boolean rawCode = Reference.VERSION_NUMBER == "@VERSION@";
   
   public static void handleException(Exception e) {
-    if (debug) {
+    if (debug || rawCode) {
       e.printStackTrace();
     }
   }
   
   public static void message(Object o) {
-    if (debug) {
+    if (debug || rawCode) {
       Log.debug(o);
     }
   }
   
   public static void printObject(Object o) {
-    if (debug) {
+    if (debug && rawCode) {
       prevPrint = null;
       printObject(o, "", 0);
     }
