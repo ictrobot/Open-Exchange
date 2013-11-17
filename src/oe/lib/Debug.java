@@ -32,6 +32,9 @@ public class Debug {
     if (prevPrint != null && prevPrint.equals(o)) {
       return;
     }
+    if (i > 9) {
+      return;
+    }
     prevPrint = o;
     try {
       String prefix = "";

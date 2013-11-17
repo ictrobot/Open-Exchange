@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import oe.lib.Log;
 import oe.lib.helper.ConfigHelper;
+import oe.lib.helper.Register;
 
 public class NormalQMCValues extends QMC {
   public static void load() {
@@ -125,6 +126,8 @@ public class NormalQMCValues extends QMC {
     config("gemRuby", 2048);
     config("gemSapphire", 2048);
     config("gemGreenSapphire", 2048);
+    
+    Register.Ore("oreCoal", Block.oreCoal);
   }
   
   public static void config(String str, int normal) {
