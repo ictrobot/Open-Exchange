@@ -69,11 +69,20 @@ public class QuantumDestructionPacket {
         return;
       }
       if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
-        ItemStack newStack = new ItemStack(block.idDropped(meta, world.rand, 0), block.quantityDropped(world.rand), block.damageDropped(meta));
         if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {
           OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
           if (oe.getQMC(player.getHeldItem()) > QMCNeeded) {
-            if (player.inventory.addItemStackToInventory(newStack)) {
+            Object[] drops = block.getBlockDropped(player.worldObj, x, y, x, meta, 0).toArray();
+            boolean invSpace = false;
+            for (Object o : drops) {
+              if (o != null && o instanceof ItemStack) {
+                Boolean inv = player.inventory.addItemStackToInventory((ItemStack) o);
+                if (inv && !invSpace) {
+                  invSpace = true;
+                }
+              }
+            }
+            if (invSpace) {
               oe.decreaseQMC(QMCNeeded, player.getHeldItem());
               world.setBlockToAir(x, y, z);
             } else {

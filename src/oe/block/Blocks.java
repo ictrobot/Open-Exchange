@@ -1,6 +1,7 @@
 package oe.block;
 
 import net.minecraft.block.Block;
+import oe.lib.RemoteDrillData;
 import oe.lib.helper.ConfigHelper;
 import oe.lib.helper.Register;
 import oe.qmc.QMC;
@@ -14,6 +15,8 @@ public class Blocks {
   public static Block experienceConsumer;
   public static Block pipe;
   public static Block drill;
+  public static Block drillRemote;
+  public static Block drillRemoteReceiver;
   
   public static void Load() {
     ConfigHelper.load();
@@ -36,7 +39,12 @@ public class Blocks {
       pipe = new BlockPipe(BlockIDs.pipe);
     }
     if (ConfigHelper.other("block", "drillEnabled", true)) {
+      RemoteDrillData.init();
       drill = new BlockDrill(BlockIDs.drill);
+    }
+    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+      drillRemote = new BlockDrillRemote(BlockIDs.drillRemote);
+      drillRemoteReceiver = new BlockDrillRemoteReceiver(BlockIDs.drillRemoteReceiver);
     }
     ConfigHelper.save();
   }
@@ -63,6 +71,10 @@ public class Blocks {
     }
     if (ConfigHelper.other("block", "drillEnabled", true)) {
       Register.Block(drill, QMC.name + " Drill", "pickaxe", 2);
+    }
+    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+      Register.Block(drillRemote, QMC.name + " Remote Drill", "pickaxe", 2);
+      Register.Block(drillRemoteReceiver, QMC.name + " Remote Drill Receiver", "pickaxe", 2);
     }
     ConfigHelper.save();
   }

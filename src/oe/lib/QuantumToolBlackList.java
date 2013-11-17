@@ -9,6 +9,7 @@ public class QuantumToolBlackList {
   public static void init() {
     add(Block.bedrock);
     add(Blocks.drill);
+    add(Blocks.drillRemote);
   }
   
   public static void add(Block block) {

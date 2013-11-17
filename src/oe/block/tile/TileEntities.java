@@ -10,6 +10,8 @@ public class TileEntities {
     GameRegistry.registerTileEntity(TileStorage.class, "OEStorage");
     GameRegistry.registerTileEntity(TilePipe.class, "OEPipe");
     GameRegistry.registerTileEntity(TileDrill.class, "OEDrill");
+    GameRegistry.registerTileEntity(TileDrillRemote.class, "OEDrillRemote");
+    GameRegistry.registerTileEntity(TileDrillRemoteReceiver.class, "OEDrillRemoteReceiver");
     GameRegistry.registerTileEntity(TileExperienceConsumer.class, "OEExperienceConsumer");
   }
 }

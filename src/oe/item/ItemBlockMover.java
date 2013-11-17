@@ -19,6 +19,7 @@ public class ItemBlockMover extends Item implements OEItemInterface {
     setTextureName(Items.Texture("BlockMover"));
     setCreativeTab(CreativeTabs.tabTools);
     setUnlocalizedName("ItemBlockMover");
+    setMaxStackSize(1);
   }
   
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {

@@ -27,7 +27,7 @@ public class TileDrill extends TileEntity implements OETileInterface {
   public TileDrill() {
     super();
     ConfigHelper.load();
-    mineCost = ConfigHelper.other("block", "Drill Mine Block Cost", 100.0);
+    mineCost = ConfigHelper.other("block", "Drill Mine Block Cost", 256.0);
     delayTicks = ConfigHelper.other("block", "Drill Tick Delay", 100);
     range = ConfigHelper.other("block", "Drill Range", 8);
     ConfigHelper.save();

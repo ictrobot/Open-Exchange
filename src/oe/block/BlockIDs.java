@@ -11,6 +11,8 @@ public class BlockIDs {
   public static int experienceConsumer;
   public static int pipe;
   public static int drill;
+  public static int drillRemote;
+  public static int drillRemoteReceiver;
   
   public static void Load() {
     ConfigHelper.load();
@@ -22,6 +24,8 @@ public class BlockIDs {
     experienceConsumer = ConfigHelper.block("experienceConsumer");
     pipe = ConfigHelper.block("pipe");
     drill = ConfigHelper.block("drill");
+    drillRemote = ConfigHelper.block("drillRemote");
+    drillRemoteReceiver = ConfigHelper.block("drillRemoteReceiver");
     
     ConfigHelper.save();
   }

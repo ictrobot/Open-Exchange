@@ -15,6 +15,7 @@ import oe.lib.Log;
 import oe.lib.OECommand;
 import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
+import oe.lib.RemoteDrillData;
 import oe.lib.TransmutationRecipes;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.PlayerInteractHandler;
@@ -42,6 +43,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -126,7 +128,10 @@ public class OpenExchange {
   
   @EventHandler
   public void serverLoad(FMLServerStartingEvent event) {
-    event.registerServerCommand(new OECommand());
+    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+      event.registerServerCommand(new OECommand());
+    }
+    RemoteDrillData.loadNBT();
   }
   
   @EventHandler
@@ -141,5 +146,12 @@ public class OpenExchange {
     QMCValuesWriter.write();
     Log.debug("Writing OreDictionary Values to a file");
     OreDictionaryWriter.write();
+  }
+  
+  @EventHandler
+  public void serverStop(FMLServerStoppingEvent event) {
+    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+      RemoteDrillData.saveNBT();
+    }
   }
 }

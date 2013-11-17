@@ -4,13 +4,16 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class Sided {
+  
   public static boolean isServer() {
-    Side side = FMLCommonHandler.instance().getEffectiveSide();
-    return side.isServer();
+    return getSide().isServer();
   }
   
   public static boolean isClient() {
-    Side side = FMLCommonHandler.instance().getEffectiveSide();
-    return side.isClient();
+    return getSide().isClient();
+  }
+  
+  public static Side getSide() {
+    return FMLCommonHandler.instance().getEffectiveSide();
   }
 }
