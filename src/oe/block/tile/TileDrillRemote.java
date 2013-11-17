@@ -98,6 +98,7 @@ public class TileDrillRemote extends TileEntity {
       TileDrillRemote drill = (TileDrillRemote) te;
       drill.spawnedReceiver = true;
       drill.RemoteID = this.RemoteID;
+      drill.direction = this.direction;
       worldObj.setBlockToAir(xCoord, yCoord, zCoord);
       this.invalidate();
       RemoteDrillData.setQMC(RemoteID, RemoteDrillData.getQMC(RemoteID) - RemoteDrillData.moveCost);

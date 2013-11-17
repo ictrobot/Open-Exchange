@@ -56,6 +56,7 @@ public class BlockMoverPacket {
           }
           player.getHeldItem().stackTagCompound.setTag("block", nbt);
           player.getHeldItem().stackTagCompound.setBoolean("hasBlock", true);
+          player.getHeldItem().setItemDamage(1); // To stop them having values while storing a block
           if (te != null) {
             TileEntity toSet = Block.blocksList[world.getBlockId(x, y, z)].createTileEntity(world, world.getBlockMetadata(x, y, z));
             world.setBlockTileEntity(x, y, z, toSet);
@@ -86,6 +87,7 @@ public class BlockMoverPacket {
           }
           player.getHeldItem().stackTagCompound.removeTag("block");
           player.getHeldItem().stackTagCompound.setBoolean("hasBlock", false);
+          player.getHeldItem().setItemDamage(0);
         }
       }
     } catch (Exception e) {
