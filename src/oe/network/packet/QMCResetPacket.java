@@ -9,7 +9,7 @@ import cpw.mods.fml.common.network.Player;
 public class QMCResetPacket {
   
   public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player Player) {
-    Log.debug("Received QMC Wipe Packet - Restoring Post-Init Snapshot");
+    Log.debug("Received QMC Wipe Packet");
     QMC.restoreSnapshot(QMC.postInitSnapshot);
   }
 }

@@ -176,7 +176,7 @@ public class QMCItemStack {
     return -1;
   }
   
-  public static int length() {
+  public static Integer length() {
     return data.length;
   }
 }

@@ -142,10 +142,9 @@ public class OpenExchange {
   
   @EventHandler
   public void serverStarted(FMLServerStartedEvent event) {
+    QMC.restoreSnapshot(QMC.postInitSnapshot);
     Log.debug("Loading Fake Player");
     fakePlayer = new FakePlayer.OEFakePlayer();
-    Log.debug("Restoring Post-Init Snapshot");
-    QMC.restoreSnapshot(QMC.postInitSnapshot);
     Log.debug("Guessing QMC Values");
     Guess.load();
   }
@@ -161,7 +160,6 @@ public class OpenExchange {
   @EventHandler
   public void serverStopped(FMLServerStoppedEvent event) {
     if (proxy.isClient()) {
-      Log.debug("Restoring Post-Init Snapshot");
       QMC.restoreSnapshot(QMC.postInitSnapshot);
     }
   }

@@ -25,4 +25,8 @@ public class OEQMC {
   public static void restoreSnapshot(NBTTagCompound nbt) {
     
   }
+  
+  public static Integer length() {
+    return 0;
+  }
 }

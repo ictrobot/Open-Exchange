@@ -26,7 +26,7 @@ public class PlayerTracker implements IPlayerTracker {
       }
       try {
         sendReset(player);
-        NBTTagCompound nbt = QMC.snapshot();
+        NBTTagCompound nbt = QMC.snapshot("Server --> Client");
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
         DataOutputStream outputStream = new DataOutputStream(bos);
         CompressedStreamTools.writeCompressed(nbt, outputStream);

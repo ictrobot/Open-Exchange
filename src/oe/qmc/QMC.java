@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import oe.lib.Log;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomQMCValuesReader;
 
@@ -94,7 +95,23 @@ public class QMC {
     return false;
   }
   
-  public static NBTTagCompound snapshot() {
+  public static int length() {
+    int l = 0;
+    for (int i = 0; i < data.length; i++) {
+      Class<?> c = data[i].c;
+      try {
+        Method m = c.getDeclaredMethod("length");
+        Object r = m.invoke(null);
+        if (r != null && r instanceof Integer) {
+          l = l + (Integer) r;
+        }
+      } catch (Exception e) {
+      }
+    }
+    return l;
+  }
+  
+  public static NBTTagCompound snapshot(String SnapShotName) {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
       Class<?> c = data[i].c;
@@ -107,6 +124,7 @@ public class QMC {
       } catch (Exception e) {
       }
     }
+    nbt.setString("Name", SnapShotName);
     return nbt;
   }
   
@@ -114,6 +132,7 @@ public class QMC {
     if (nbt == null) {
       return;
     }
+    Log.debug("Restoring " + nbt.getString("Name") + " Snapshot - Currently there are " + length() + " " + name + " values");
     for (int i = 0; i < data.length; i++) {
       Class<?> c = data[i].c;
       NBTTagCompound snapshot = nbt.getCompoundTag(c.getSimpleName());
@@ -123,6 +142,7 @@ public class QMC {
       } catch (Exception e) {
       }
     }
+    Log.debug("After restoring there are " + length() + " " + name + " values");
   }
   
   private static Class<?> getHandler(Object o) {
@@ -146,6 +166,6 @@ public class QMC {
   public static NBTTagCompound postInitSnapshot = new NBTTagCompound();
   
   public static void takePostInitSnapshot() {
-    postInitSnapshot = snapshot();
+    postInitSnapshot = snapshot("Post-Init");
   }
 }
