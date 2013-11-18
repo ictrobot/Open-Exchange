@@ -27,7 +27,7 @@ import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
-import oe.qmc.file.QMCValuesWriter;
+import oe.qmc.QMCItemStack;
 import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.Ore;
@@ -42,13 +42,14 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeQD", "oeTransmutation", "oeBM", "oeQMC", "oeQMCWipe" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeQD", "oeBM", "oeQMC", "oeQMCReset" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -77,8 +78,8 @@ public class OpenExchange {
     MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
     GameRegistry.registerPlayerTracker(new PlayerTracker());
-    Log.debug("Loading QMC Values");
-    QMC.load();
+    Log.debug("Adding QMC Handlers");
+    QMC.loadHandlers();
     Log.debug("Loading Block IDs");
     BlockIDs.Load();
     Log.debug("Loading Blocks");
@@ -95,10 +96,6 @@ public class OpenExchange {
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
     NetworkRegistry.instance().registerGuiHandler(OpenExchange.instance, new GUIHandler());
-    Log.debug("Adding QMC Guessers");
-    Guess.add(Crafting.class);
-    Guess.add(Smelting.class);
-    Guess.add(Ore.class);
     if (fuelHandler) {
       Log.debug("Loading Fuel Handler");
       GameRegistry.registerFuelHandler(new QMCFuelHandler());
@@ -110,6 +107,12 @@ public class OpenExchange {
   @EventHandler
   public void load(FMLInitializationEvent event) {
     OreDictionaryHelper.minecraftInit();
+    Log.debug("Loading QMC Values");
+    QMC.load();
+    Log.debug("Adding QMC Guessers");
+    Guess.add(Crafting.class);
+    Guess.add(Smelting.class);
+    Guess.add(Ore.class);
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }
@@ -119,7 +122,9 @@ public class OpenExchange {
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
     Log.debug("Updating Database Ore Dictionary Values");
-    QMC.updateOreDictionary();
+    QMCItemStack.updateOreDictionary();
+    Log.debug("Taking Post-Init Snapshot");
+    QMC.takePostInitSnapshot();
   }
   
   @EventHandler
@@ -128,7 +133,7 @@ public class OpenExchange {
   }
   
   @EventHandler
-  public void serverLoad(FMLServerStartingEvent event) {
+  public void serverStarting(FMLServerStartingEvent event) {
     if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
       event.registerServerCommand(new OECommand());
     }
@@ -139,10 +144,10 @@ public class OpenExchange {
   public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Loading Fake Player");
     fakePlayer = new FakePlayer.OEFakePlayer();
+    Log.debug("Restoring Post-Init Snapshot");
+    QMC.restoreSnapshot(QMC.postInitSnapshot);
     Log.debug("Guessing QMC Values");
     Guess.load();
-    Log.debug("Writing QMC Values to a file");
-    QMCValuesWriter.write();
   }
   
   @EventHandler
@@ -151,5 +156,13 @@ public class OpenExchange {
       RemoteDrillData.saveNBT();
     }
     fakePlayer = null;
+  }
+  
+  @EventHandler
+  public void serverStopped(FMLServerStoppedEvent event) {
+    if (proxy.isClient()) {
+      Log.debug("Restoring Post-Init Snapshot");
+      QMC.restoreSnapshot(QMC.postInitSnapshot);
+    }
   }
 }

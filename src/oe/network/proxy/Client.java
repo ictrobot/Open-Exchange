@@ -18,4 +18,9 @@ public class Client extends Server {
   public boolean isSinglePlayer() {
     return Minecraft.getMinecraft().isSingleplayer();
   }
+  
+  @Override
+  public boolean isClient() {
+    return true;
+  }
 }

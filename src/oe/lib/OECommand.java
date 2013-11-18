@@ -14,8 +14,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.helper.BlockItem;
 import oe.lib.helper.OreDictionaryHelper;
 import oe.qmc.QMC;
-import oe.qmc.QMCData;
-import oe.qmc.QMCType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -75,10 +73,6 @@ public class OECommand implements ICommand {
       commandMod(sender, arguments);
       return;
     }
-    if (arguments[0].toLowerCase().matches("length")) {
-      commandLength(sender, arguments);
-      return;
-    }
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
   }
   
@@ -135,10 +129,6 @@ public class OECommand implements ICommand {
     }
   }
   
-  private void commandLength(ICommandSender sender, String[] arguments) {
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("The length of the " + QMC.nameFull + " database is " + QMC.length()));
-  }
-  
   private void commandData(ICommandSender sender, String[] arguments) {
     EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
     if (player != null) {
@@ -146,26 +136,12 @@ public class OECommand implements ICommand {
       sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Data ---"));
       ItemStack held = player.getHeldItem();
       if (held != null) {
-        int ref = QMC.getReference(held);
-        QMCData d = QMC.getQMCData(ref);
-        if (d != null) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Reference: " + ref + " - " + d.QMC + " " + QMC.name + " - " + d.type));
-          if (d.type != QMCType.OreDictionary) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Itemstack " + d.itemstack.getUnlocalizedName() + " (ID:" + d.itemstack.itemID + " Meta:" + held.getItemDamage() + ")"));
-          }
-          if (d.type != QMCType.Itemstack) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary " + d.oreDictionary));
-          }
-          if (d.guess != null) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Value Guessed:"));
-            for (int i = 0; i < d.guess.ingredients.length; i++) {
-              if (d.guess.ingredients[i] != null) {
-                sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + i + ": " + d.guess.ingredients[i].getUnlocalizedName() + " (ID:" + d.guess.ingredients[i].itemID + " Meta:" + held.getItemDamage() + ") " + QMC.name + ": " + d.guess.ingredientsQMC[i]));
-              }
-            }
-            if (d.guess.outputNum > 1) {
-              sender.sendChatToPlayer(ChatMessageComponent.createFromText("Makes " + d.guess.outputNum));
-            }
+        if (QMC.hasQMC(held)) {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText(QMC.getQMC(held) + " " + QMC.name));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Itemstack " + held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
+          int oreID = OreDictionary.getOreID(held);
+          if (oreID != -1) {
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
           }
         } else {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held item does not have a value"));

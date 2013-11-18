@@ -22,4 +22,8 @@ public class Server {
   public boolean isSinglePlayer() {
     return false;
   }
+  
+  public boolean isClient() {
+    return false;
+  }
 }

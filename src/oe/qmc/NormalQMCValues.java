@@ -3,12 +3,9 @@ package oe.qmc;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oe.lib.Log;
 
 public class NormalQMCValues extends QMC {
   public static void load() {
-    
-    int r = length();
     // Minecraft
     add(Block.cobblestone, 1);
     add(Block.stone, 1);
@@ -113,7 +110,5 @@ public class NormalQMCValues extends QMC {
     add(Item.recordWard, getQMC(Item.record11));
     add(Item.record11, getQMC(Item.record11));
     add(Item.recordWait, getQMC(Item.record11));
-    int reg = length() - r;
-    Log.info(reg + " Minecraft " + nameFull + " Values Loaded");
   }
 }

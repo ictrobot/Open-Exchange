@@ -87,9 +87,6 @@ public class Guess {
   }
   
   private static void checkLoop() {
-    
-    int r = QMC.length();
-    
     for (int i = 0; i < Block.blocksList.length; i++) {
       if (Block.blocksList[i] != null) {
         if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
@@ -128,10 +125,6 @@ public class Guess {
         }
       }
     }
-    
-    int reg = QMC.length() - r;
-    Log.info(reg + " " + QMC.nameFull + " Values Guessed");
-    Log.info(noValue.length + " Items/Blocks have no value");
   }
   
   public static double check(ItemStack itemstack) {
@@ -168,7 +161,7 @@ public class Guess {
     if (data != null) {
       if (data.totalQMC > -1) {
         ItemStack toAdd = itemstack.copy();
-        QMC.addGuessed(toAdd, data);
+        QMC.add(toAdd, data.totalQMC);
       } else {
         ItemStack[] tmp = new ItemStack[noValue.length + 1];
         System.arraycopy(noValue, 0, tmp, 0, noValue.length);

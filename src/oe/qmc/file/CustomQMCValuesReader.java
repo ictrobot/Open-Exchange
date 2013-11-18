@@ -46,13 +46,6 @@ public class CustomQMCValuesReader {
           bw.write("# a [OreDictionary] [Value]");
           bw.newLine();
           bw.newLine();
-          bw.write("# To remove a value");
-          bw.newLine();
-          bw.write("# r [ID] [Meta]");
-          bw.newLine();
-          bw.write("# r [OreDictionary]");
-          bw.newLine();
-          bw.newLine();
           bw.write("# To blacklist");
           bw.newLine();
           bw.write("# b [ID] [Meta]");
@@ -70,18 +63,14 @@ public class CustomQMCValuesReader {
           String[] result = line.split("\\s");
           String command = result[0];
           if (result.length == 2) {
-            if (command.startsWith("r")) {
-              removeOre(result);
-            } else if (command.startsWith("b")) {
+            if (command.startsWith("b")) {
               blacklistOre(result);
             }
           } else if (result.length == 3) {
             if (command.startsWith("a")) {
               addOre(result);
             }
-            if (command.startsWith("r")) {
-              remove(result);
-            } else if (command.startsWith("b")) {
+            if (command.startsWith("b")) {
               blacklist(result);
             }
           } else if (result.length == 4) {
@@ -120,24 +109,6 @@ public class CustomQMCValuesReader {
     }
     String ore = result[1];
     QMC.add(ore, value);
-  }
-  
-  private static void remove(String[] result) {
-    int id;
-    int meta;
-    try {
-      id = Integer.parseInt(result[1]);
-      meta = Integer.parseInt(result[2]);
-    } catch (NumberFormatException e) {
-      return;
-    }
-    ItemStack stack = new ItemStack(id, 1, meta);
-    QMC.remove(stack);
-  }
-  
-  private static void removeOre(String[] result) {
-    String ore = result[1];
-    QMC.remove(ore);
   }
   
   private static void blacklist(String[] result) {

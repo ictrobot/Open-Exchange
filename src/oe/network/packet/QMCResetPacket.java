@@ -6,12 +6,10 @@ import oe.lib.Log;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.Player;
 
-public class QMCWipePacket {
+public class QMCResetPacket {
   
   public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player Player) {
-    Log.debug("Received QMC Wipe Packet");
-    Log.debug("Current DataBase Length " + QMC.length());
-    QMC.removeGuessed();
-    Log.debug("After Wipe DataBase Length " + QMC.length());
+    Log.debug("Received QMC Wipe Packet - Restoring Post-Init Snapshot");
+    QMC.restoreSnapshot(QMC.postInitSnapshot);
   }
 }

@@ -23,9 +23,6 @@ public class CraftingRecipes {
       GameRegistry.addRecipe(new ItemStack(Items.axe), "tt ", "ts ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
       GameRegistry.addRecipe(new ItemStack(Items.shovel), " t ", " s ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
     }
-    if (ConfigHelper.other("item", "transmutationEnabled", true)) {
-      GameRegistry.addRecipe(new ItemStack(Items.transmutation), "sss", "sts", "sss", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
-    }
     if (ConfigHelper.other("item", "repairEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Items.repair), "ttt", "sss", "sss", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
     }

@@ -14,7 +14,6 @@ public class Items {
   public static Item pickaxe;
   public static Item shovel;
   public static Item axe;
-  public static Item transmutation;
   public static Item repair;
   public static Item blockMover;
   
@@ -32,9 +31,6 @@ public class Items {
       pickaxe = new ItemQuantumPickaxe(ItemIDs.pickaxe);
       axe = new ItemQuantumAxe(ItemIDs.axe);
       shovel = new ItemQuantumShovel(ItemIDs.shovel);
-    }
-    if (ConfigHelper.other("item", "transmutationEnabled", true)) {
-      transmutation = new ItemTransmutation(ItemIDs.transmutation);
     }
     if (ConfigHelper.other("item", "repairEnabled", true)) {
       repair = new ItemRepair(ItemIDs.repair);
@@ -57,9 +53,6 @@ public class Items {
       Register.Item(pickaxe, "Quantum Pickaxe");
       Register.Item(axe, "Quantum Axe");
       Register.Item(shovel, "Quantum Shovel");
-    }
-    if (ConfigHelper.other("item", "transmutationEnabled", true)) {
-      Register.Item(transmutation, QMC.name + " Transmutation");
     }
     if (ConfigHelper.other("item", "repairEnabled", true)) {
       Register.Item(repair, QMC.name + " Repair");

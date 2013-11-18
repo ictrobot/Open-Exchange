@@ -13,14 +13,12 @@ public class PacketHandler implements IPacketHandler {
       InternalPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQD")) {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeTransmutation")) {
-      TransmutationPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeBM")) {
       BlockMoverPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQMC")) {
       QMCSynchronizationPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeQMCWipe")) {
-      QMCWipePacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel.contentEquals("oeQMCReset")) {
+      QMCResetPacket.packet(manager, packet, playerEntity);
     }
   }
 }

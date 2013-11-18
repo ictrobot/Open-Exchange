@@ -2,15 +2,15 @@ package oe.lib.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import oe.OpenExchange;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.helper.Sided;
 import oe.qmc.QMC;
-import oe.qmc.QMCData;
-import oe.qmc.QMCType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -19,36 +19,31 @@ public class PlayerTracker implements IPlayerTracker {
   
   @Override
   public void onPlayerLogin(EntityPlayer player) {
+    Log.debug("Player logged in");
     if (Sided.isServer()) {
       if (OpenExchange.proxy.isSinglePlayer()) {
         return;
       }
-      sendWipe(player);
-      int i = 0;
-      for (QMCData d : QMC.getDataBase()) {
-        if (d.type != QMCType.OreDictionary) {
-          ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-          DataOutputStream outputStream = new DataOutputStream(bos);
-          try {
-            outputStream.writeInt(d.itemstack.itemID);
-            outputStream.writeInt(d.itemstack.getItemDamage());
-            outputStream.writeDouble(d.QMC);
-          } catch (Exception e) {
-            Debug.handleException(e);
-          }
-          Packet250CustomPayload packet = new Packet250CustomPayload();
-          packet.channel = "oeQMC";
-          packet.data = bos.toByteArray();
-          packet.length = bos.size();
-          PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
-          i++;
-        }
+      try {
+        sendReset(player);
+        NBTTagCompound nbt = QMC.snapshot();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+        DataOutputStream outputStream = new DataOutputStream(bos);
+        CompressedStreamTools.writeCompressed(nbt, outputStream);
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "oeQMC";
+        packet.data = bos.toByteArray();
+        packet.length = bos.size();
+        PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
+        Log.debug("Sent QMC packet to " + player.username);
+      } catch (Exception e) {
+        Debug.handleException(e);
+        Log.severe("Failed to send QMC packet to " + player.username);
       }
-      Log.debug("Sent " + i + " QMC packets to " + player.username);
     }
   }
   
-  public void sendWipe(EntityPlayer Player) {
+  public void sendReset(EntityPlayer Player) {
     ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
     DataOutputStream outputStream = new DataOutputStream(bos);
     try {
@@ -57,16 +52,15 @@ public class PlayerTracker implements IPlayerTracker {
       Debug.handleException(e);
     }
     Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oeQMCWipe";
+    packet.channel = "oeQMCReset";
     packet.data = bos.toByteArray();
     packet.length = bos.size();
     PacketDispatcher.sendPacketToPlayer(packet, (Player) Player);
-    Log.debug("Sent QMCWipe packet to " + Player.username);
+    Log.debug("Sent QMCReset packet to " + Player.username);
   }
   
   @Override
   public void onPlayerLogout(EntityPlayer player) {
-    
   }
   
   @Override
