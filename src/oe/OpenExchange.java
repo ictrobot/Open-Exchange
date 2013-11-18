@@ -21,9 +21,8 @@ import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
 import oe.lib.handler.QMCFuelHandler;
 import oe.lib.handler.ToolTipHandler;
-import oe.lib.handler.ore.OreDictionaryHelper;
-import oe.lib.handler.ore.OreDictionaryWriter;
 import oe.lib.helper.ConfigHelper;
+import oe.lib.helper.OreDictionaryHelper;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
@@ -76,7 +75,6 @@ public class OpenExchange {
     }
     Log.debug("Registering Handlers");
     MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
-    MinecraftForge.EVENT_BUS.register(new OreDictionaryHelper());
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
     GameRegistry.registerPlayerTracker(new PlayerTracker());
     Log.debug("Loading QMC Values");
@@ -111,6 +109,7 @@ public class OpenExchange {
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
+    OreDictionaryHelper.minecraftInit();
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }
@@ -144,8 +143,6 @@ public class OpenExchange {
     Guess.load();
     Log.debug("Writing QMC Values to a file");
     QMCValuesWriter.write();
-    Log.debug("Writing OreDictionary Values to a file");
-    OreDictionaryWriter.write();
   }
   
   @EventHandler

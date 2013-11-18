@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import oe.lib.Log;
-import oe.lib.helper.Register;
 
 public class NormalQMCValues extends QMC {
   public static void load() {
@@ -116,7 +115,5 @@ public class NormalQMCValues extends QMC {
     add(Item.recordWait, getQMC(Item.record11));
     int reg = length() - r;
     Log.info(reg + " Minecraft " + nameFull + " Values Loaded");
-    
-    Register.Ore("oreCoal", Block.oreCoal);
   }
 }

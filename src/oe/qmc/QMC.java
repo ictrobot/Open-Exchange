@@ -9,8 +9,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEItemInterface;
 import oe.api.OE_API;
 import oe.lib.Log;
-import oe.lib.handler.ore.OreDictionaryHelper;
 import oe.lib.helper.ConfigHelper;
+import oe.lib.helper.OreDictionaryHelper;
 import oe.qmc.file.CustomQMCValuesReader;
 import oe.qmc.guess.GuessReturn;
 
@@ -222,7 +222,7 @@ public class QMC {
       if (check.type != QMCType.Itemstack) {
         int oreID = OreDictionary.getOreID(itemstack);
         if (oreID != -1) {
-          if (check.oreDictionary == OreDictionary.getOreName(oreID)) {
+          if (OreDictionary.getOreID(check.oreDictionary) == oreID) {
             return i;
           }
         }
@@ -330,7 +330,7 @@ public class QMC {
         }
       } else {
         ItemStack[] stacks = OreDictionaryHelper.getItemStacks(d.oreDictionary);
-        if (stacks != null && stacks.length > 1) {
+        if (stacks != null) {
           d.itemstack = stacks[0];
           d.type = QMCType.OreDictionary_Itemstack;
         }

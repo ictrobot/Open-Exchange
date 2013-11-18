@@ -4,8 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEGuesser;
 import oe.lib.Log;
-import oe.lib.handler.ore.OreData;
-import oe.lib.handler.ore.OreDictionaryHelper;
+import oe.lib.helper.OreDictionaryHelper;
 import oe.qmc.QMC;
 
 public class Ore extends OEGuesser {
@@ -20,48 +19,62 @@ public class Ore extends OEGuesser {
     }
   }
   
-  private static String[] ores = new String[0];
-  private static Prefix[] prefixes = new Prefix[] { new Prefix("dust", 1), new Prefix("block", 9), new Prefix("nugget", (1 / 9)) };
-  
-  public static void init() {
-    Log.debug("Loading Ore Guesser");
-    for (OreData ore : OreDictionaryHelper.oreDataArray()) {
-      if (ore.ore.startsWith("ingot")) {
-        String oreValue = ore.ore.substring(5);
-        String[] tmp = new String[ores.length + 1];
-        System.arraycopy(ores, 0, tmp, 0, ores.length);
-        ores = tmp;
-        ores[ores.length - 1] = oreValue;
-      }
+  public static class Ores {
+    public String full;
+    public String ore;
+    
+    public Ores(String Full, String Ore) {
+      this.full = Full; // Example: ingotCopper
+      this.ore = Ore; // Example: Copper
     }
   }
   
-  public static GuessReturn check(ItemStack itemstack) {
-    if (itemstack.itemID == 30066 && itemstack.getItemDamage() == 3) {
-      Log.info(itemstack);
+  private static Ores[] ores = new Ores[0];
+  private static Prefix[] prefixes = new Prefix[] { new Prefix("dustTiny", (1 / 9)), new Prefix("dust", 1), new Prefix("crushed", 1), new Prefix("block", 9), new Prefix("nugget", (1 / 9)) };
+  
+  public static void init() {
+    Log.debug("Loading Ore Guesser");
+    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("ingot", true)) {
+      addOre("ingot" + ore, ore);
     }
+    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("gem", true)) {
+      addOre("gem" + ore, ore);
+    }
+    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("material", true)) {
+      addOre("material" + ore, ore);
+    }
+  }
+  
+  public static void addOre(String full, String ore) {
+    Ores[] tmp = new Ores[ores.length + 1];
+    System.arraycopy(ores, 0, tmp, 0, ores.length);
+    ores = tmp;
+    ores[ores.length - 1] = new Ores(full, ore);
+  }
+  
+  public static GuessReturn check(ItemStack itemstack) {
     if (OreDictionary.getOreID(itemstack) != -1) {
       String ore = OreDictionary.getOreName(OreDictionary.getOreID(itemstack));
-      String ingot2 = "";
-      Prefix prefix2 = null;
-      for (String ingot : ores) {
-        for (Prefix prefix : prefixes) {
-          String combo = prefix.prefix + ingot;
+      Ores o = null;
+      Prefix prefix = null;
+      for (Ores o_ : ores) {
+        for (Prefix prefix_ : prefixes) {
+          String combo = prefix_.prefix + o_.ore;
           if (ore.toLowerCase().matches(combo.toLowerCase())) {
-            ingot2 = ingot;
-            prefix2 = prefix;
+            o = o_;
+            prefix = prefix_;
             break;
           }
         }
-        if (ingot2 != "") {
+        if (o != null) {
           break;
         }
       }
-      if (ingot2 != "") {
-        double ingotValue = QMC.getQMC(OreDictionaryHelper.getItemStacks("ingot" + ingot2)[0]);
-        if (ingotValue > 0) {
-          ItemStack[] ingot = new ItemStack[] { OreDictionaryHelper.getItemStacks("ingot" + ingot2)[0] };
-          GuessReturn guess = new GuessReturn(ingot, new double[] { ingotValue }, ingotValue * prefix2.ingotsNum, (int) prefix2.ingotsNum);
+      if (o != null) {
+        double value = QMC.getQMC(o.full);
+        if (value > 0) {
+          ItemStack[] src = new ItemStack[] { OreDictionaryHelper.getItemStacks(o.full)[0] };
+          GuessReturn guess = new GuessReturn(src, new double[] { value }, value * prefix.ingotsNum, (int) prefix.ingotsNum);
           return guess;
         }
       }

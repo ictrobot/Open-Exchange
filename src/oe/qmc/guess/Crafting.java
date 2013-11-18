@@ -15,7 +15,7 @@ import oe.api.OEGuesser;
 import oe.lib.Debug;
 import oe.lib.FakeContainer;
 import oe.lib.Log;
-import oe.lib.handler.ore.OreDictionaryHelper;
+import oe.lib.helper.OreDictionaryHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Crafting extends OEGuesser {
@@ -235,7 +235,7 @@ public class Crafting extends OEGuesser {
     } else if (o instanceof String) {
       String ore = (String) o;
       ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
-      if (stacks != null && stacks.length > 1) {
+      if (stacks != null) {
         return stacks[0];
       }
     } else if (o instanceof ArrayList) {
