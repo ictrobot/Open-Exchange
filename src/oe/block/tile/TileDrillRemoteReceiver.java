@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.lib.RemoteDrillData;
+import oe.lib.util.RemoteDrillData;
 
 public class TileDrillRemoteReceiver extends TileEntity implements OETileInterface {
   public int RemoteID;

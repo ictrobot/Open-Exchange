@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.lib.util;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.helper.BlockItem;
+import oe.lib.helper.BlockOrItem;
 import oe.lib.helper.Sided;
 import oe.qmc.QMC;
 
@@ -31,7 +31,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
           EntityPlayer player = (EntityPlayer) entity;
           ItemStack held = player.getHeldItem();
           if (held != null) {
-            if (BlockItem.isBlock(held.itemID)) {
+            if (BlockOrItem.isBlock(held.itemID)) {
               if (held.stackSize == 1) {
                 if (QMC.hasQMC(held)) {
                   double v = itemStack.getTagCompound().getDouble("Value");

@@ -9,13 +9,9 @@ import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
 import oe.item.ItemIDs;
 import oe.item.Items;
-import oe.lib.CraftingRecipes;
-import oe.lib.FakePlayer;
 import oe.lib.Log;
 import oe.lib.OECommand;
-import oe.lib.QuantumToolBlackList;
 import oe.lib.Reference;
-import oe.lib.RemoteDrillData;
 import oe.lib.handler.IMCHandler;
 import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
@@ -23,6 +19,10 @@ import oe.lib.handler.QMCFuelHandler;
 import oe.lib.handler.ToolTipHandler;
 import oe.lib.helper.ConfigHelper;
 import oe.lib.helper.OreDictionaryHelper;
+import oe.lib.util.CraftingRecipes;
+import oe.lib.util.FakePlayer;
+import oe.lib.util.QuantumToolBlackList;
+import oe.lib.util.RemoteDrillData;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
@@ -123,7 +123,6 @@ public class OpenExchange {
     ModIntegration.init();
     Log.debug("Updating Database Ore Dictionary Values");
     QMCItemStack.updateOreDictionary();
-    Log.debug("Taking Post-Init Snapshot");
     QMC.takePostInitSnapshot();
   }
   

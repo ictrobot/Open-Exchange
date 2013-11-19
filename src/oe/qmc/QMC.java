@@ -2,6 +2,8 @@ package oe.qmc;
 
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +35,7 @@ public class QMC {
     nameFull = ConfigHelper.other("QMC", "Stands For", "Quantum Matter Currency");
     ConfigHelper.save();
     CustomQMCValuesReader.read();
-    NormalQMCValues.load();
+    QMCValues.load();
   }
   
   public static void loadHandlers() {
@@ -112,6 +114,7 @@ public class QMC {
   }
   
   public static NBTTagCompound snapshot(String SnapShotName) {
+    Log.info("Taking " + SnapShotName + " " + name + " Snapshot");
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
       Class<?> c = data[i].c;
@@ -125,6 +128,8 @@ public class QMC {
       }
     }
     nbt.setString("Name", SnapShotName);
+    nbt.setString("Date", new SimpleDateFormat("dd,MM,yyyy").format(Calendar.getInstance().getTime()));
+    nbt.setString("Time", new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
     return nbt;
   }
   
@@ -132,7 +137,8 @@ public class QMC {
     if (nbt == null) {
       return;
     }
-    Log.debug("Restoring " + nbt.getString("Name") + " Snapshot - Currently there are " + length() + " " + name + " values");
+    Log.info("Restoring " + nbt.getString("Name") + " " + name + " Snapshot");
+    Log.debug("Currently there are " + length() + " " + name + " values");
     for (int i = 0; i < data.length; i++) {
       Class<?> c = data[i].c;
       NBTTagCompound snapshot = nbt.getCompoundTag(c.getSimpleName());

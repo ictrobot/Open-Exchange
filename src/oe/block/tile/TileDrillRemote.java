@@ -7,8 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.lib.Location;
 import oe.block.BlockIDs;
-import oe.lib.RemoteDrillData;
 import oe.lib.helper.Sided;
+import oe.lib.util.RemoteDrillData;
 
 public class TileDrillRemote extends TileEntity {
   int delayTicks = 100;

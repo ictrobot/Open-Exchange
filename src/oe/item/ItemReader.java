@@ -28,10 +28,11 @@ public class ItemReader extends Item {
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;
         int z = Minecraft.getMinecraft().objectMouseOver.blockZ;
         TileEntity te = world.getBlockTileEntity(x, y, z);
+        // TODO packet to server
         if (te != null) {
           if (OE_API.isOE(te.getClass())) {
             OETileInterface oe = (OETileInterface) te;
-            player.addChatMessage("\u00A73\u00A7l" + QMC.name + " Reader:\u00A7r\u00A77 " + oe.getQMC() + " " + QMC.name + ", Type: " + oe.getType());
+            player.addChatMessage("\u00A73\u00A7l" + QMC.name + " Reader:\u00A7r\u00A77 " + oe.getQMC() + " " + QMC.name + ", " + oe.getMaxQMC() + " Max " + QMC.name + ", Type: " + oe.getType());
           }
         }
       }

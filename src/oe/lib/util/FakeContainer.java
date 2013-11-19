@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.lib.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

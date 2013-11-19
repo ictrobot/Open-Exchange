@@ -11,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.lib.helper.BlockItem;
+import oe.lib.helper.BlockOrItem;
 import oe.lib.helper.OreDictionaryHelper;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -82,13 +82,13 @@ public class OECommand implements ICommand {
       ItemStack held = player.getHeldItem();
       if (held != null) {
         GameRegistry.UniqueIdentifier id = null;
-        if (BlockItem.isBlock(held.itemID)) {
+        if (BlockOrItem.isBlock(held.itemID)) {
           Block block = Block.blocksList[held.itemID];
           if (block == null) {
             return;
           }
           id = GameRegistry.findUniqueIdentifierFor(block);
-        } else if (BlockItem.isItem(held.itemID)) {
+        } else if (BlockOrItem.isItem(held.itemID)) {
           Item item = Item.itemsList[held.itemID];
           if (item == null) {
             return;

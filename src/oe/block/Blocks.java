@@ -1,9 +1,9 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import oe.lib.RemoteDrillData;
 import oe.lib.helper.ConfigHelper;
 import oe.lib.helper.Register;
+import oe.lib.util.RemoteDrillData;
 import oe.qmc.QMC;
 
 public class Blocks {

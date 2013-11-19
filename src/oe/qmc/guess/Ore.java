@@ -52,7 +52,7 @@ public class Ore extends OEGuesser {
     ores[ores.length - 1] = new Ores(full, ore);
   }
   
-  public static GuessReturn check(ItemStack itemstack) {
+  public static Guess.Data check(ItemStack itemstack) {
     if (OreDictionary.getOreID(itemstack) != -1) {
       String ore = OreDictionary.getOreName(OreDictionary.getOreID(itemstack));
       Ores o = null;
@@ -74,7 +74,7 @@ public class Ore extends OEGuesser {
         double value = QMC.getQMC(o.full);
         if (value > 0) {
           ItemStack[] src = new ItemStack[] { OreDictionaryHelper.getItemStacks(o.full)[0] };
-          GuessReturn guess = new GuessReturn(src, new double[] { value }, value * prefix.ingotsNum, (int) prefix.ingotsNum);
+          Guess.Data guess = new Guess.Data(src, value * prefix.ingotsNum, (int) prefix.ingotsNum);
           return guess;
         }
       }

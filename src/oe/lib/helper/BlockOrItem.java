@@ -3,7 +3,7 @@ package oe.lib.helper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class BlockItem {
+public class BlockOrItem {
   public static boolean isItem(int ID) {
     if (isBlock(ID)) {
       return false;

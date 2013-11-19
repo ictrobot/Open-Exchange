@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class NormalQMCValues extends QMC {
+public class QMCValues extends QMC {
   public static void load() {
     // Minecraft
     add(Block.cobblestone, 1);

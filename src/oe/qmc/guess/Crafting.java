@@ -13,14 +13,25 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import oe.OpenExchange;
 import oe.api.OEGuesser;
 import oe.lib.Debug;
-import oe.lib.FakeContainer;
 import oe.lib.Log;
 import oe.lib.helper.OreDictionaryHelper;
+import oe.lib.util.FakeContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Crafting extends OEGuesser {
+  public static class Data {
+    ItemStack output;
+    ItemStack[] input;
+    AfterData after;
+    
+    public Data(ItemStack Output, ItemStack[] Inputs, AfterData After) {
+      this.output = Output;
+      this.input = Inputs;
+      this.after = After;
+    }
+  }
   
-  private static GuessData[][] crafting = new GuessData[32000][0];
+  private static Data[][] crafting = new Data[32000][0];
   
   public static void init() {
     Log.debug("Loading Crafting Guesser");
@@ -30,12 +41,15 @@ public class Crafting extends OEGuesser {
         IRecipe recipe = (IRecipe) recipeObject;
         ItemStack output = recipe.getRecipeOutput();
         if (output != null) {
+          if (output.itemID == 30066 && output.getItemDamage() == 8) {
+            Log.debug(output);
+          }
           ItemStack[] input = getCraftingInputs(recipe);
           if (input != null) {
             int id = output.itemID;
             increaseCrafting(id);
-            CheckData cd = afterCrafting(recipe, input, output);
-            crafting[id][crafting[id].length - 1] = new GuessData(output, input, cd);
+            AfterData cd = afterCrafting(recipe, input, output);
+            crafting[id][crafting[id].length - 1] = new Data(output, input, cd);
             recipes++;
           }
         }
@@ -44,25 +58,25 @@ public class Crafting extends OEGuesser {
     Log.debug("Found " + recipes + " Crafting Recipes");
   }
   
-  public static GuessReturn check(ItemStack itemstack) {
+  public static Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
     }
     int id = itemstack.itemID;
-    GuessData[] data = new GuessData[0];
-    for (GuessData gd : crafting[id]) {
+    Data[] data = new Data[0];
+    for (Data gd : crafting[id]) {
       if (itemstack.getItemDamage() == gd.output.getItemDamage()) {
-        GuessData[] tmp = new GuessData[data.length + 1];
+        Data[] tmp = new Data[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
         data = tmp;
         data[data.length - 1] = gd;
       }
     }
     if (data.length != 0) {
-      for (GuessData gd : data) {
+      for (Data gd : data) {
         double value = 0;
         double[] values = new double[gd.input.length];
-        CheckData cd = gd.after;
+        AfterData cd = gd.after;
         for (int i = 0; i < gd.input.length; i++) {
           ItemStack stack = gd.input[i];
           ItemStack check = cd.after[i];
@@ -95,7 +109,7 @@ public class Crafting extends OEGuesser {
         }
         if (value > 0) {
           value = value / gd.output.stackSize;
-          GuessReturn toReturn = new GuessReturn(gd.input, values, value, gd.output.stackSize);
+          Guess.Data toReturn = new Guess.Data(gd.input, value, gd.output.stackSize);
           return toReturn;
         }
       }
@@ -121,7 +135,7 @@ public class Crafting extends OEGuesser {
   public static int[] meta(int ID) {
     ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];
-    for (GuessData gd : crafting[ID]) {
+    for (Data gd : crafting[ID]) {
       if (gd.output.itemID == itemstack.itemID) {
         int[] tmp = new int[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
@@ -245,12 +259,22 @@ public class Crafting extends OEGuesser {
   }
   
   private static void increaseCrafting(int id) {
-    GuessData[] tmp = new GuessData[crafting[id].length + 1];
+    Data[] tmp = new Data[crafting[id].length + 1];
     System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
     crafting[id] = tmp;
   }
   
-  private static CheckData afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+  public static class AfterData {
+    public ItemStack[] after;
+    public boolean changed;
+    
+    public AfterData(ItemStack[] data, boolean Changed) {
+      this.after = data;
+      this.changed = Changed;
+    }
+  }
+  
+  private static AfterData afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
     ItemStack[] toReturn = new ItemStack[inputs.length];
     boolean changed = false;
     try {
@@ -278,9 +302,7 @@ public class Crafting extends OEGuesser {
       Debug.printObject(recipe);
       Debug.handleException(e);
     }
-    CheckData cd = new CheckData();
-    cd.changed = changed;
-    cd.after = toReturn;
-    return cd;
+    AfterData after = new AfterData(toReturn, changed);
+    return after;
   }
 }

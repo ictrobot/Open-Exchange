@@ -14,6 +14,25 @@ import com.google.common.base.Stopwatch;
 
 public class Guess {
   
+  public static class Data {
+    public ItemStack[] input; // Input ItemStacks
+    public double QMC; // Total QMC
+    public int outputNum; // Number of Items Made
+    
+    public Data(ItemStack[] Input, double value, int OutputNum) {
+      this.input = Input;
+      this.QMC = value;
+      this.outputNum = OutputNum;
+    }
+    
+    public Data(ItemStack Input, double value, int OutputNum) {
+      this.input = new ItemStack[1];
+      this.input[0] = Input;
+      this.QMC = value;
+      this.outputNum = OutputNum;
+    }
+  }
+  
   public static Class<?>[] classes = new Class[0];
   public static ItemStack[] noValue = new ItemStack[0];
   
@@ -22,10 +41,6 @@ public class Guess {
   private static int recursionLimit = 25;
   private static boolean recursionNotified = false;
   private static ItemStack stackCheck;
-  
-  // To make meta sensitive (Currently unused)
-  @SuppressWarnings("unused")
-  private static boolean multipleMeta;
   
   public static boolean add(Class<?> c) {
     if (OE_API.isOEGuessable(c)) {
@@ -91,11 +106,6 @@ public class Guess {
       if (Block.blocksList[i] != null) {
         if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
           int[] Meta = meta(i);
-          if (Meta.length > 1) {
-            multipleMeta = true;
-          } else {
-            multipleMeta = false;
-          }
           for (int m : Meta) {
             ItemStack check = new ItemStack(Block.blocksList[i], 0, m);
             if (!QMC.hasQMC(check)) {
@@ -110,11 +120,6 @@ public class Guess {
     for (int i = 0; i < Item.itemsList.length; i++) {
       if (Item.itemsList[i] != null) {
         int[] Meta = meta(i);
-        if (Meta.length > 1) {
-          multipleMeta = true;
-        } else {
-          multipleMeta = false;
-        }
         for (int m : Meta) {
           ItemStack check = new ItemStack(Item.itemsList[i], 0, m);
           if (!QMC.hasQMC(check)) {
@@ -128,7 +133,7 @@ public class Guess {
   }
   
   public static double check(ItemStack itemstack) {
-    GuessReturn data;
+    Data data;
     if (itemstack == null) {
       return -1;
     }
@@ -159,9 +164,9 @@ public class Guess {
     }
     data = checkClasses(itemstack);
     if (data != null) {
-      if (data.totalQMC > -1) {
+      if (data.QMC > -1) {
         ItemStack toAdd = itemstack.copy();
-        QMC.add(toAdd, data.totalQMC);
+        QMC.add(toAdd, data.QMC);
       } else {
         ItemStack[] tmp = new ItemStack[noValue.length + 1];
         System.arraycopy(noValue, 0, tmp, 0, noValue.length);
@@ -170,18 +175,18 @@ public class Guess {
       }
     }
     if (data != null) {
-      return data.totalQMC;
+      return data.QMC;
     }
     return -1;
   }
   
-  public static GuessReturn checkClasses(ItemStack itemstack) {
+  public static Data checkClasses(ItemStack itemstack) {
     for (Class<?> c : classes) {
       try {
         Method m = c.getMethod("check", ItemStack.class);
         Object r = m.invoke(null, itemstack);
-        if (r instanceof GuessReturn) {
-          return (GuessReturn) r;
+        if (r instanceof Data) {
+          return (Data) r;
         }
       } catch (Exception e) {
         Debug.handleException(e);

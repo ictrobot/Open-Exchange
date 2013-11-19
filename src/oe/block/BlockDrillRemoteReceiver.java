@@ -11,8 +11,8 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.api.lib.Location;
 import oe.block.tile.TileDrillRemoteReceiver;
-import oe.lib.RemoteDrillData;
 import oe.lib.helper.Sided;
+import oe.lib.util.RemoteDrillData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

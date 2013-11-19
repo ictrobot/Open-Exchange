@@ -8,7 +8,17 @@ import oe.api.OEGuesser;
 import oe.lib.Log;
 
 public class Smelting extends OEGuesser {
-  private static GuessData[] smelting = new GuessData[0];
+  public static class Data {
+    ItemStack output;
+    ItemStack input;
+    
+    public Data(ItemStack Output, ItemStack Input) {
+      this.output = Output;
+      this.input = Input;
+    }
+  }
+  
+  private static Data[] smelting = new Data[0];
   
   @SuppressWarnings("unchecked")
   public static void init() {
@@ -20,7 +30,7 @@ public class Smelting extends OEGuesser {
       ItemStack input = new ItemStack(i, 1, 0);
       ItemStack output = normal.get(i);
       if (input != null & output != null) {
-        smelting[smelting.length - 1] = new GuessData(output, input);
+        smelting[smelting.length - 1] = new Data(output, input);
         recipes++;
       }
     }
@@ -35,43 +45,41 @@ public class Smelting extends OEGuesser {
       ItemStack output = meta.get(idPair);
       increaseSmelting();
       if (input != null & output != null) {
-        smelting[smelting.length - 1] = new GuessData(output, input);
+        smelting[smelting.length - 1] = new Data(output, input);
         recipes++;
       }
     }
     Log.debug("Found " + recipes + " Smelting Recipes");
   }
   
-  public static GuessReturn check(ItemStack itemstack) {
+  public static Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
     }
-    GuessData[] data = new GuessData[0];
-    for (GuessData gd : smelting) {
+    Data[] data = new Data[0];
+    for (Data gd : smelting) {
       if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == gd.output.getItemDamage()) {
-        GuessData[] tmp = new GuessData[data.length + 1];
+        Data[] tmp = new Data[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
         data = tmp;
         data[data.length - 1] = gd;
       }
     }
     if (data.length != 0) {
-      for (GuessData gd : data) {
+      for (Data gd : data) {
         ItemStack output = gd.output;
         if (output.getItemDamage() == 32767) {
           output.setItemDamage(0);
         }
         if (output.itemID == itemstack.itemID && output.getItemDamage() == itemstack.getItemDamage()) {
           double value = 0;
-          ItemStack stack = gd.input[0];
+          ItemStack stack = gd.input;
           if (stack != null) {
             double v = Guess.check(stack);
             value = v;
           }
           if (value > 0) {
-            double[] values = new double[1];
-            values[0] = value;
-            GuessReturn toReturn = new GuessReturn(gd.input, values, value, 1);
+            Guess.Data toReturn = new Guess.Data(gd.input, value, 1);
             return toReturn;
           }
         }
@@ -83,7 +91,7 @@ public class Smelting extends OEGuesser {
   public static int[] meta(int ID) {
     ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];
-    for (GuessData gd : smelting) {
+    for (Data gd : smelting) {
       if (gd.output.itemID == itemstack.itemID) {
         int[] tmp = new int[data.length + 1];
         System.arraycopy(data, 0, tmp, 0, data.length);
@@ -95,7 +103,7 @@ public class Smelting extends OEGuesser {
   }
   
   private static void increaseSmelting() {
-    GuessData[] tmp = new GuessData[smelting.length + 1];
+    Data[] tmp = new Data[smelting.length + 1];
     System.arraycopy(smelting, 0, tmp, 0, smelting.length);
     smelting = tmp;
   }
