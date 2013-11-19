@@ -41,9 +41,6 @@ public class Crafting extends OEGuesser {
         IRecipe recipe = (IRecipe) recipeObject;
         ItemStack output = recipe.getRecipeOutput();
         if (output != null) {
-          if (output.itemID == 30066 && output.getItemDamage() == 8) {
-            Log.debug(output);
-          }
           ItemStack[] input = getCraftingInputs(recipe);
           if (input != null) {
             int id = output.itemID;

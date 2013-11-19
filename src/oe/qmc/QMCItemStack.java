@@ -1,6 +1,5 @@
 package oe.qmc;
 
-import oe.lib.Log;
 import oe.lib.helper.OreDictionaryHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
@@ -80,7 +79,6 @@ public class QMCItemStack {
   }
   
   public static void updateOreDictionary() {
-    Log.debug("Updating Ore Dictionary Values in QMC Database");
     for (Data d : data) {
       if (d.type != Type.OreDictionary) {
         int oreID = OreDictionary.getOreID(d.itemstack);
@@ -132,6 +130,7 @@ public class QMCItemStack {
         add(item, value);
       }
     }
+    updateOreDictionary();
   }
   
   private static void increase() {
@@ -157,7 +156,7 @@ public class QMCItemStack {
         if (check.type != Type.Itemstack) {
           int oreID = OreDictionary.getOreID(itemstack);
           if (oreID != -1) {
-            if (check.oreDictionary == OreDictionary.getOreName(oreID)) {
+            if (OreDictionary.getOreID(check.oreDictionary) == oreID) {
               return i;
             }
           }
