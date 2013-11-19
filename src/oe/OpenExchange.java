@@ -32,6 +32,7 @@ import oe.qmc.guess.Crafting;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.Ore;
 import oe.qmc.guess.Smelting;
+import oe.qmc.guess.Fluid;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -110,9 +111,10 @@ public class OpenExchange {
     Log.debug("Loading QMC Values");
     QMC.load();
     Log.debug("Adding QMC Guessers");
+    Guess.add(Ore.class);
+    Guess.add(Fluid.class);
     Guess.add(Crafting.class);
     Guess.add(Smelting.class);
-    Guess.add(Ore.class);
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }

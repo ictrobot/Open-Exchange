@@ -3,6 +3,7 @@ package oe.qmc;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class QMCValues extends QMC {
   public static void load() {
@@ -88,15 +89,8 @@ public class QMCValues extends QMC {
       add(stack, dyeValues[i]);
     }
     
-    // Values required for OreDictionary before guessing
-    add(Block.planks, getQMC(Block.wood) / 4);
-    add(Item.stick, getQMC(Block.planks) / 2);
-    
-    // Other Values that are not from crafting/smelting etc;
-    add(Item.bucketMilk, (getQMC(Item.ingotIron) * 3) + 32);
-    add(Item.bucketWater, (getQMC(Item.ingotIron) * 3) + 2);
-    add(Item.bucketLava, (getQMC(Item.ingotIron) * 3) + 16);
-    add(Item.netherStar, getQMC(Item.diamond) * 64);
+    add(FluidRegistry.LAVA, 16);
+    add(FluidRegistry.WATER, 0.25);
     
     add(Item.record13, 16384);
     add(Item.recordCat, getQMC(Item.record11));

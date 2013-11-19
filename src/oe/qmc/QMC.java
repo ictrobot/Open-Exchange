@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import oe.lib.Log;
 import oe.lib.helper.ConfigHelper;
 import oe.qmc.file.CustomQMCValuesReader;
@@ -40,6 +42,7 @@ public class QMC {
   
   public static void loadHandlers() {
     addHandler(QMCItemStack.class, new Class<?>[] { ItemStack.class, String.class, Block.class, Item.class });
+    addHandler(QMCFluid.class, new Class<?>[] { Fluid.class, FluidStack.class });
   }
   
   public static boolean add(Object o, double Value) {
