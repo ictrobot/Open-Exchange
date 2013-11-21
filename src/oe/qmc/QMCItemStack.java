@@ -1,6 +1,8 @@
 package oe.qmc;
 
 import oe.lib.helper.OreDictionaryHelper;
+import oe.lib.util.FluidUtil;
+import oe.qmc.QMCFluid.FluidItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -45,6 +47,16 @@ public class QMCItemStack {
   private static Data[] data = new Data[0];
   
   public static Double getQMC(Object o) {
+    if (FluidUtil.storesFluid((ItemStack) o)) {
+      ItemStack container = FluidUtil.getEmpty((ItemStack) o);
+      if (container != null) {
+        double qmc = getQMC(container);
+        if (qmc >= 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
+          FluidItemStack f = new FluidItemStack(container, qmc, FluidUtil.getFluidStack((ItemStack) o));
+          return QMC.getQMC(f);
+        }
+      }
+    }
     int r = getReference(o);
     if (r >= 0) {
       return new Double(data[r].QMC);
@@ -53,6 +65,9 @@ public class QMCItemStack {
   }
   
   public static Boolean add(Object o, Double Value) {
+    if (getReference(o) != -1) {
+      return false;
+    }
     if (o instanceof ItemStack) {
       increase();
       data[data.length - 1] = new Data((ItemStack) o, Value);

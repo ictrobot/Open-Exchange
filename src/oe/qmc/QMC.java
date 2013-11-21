@@ -42,7 +42,7 @@ public class QMC {
   
   public static void loadHandlers() {
     addHandler(QMCItemStack.class, new Class<?>[] { ItemStack.class, String.class, Block.class, Item.class });
-    addHandler(QMCFluid.class, new Class<?>[] { Fluid.class, FluidStack.class });
+    addHandler(QMCFluid.class, new Class<?>[] { Fluid.class, FluidStack.class, QMCFluid.FluidItemStack.class });
   }
   
   public static boolean add(Object o, double Value) {

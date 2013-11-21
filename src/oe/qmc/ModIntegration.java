@@ -1,5 +1,6 @@
 package oe.qmc;
 
+import oe.lib.util.FluidUtil;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -10,6 +11,7 @@ public class ModIntegration {
     public String name;
     public double value;
     public boolean isOre;
+    public boolean isLiquid;
     public int meta;
     
     public Data(String Mod, String Name, int Meta, double Value) {
@@ -20,10 +22,11 @@ public class ModIntegration {
       isOre = false;
     }
     
-    public Data(String ore, double Value) {
+    public Data(String ore, double Value, boolean isFluid) {
       this.name = ore;
       this.value = Value;
-      this.isOre = true;
+      this.isOre = !isFluid;
+      this.isLiquid = isFluid;
     }
   }
   
@@ -31,34 +34,39 @@ public class ModIntegration {
   
   public static void init() {
     mod("IC2");
-    add("itemRubber", 0, 24); // Rubber
-    add("blockRubSapling", 0, 8); // Rubber Tree Sapling
+    item("itemRubber", 0, 24); // Rubber
+    item("blockRubSapling", 0, 8); // Rubber Tree Sapling
+    item("itemCellEmpty", 0, 196 / 3);
     
     mod("Thaumcraft");
-    add("ItemShard", 0, 512); // Shards
-    add("ItemShard", 1, 512);
-    add("ItemShard", 2, 512);
-    add("ItemShard", 3, 512);
-    add("ItemShard", 4, 512);
-    add("ItemShard", 5, 512);
-    add("ItemWispEssence", 0, 2048); // Wisp
-    add("blockMagicalLog", 0, 512); // Thaumcraft wood
-    add("blockMagicalLog", 1, 512);
+    item("ItemShard", 0, 512); // Shards
+    item("ItemShard", 1, 512);
+    item("ItemShard", 2, 512);
+    item("ItemShard", 3, 512);
+    item("ItemShard", 4, 512);
+    item("ItemShard", 5, 512);
+    item("ItemWispEssence", 0, 2048); // Wisp
+    item("blockMagicalLog", 0, 512); // Thaumcraft wood
+    item("blockMagicalLog", 1, 512);
     
     mod("Railcraft");
-    add("tile.railcraft.brick.quarried", 2, 16); // Railcraft Stones
-    add("tile.railcraft.brick.quarried", 5, 16);
-    add("tile.railcraft.brick.bloodstained", 2, 16);
-    add("tile.railcraft.brick.bloodstained", 5, 16);
-    add("tile.railcraft.brick.frostbound", 2, 16);
-    add("tile.railcraft.brick.frostbound", 5, 16);
-    add("tile.railcraft.brick.nether", 2, 16);
-    add("tile.railcraft.brick.nether", 5, 16);
-    add("tile.railcraft.brick.abyssal", 2, 16);
-    add("tile.railcraft.brick.abyssal", 5, 16);
+    item("tile.railcraft.brick.quarried", 2, 16); // Railcraft Stones
+    item("tile.railcraft.brick.quarried", 5, 16);
+    item("tile.railcraft.brick.bloodstained", 2, 16);
+    item("tile.railcraft.brick.bloodstained", 5, 16);
+    item("tile.railcraft.brick.frostbound", 2, 16);
+    item("tile.railcraft.brick.frostbound", 5, 16);
+    item("tile.railcraft.brick.nether", 2, 16);
+    item("tile.railcraft.brick.nether", 5, 16);
+    item("tile.railcraft.brick.abyssal", 2, 16);
+    item("tile.railcraft.brick.abyssal", 5, 16);
+    
     mod("AppliedEnergistics");
-    add("AppEngMaterials", 7, 512); // Quartz Dust
-    add("AppEngMaterials", 6, 512); // Quartz
+    item("AppEngMaterials", 7, 512); // Quartz Dust
+    item("AppEngMaterials", 6, 512); // Quartz
+    
+    fluid("oil", 128);
+    fluid("fuel", 192);
     
     ore("ingotPlatinum", 4096); // Thermal Expansion 3
     ore("ingotElectrum", 1152);
@@ -82,6 +90,8 @@ public class ModIntegration {
     for (Data d : data) {
       if (d.isOre) {
         QMC.add(d.name, d.value);
+      } else if (d.isLiquid) {
+        QMC.add(FluidUtil.getFluid(d.name), d.value);
       } else {
         ItemStack stack = GameRegistry.findItemStack(d.mod, d.name, 1);
         if (stack != null) {
@@ -94,7 +104,7 @@ public class ModIntegration {
   
   static String mod;
   
-  static void mod(String Mod) {
+  private static void mod(String Mod) {
     mod = Mod;
   }
   
@@ -104,11 +114,11 @@ public class ModIntegration {
    * @param Name
    * @param Value
    */
-  static void ore(String Name, double Value) {
+  private static void ore(String Name, double Value) {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
-    data[data.length - 1] = new Data(Name, Value);
+    data[data.length - 1] = new Data(Name, Value, false);
   }
   
   /**
@@ -117,10 +127,23 @@ public class ModIntegration {
    * @param Name
    * @param Value
    */
-  static void add(String Name, int Meta, double Value) {
+  private static void item(String Name, int Meta, double Value) {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
     data[data.length - 1] = new Data(mod, Name, Meta, Value);
+  }
+  
+  /**
+   * Fluid
+   * 
+   * @param Name
+   * @param Value
+   */
+  private static void fluid(String Name, double Value) {
+    Data[] tmp = new Data[data.length + 1];
+    System.arraycopy(data, 0, tmp, 0, data.length);
+    data = tmp;
+    data[data.length - 1] = new Data(Name, Value, true);
   }
 }

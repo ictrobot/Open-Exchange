@@ -10,9 +10,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.lib.helper.BlockOrItem;
 import oe.lib.helper.OreDictionaryHelper;
+import oe.lib.util.FluidUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -69,11 +71,42 @@ public class OECommand implements ICommand {
       commandOre(sender, arguments);
       return;
     }
+    if (arguments[0].toLowerCase().matches("fluid")) {
+      commandFluid(sender, arguments);
+      return;
+    }
     if (arguments[0].toLowerCase().matches("mod")) {
       commandMod(sender, arguments);
       return;
     }
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
+  }
+  
+  private void commandFluid(ICommandSender sender, String[] arguments) {
+    EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
+    if (player != null) {
+      ItemStack held = player.getHeldItem();
+      if (held != null) {
+        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- ItemStack Fluid Data ---"));
+        if (FluidUtil.storesFluid(held)) {
+          FluidStack f = FluidUtil.getFluidStack(held);
+          ItemStack e = FluidUtil.getEmpty(held);
+          if (f != null && e != null) {
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Fluid:"));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  Name: " + FluidUtil.getName(f.fluidID)));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  FluidID: " + f.fluidID));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  Amount: " + f.amount));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  QMC:"));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC per 1000mb: " + QMC.getQMC(FluidUtil.getFluid(f.fluidID))));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC: " + QMC.getQMC(f)));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Empty Container:"));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + e.getUnlocalizedName() + " (ID:" + e.itemID + " Meta:" + e.getItemDamage() + ")"));
+          }
+        } else {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held ItemStack does not store fluid"));
+        }
+      }
+    }
   }
   
   private void commandMod(ICommandSender sender, String[] arguments) {

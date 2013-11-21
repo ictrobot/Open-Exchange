@@ -30,7 +30,7 @@ public class Ore extends OEGuesser {
   }
   
   private static Ores[] ores = new Ores[0];
-  private static Prefix[] prefixes = new Prefix[] { new Prefix("dustTiny", (1 / 9)), new Prefix("dust", 1), new Prefix("crushed", 1), new Prefix("block", 9), new Prefix("nugget", (1 / 9)) };
+  private static Prefix[] prefixes = new Prefix[] { new Prefix("dustTiny", (1 / 9)), new Prefix("dust", 1), new Prefix("plate", 1), new Prefix("itemCasing", 0.5), new Prefix("block", 9), new Prefix("nugget", (1 / 9)) };
   
   public static void init() {
     Log.debug("Loading Ore Guesser");
@@ -53,7 +53,8 @@ public class Ore extends OEGuesser {
   }
   
   public static Guess.Data check(ItemStack itemstack) {
-    if (OreDictionary.getOreID(itemstack) != -1) {
+    int oreID = OreDictionary.getOreID(itemstack);
+    if (oreID != -1) {
       String ore = OreDictionary.getOreName(OreDictionary.getOreID(itemstack));
       Ores o = null;
       Prefix prefix = null;

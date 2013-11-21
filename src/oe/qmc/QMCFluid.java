@@ -18,16 +18,39 @@ public class QMCFluid {
     }
   }
   
+  public static class FluidItemStack {
+    public double containerQMC;
+    public net.minecraft.item.ItemStack container;
+    public FluidStack fluid;
+    
+    public FluidItemStack(net.minecraft.item.ItemStack stack, double ContainerQMC, FluidStack Fluid) {
+      this.container = stack;
+      this.containerQMC = ContainerQMC;
+      this.fluid = Fluid;
+    }
+  }
+  
   private static Data[] data = new Data[0];
   
   public static Double getQMC(Object o) {
+    if (o instanceof FluidItemStack) {
+      FluidItemStack f = (FluidItemStack) o;
+      if (f.containerQMC >= 0) {
+        double fluidQMC = getQMC(f.fluid);
+        if (fluidQMC >= 0) {
+          return f.containerQMC + fluidQMC;
+        }
+      }
+      return new Double(-1);
+    }
     int r = getReference(o);
     if (r >= 0) {
       if (o instanceof FluidStack) {
         FluidStack f = (FluidStack) o;
         return new Double(data[r].QMC / 1000 * f.amount);
+      } else {
+        return new Double(data[r].QMC);
       }
-      return new Double(data[r].QMC);
     }
     return new Double(-1);
   }

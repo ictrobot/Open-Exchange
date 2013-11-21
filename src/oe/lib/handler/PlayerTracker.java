@@ -19,7 +19,6 @@ public class PlayerTracker implements IPlayerTracker {
   
   @Override
   public void onPlayerLogin(EntityPlayer player) {
-    Log.debug("Player logged in");
     if (Sided.isServer()) {
       if (OpenExchange.proxy.isSinglePlayer()) {
         return;
