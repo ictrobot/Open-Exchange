@@ -61,8 +61,28 @@ public class FluidUtil {
     return null;
   }
   
+  public static ItemStack[] getStoringItemStacks(int fluidID) {
+    ItemStack[] toReturn = new ItemStack[0];
+    for (FluidContainerData f : getFluidData()) {
+      if (f.fluid.fluidID == fluidID) {
+        ItemStack[] tmp = new ItemStack[toReturn.length + 1];
+        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+        toReturn = tmp;
+        toReturn[toReturn.length - 1] = f.filledContainer;
+      }
+    }
+    if (toReturn.length == 0) {
+      return null;
+    }
+    return toReturn;
+  }
+  
   public static net.minecraftforge.fluids.Fluid getFluid(String name) {
     return FluidRegistry.getFluid(FluidRegistry.getFluidID(name));
+  }
+  
+  public static int getFluidID(String name) {
+    return FluidRegistry.getFluidID(name);
   }
   
   public static net.minecraftforge.fluids.Fluid getFluid(int id) {

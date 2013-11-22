@@ -2,6 +2,7 @@ package oe.qmc;
 
 import oe.lib.helper.OreDictionaryHelper;
 import oe.lib.util.FluidUtil;
+import oe.lib.util.ItemStackUtil;
 import oe.qmc.QMCFluid.FluidItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
@@ -47,19 +48,57 @@ public class QMCItemStack {
   private static Data[] data = new Data[0];
   
   public static Double getQMC(Object o) {
+    // Fluid Storing Itemstacks
     if (FluidUtil.storesFluid((ItemStack) o)) {
       ItemStack container = FluidUtil.getEmpty((ItemStack) o);
       if (container != null) {
-        double qmc = getQMC(container);
-        if (qmc >= 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
-          FluidItemStack f = new FluidItemStack(container, qmc, FluidUtil.getFluidStack((ItemStack) o));
-          return QMC.getQMC(f);
+        double containerQMC = getQMC(container);
+        if (containerQMC >= 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
+          FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));
+          double qmc = QMC.getQMC(f);
+          if (qmc >= 0) {
+            return new Double(qmc);
+          }
         }
       }
     }
-    int r = getReference(o);
-    if (r >= 0) {
-      return new Double(data[r].QMC);
+    // Other Itemstacks
+    if (o instanceof ItemStack) {
+      ItemStack itemstack = (ItemStack) o;
+      for (int i = 0; i < data.length; i++) {
+        Data check = data[i];
+        if (check.type != Type.OreDictionary) {
+          if (check.itemstack.itemID == ((ItemStack) o).itemID) {
+            if ((((ItemStack) o).stackTagCompound == null && check.itemstack.stackTagCompound == null) || (((ItemStack) o).stackTagCompound == itemstack.stackTagCompound)) {
+              if (check.itemstack.getItemDamage() == ((ItemStack) o).getItemDamage()) {
+                return new Double(check.QMC);
+              } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {
+                double q = check.QMC - (check.QMC / check.itemstack.getMaxDamage() * ((ItemStack) o).getItemDamage());
+                if (q > 0) {
+                  return new Double(q);
+                }
+              }
+            }
+          }
+        }
+        if (check.type != Type.Itemstack) {
+          int oreID = OreDictionary.getOreID(itemstack);
+          if (oreID != -1) {
+            if (OreDictionary.getOreID(check.oreDictionary) == oreID) {
+              return new Double(check.QMC);
+            }
+          }
+        }
+      }
+    } else if (o instanceof Block) {
+      return getQMC(new ItemStack((Block) o));
+    } else if (o instanceof Item) {
+      return getQMC(new ItemStack((Item) o));
+    } else if (o instanceof String) {
+      ItemStack[] stacks = OreDictionaryHelper.getItemStacks((String) o);
+      if (stacks != null) {
+        return getQMC(stacks[0]);
+      }
     }
     return new Double(-1);
   }
@@ -164,8 +203,14 @@ public class QMCItemStack {
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
         if (check.type != Type.OreDictionary) {
-          if (check.itemstack.isItemEqual(itemstack)) {
-            return i;
+          if (check.itemstack.itemID == ((ItemStack) o).itemID) {
+            if ((((ItemStack) o).stackTagCompound == null && check.itemstack.stackTagCompound == null) || (((ItemStack) o).stackTagCompound == itemstack.stackTagCompound)) {
+              if (check.itemstack.getItemDamage() == ((ItemStack) o).getItemDamage()) {
+                return i;
+              } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {
+                return i;
+              }
+            }
           }
         }
         if (check.type != Type.Itemstack) {

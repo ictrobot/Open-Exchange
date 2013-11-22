@@ -69,7 +69,7 @@ public class Guess {
   }
   
   public static int[] meta(int ID) {
-    int[] possible = new int[0];
+    int[] possible = new int[] { 0 };
     for (Class<?> c : classes) {
       int[] meta;
       try {

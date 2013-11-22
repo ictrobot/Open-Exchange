@@ -14,20 +14,21 @@ import oe.OpenExchange;
 import oe.api.OEGuesser;
 import oe.lib.Debug;
 import oe.lib.Log;
-import oe.lib.helper.OreDictionaryHelper;
 import oe.lib.util.FakeContainer;
+import oe.lib.util.ItemStackUtil;
+import oe.lib.util.PlayerUtil;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Crafting extends OEGuesser {
   public static class Data {
     ItemStack output;
     ItemStack[] input;
-    AfterData after;
+    ItemStack[] returned;
     
-    public Data(ItemStack Output, ItemStack[] Inputs, AfterData After) {
+    public Data(ItemStack Output, ItemStack[] Inputs, ItemStack[] Returned) {
       this.output = Output;
       this.input = Inputs;
-      this.after = After;
+      this.returned = Returned;
     }
   }
   
@@ -45,8 +46,8 @@ public class Crafting extends OEGuesser {
           if (input != null) {
             int id = output.itemID;
             increaseCrafting(id);
-            AfterData cd = afterCrafting(recipe, input, output);
-            crafting[id][crafting[id].length - 1] = new Data(output, input, cd);
+            ItemStack[] returned = afterCrafting(recipe, input, output);
+            crafting[id][crafting[id].length - 1] = new Data(output, input, returned);
             recipes++;
           }
         }
@@ -69,38 +70,28 @@ public class Crafting extends OEGuesser {
         data[data.length - 1] = gd;
       }
     }
-    if (data.length != 0) {
+    if (data.length > 0) {
       for (Data gd : data) {
         double value = 0;
-        double[] values = new double[gd.input.length];
-        AfterData cd = gd.after;
         for (int i = 0; i < gd.input.length; i++) {
           ItemStack stack = gd.input[i];
-          ItemStack check = cd.after[i];
           if (stack != null) {
-            if (stack.equals(check)) {
-              double v = checkQMC(stack);
-              if (v == -1) {
-                value = v;
-                break;
-              } else {
-                values[i] = v;
-                value = value + v;
-              }
+            double v = checkQMC(stack);
+            if (v == -1) {
+              return null;
             } else {
-              double v = checkQMC(stack);
-              if (v == -1) {
-                value = v;
-                break;
-              } else {
-                double c = checkQMC(check);
-                if (c == -1) {
-                  value = v;
-                  break;
-                }
-                values[i] = v;
-                value = value + v - c;
-              }
+              value = value + v;
+            }
+          }
+        }
+        for (int i = 0; i < gd.returned.length; i++) {
+          ItemStack stack = gd.returned[i];
+          if (stack != null) {
+            double v = checkQMC(stack);
+            if (v == -1) {
+              return null;
+            } else {
+              value = value - v;
             }
           }
         }
@@ -145,6 +136,7 @@ public class Crafting extends OEGuesser {
   
   @SuppressWarnings("rawtypes")
   private static ItemStack[] getCraftingInputs(IRecipe recipe) {
+    int nullNum = 0;
     ItemStack[] inputs = new ItemStack[9];
     if (recipe instanceof ShapedRecipes) {
       ShapedRecipes shaped = (ShapedRecipes) recipe;
@@ -207,14 +199,19 @@ public class Crafting extends OEGuesser {
         } catch (Exception e) {
           Debug.handleException(e);
         }
+        
         if (value != null) {
           if (value.getClass().isArray()) {
             Object[] os = (Object[]) value;
             for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
-              ItemStack fromObject = getItemStackFromObject(r);
-              if (fromObject != null) {
-                inputs[i] = fromObject;
+              if (r != null) {
+                ItemStack fromObject = ItemStackUtil.getItemStackFromObject(r);
+                if (fromObject != null) {
+                  inputs[i] = fromObject;
+                } else {
+                  nullNum = 1000;
+                }
               }
             }
             break;
@@ -222,7 +219,6 @@ public class Crafting extends OEGuesser {
         }
       }
     }
-    int nullNum = 0;
     for (ItemStack stack : inputs) {
       if (stack == null) {
         nullNum++;
@@ -230,7 +226,7 @@ public class Crafting extends OEGuesser {
         stack.setItemDamage(0);
       }
     }
-    if (nullNum == inputs.length) {
+    if (nullNum >= inputs.length) {
       Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       Debug.printObject(recipe);
@@ -239,41 +235,14 @@ public class Crafting extends OEGuesser {
     return inputs;
   }
   
-  private static ItemStack getItemStackFromObject(Object o) {
-    if (o instanceof ItemStack) {
-      ItemStack stack = (ItemStack) o;
-      return stack;
-    } else if (o instanceof String) {
-      String ore = (String) o;
-      ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
-      if (stacks != null) {
-        return stacks[0];
-      }
-    } else if (o instanceof ArrayList) {
-      return getItemStackFromObject(((ArrayList<?>) o).toArray()[0]);
-    }
-    return null;
-  }
-  
   private static void increaseCrafting(int id) {
     Data[] tmp = new Data[crafting[id].length + 1];
     System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
     crafting[id] = tmp;
   }
   
-  public static class AfterData {
-    public ItemStack[] after;
-    public boolean changed;
-    
-    public AfterData(ItemStack[] data, boolean Changed) {
-      this.after = data;
-      this.changed = Changed;
-    }
-  }
-  
-  private static AfterData afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
-    ItemStack[] toReturn = new ItemStack[inputs.length];
-    boolean changed = false;
+  private static ItemStack[] afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+    ItemStack[] toReturn = new ItemStack[0];
     try {
       FakeContainer fake = new FakeContainer();
       InventoryCrafting ic = new InventoryCrafting(fake, 3, 3);
@@ -282,16 +251,21 @@ public class Crafting extends OEGuesser {
           ic.setInventorySlotContents(i, inputs[i]);
         }
       }
+      PlayerUtil.wipeInv(OpenExchange.fakePlayer);
       GameRegistry.onItemCrafted(OpenExchange.fakePlayer, output, ic);
       for (int i = 0; i < inputs.length; i++) {
         if (inputs[i] != null) {
           if (ic.getStackInSlot(i).getItem().hasContainerItem() && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
-            ic.setInventorySlotContents(i, new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
+            toReturn = ItemStackUtil.increaseAdd(toReturn, new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
           }
           if (inputs[i] != ic.getStackInSlot(i)) {
-            changed = true;
+            toReturn = ItemStackUtil.increaseAdd(toReturn, ic.getStackInSlot(i));
           }
-          toReturn[i] = ic.getStackInSlot(i);
+        }
+      }
+      for (ItemStack itemstack : OpenExchange.fakePlayer.inventory.mainInventory) {
+        if (itemstack != null) {
+          toReturn = ItemStackUtil.increaseAdd(toReturn, itemstack);
         }
       }
     } catch (Exception e) {
@@ -299,7 +273,6 @@ public class Crafting extends OEGuesser {
       Debug.printObject(recipe);
       Debug.handleException(e);
     }
-    AfterData after = new AfterData(toReturn, changed);
-    return after;
+    return toReturn;
   }
 }
