@@ -2,8 +2,6 @@ package oe.qmc;
 
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,6 +10,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import oe.lib.Log;
 import oe.lib.util.ConfigUtil;
+import oe.lib.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
 
 public class QMC {
@@ -131,8 +130,8 @@ public class QMC {
       }
     }
     nbt.setString("Name", SnapShotName);
-    nbt.setString("Date", new SimpleDateFormat("dd,MM,yyyy").format(Calendar.getInstance().getTime()));
-    nbt.setString("Time", new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+    nbt.setString("Date", Util.getDate());
+    nbt.setString("Time", Util.getTime());
     return nbt;
   }
   

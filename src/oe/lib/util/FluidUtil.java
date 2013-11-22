@@ -78,7 +78,13 @@ public class FluidUtil {
   }
   
   public static net.minecraftforge.fluids.Fluid getFluid(String name) {
-    return FluidRegistry.getFluid(FluidRegistry.getFluidID(name));
+    net.minecraftforge.fluids.Fluid f = null;
+    try {
+      f = FluidRegistry.getFluid(FluidRegistry.getFluidID(name));
+    } catch (Exception e) {
+      return null;
+    }
+    return f;
   }
   
   public static int getFluidID(String name) {

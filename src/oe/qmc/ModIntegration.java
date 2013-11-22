@@ -2,6 +2,7 @@ package oe.qmc;
 
 import oe.lib.util.FluidUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModIntegration {
@@ -91,7 +92,10 @@ public class ModIntegration {
       if (d.isOre) {
         QMC.add(d.name, d.value);
       } else if (d.isLiquid) {
-        QMC.add(FluidUtil.getFluid(d.name), d.value);
+        Fluid fluid = FluidUtil.getFluid(d.name);
+        if (fluid != null) {
+          QMC.add(fluid, d.value);
+        }
       } else {
         ItemStack stack = GameRegistry.findItemStack(d.mod, d.name, 1);
         if (stack != null) {

@@ -65,6 +65,9 @@ public class ItemStackUtil {
   }
   
   public static boolean isItem(int ID) {
+    if (ID >= 32000) {
+      return false;
+    }
     if (isBlock(ID)) {
       return false;
     }
@@ -75,13 +78,13 @@ public class ItemStackUtil {
   }
   
   public static boolean isBlock(int ID) {
-    if (ID > 4096) {
-      return false;
-    }
-    if (Block.blocksList[ID].getUnlocalizedName().contains("ForgeFiller")) {
+    if (ID >= 4096) {
       return false;
     }
     if (Block.blocksList[ID] == null) {
+      return false;
+    }
+    if (Block.blocksList[ID].getUnlocalizedName().contains("ForgeFiller")) {
       return false;
     }
     return true;

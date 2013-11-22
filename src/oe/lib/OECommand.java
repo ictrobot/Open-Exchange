@@ -100,7 +100,7 @@ public class OECommand implements ICommand {
             sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC per 1000mb: " + QMC.getQMC(FluidUtil.getFluid(f.fluidID))));
             sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC: " + QMC.getQMC(f)));
             sender.sendChatToPlayer(ChatMessageComponent.createFromText("Empty Container:"));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + e.getUnlocalizedName() + " (ID:" + e.itemID + " Meta:" + e.getItemDamage() + ")"));
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + e.getUnlocalizedName() + " (ID:" + e.itemID + " Meta:" + e.getItemDamage() + " QMC:" + QMC.getQMC(e) + ")"));
           }
         } else {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held ItemStack does not store fluid"));

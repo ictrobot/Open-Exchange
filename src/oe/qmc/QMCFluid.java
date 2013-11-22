@@ -62,7 +62,7 @@ public class QMCFluid {
       return true;
     } else if (o instanceof FluidStack) {
       increase();
-      data[data.length - 1] = new Data((Fluid) o, Value / 1000 * ((FluidStack) o).amount);
+      data[data.length - 1] = new Data(((FluidStack) o).getFluid(), Value / ((FluidStack) o).amount * 1000);
       return true;
     }
     return false;

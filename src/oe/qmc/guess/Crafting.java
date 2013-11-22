@@ -1,15 +1,12 @@
 package oe.qmc.guess;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import oe.OpenExchange;
 import oe.api.OEGuesser;
 import oe.lib.Debug;
@@ -134,7 +131,6 @@ public class Crafting extends OEGuesser {
     return data;
   }
   
-  @SuppressWarnings("rawtypes")
   private static ItemStack[] getCraftingInputs(IRecipe recipe) {
     int nullNum = 0;
     ItemStack[] inputs = new ItemStack[9];
@@ -158,35 +154,6 @@ public class Crafting extends OEGuesser {
           }
           inputs[i] = stack;
           i++;
-        }
-      }
-    } else if (recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe) {
-      Object[] input;
-      if (recipe instanceof ShapedOreRecipe) {
-        ShapedOreRecipe ore = (ShapedOreRecipe) recipe;
-        input = ore.getInput();
-      } else {
-        ShapelessOreRecipe ore = (ShapelessOreRecipe) recipe;
-        ArrayList al = ore.getInput();
-        input = al.toArray();
-      }
-      for (int i = 0; i < input.length; i++) {
-        if (input[i] != null) {
-          if (input[i] instanceof ArrayList) {
-            ArrayList al = (ArrayList) input[i];
-            Object[] obj = al.toArray();
-            if (obj.length != 0) {
-              if (obj[0] != null) {
-                if (obj[0] instanceof ItemStack) {
-                  ItemStack stack = (ItemStack) obj[0];
-                  inputs[i] = stack;
-                }
-              }
-            }
-          } else if (input[i] instanceof ItemStack) {
-            ItemStack stack = (ItemStack) input[i];
-            inputs[i] = stack;
-          }
         }
       }
     } else {

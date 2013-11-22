@@ -2,13 +2,12 @@ package oe.qmc.guess;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OE_API;
 import oe.lib.Debug;
 import oe.lib.Log;
+import oe.lib.util.ItemStackUtil;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -34,7 +33,6 @@ public class Guess {
   }
   
   public static Class<?>[] classes = new Class[0];
-  public static ItemStack[] noValue = new ItemStack[0];
   
   // To Stop recursions
   private static int recursions = 0;
@@ -65,7 +63,7 @@ public class Guess {
     }
     checkLoop();
     timer.stop();
-    Log.info("It took " + timer.elapsed(TimeUnit.SECONDS) + " seconds to Guess");
+    Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
   }
   
   public static int[] meta(int ID) {
@@ -102,27 +100,12 @@ public class Guess {
   }
   
   private static void checkLoop() {
-    for (int i = 0; i < Block.blocksList.length; i++) {
-      if (Block.blocksList[i] != null) {
-        if (!Block.blocksList[i].getUnlocalizedName().contains("tile.ForgeFiller")) {
-          int[] Meta = meta(i);
-          for (int m : Meta) {
-            ItemStack check = new ItemStack(Block.blocksList[i], 0, m);
-            if (!QMC.hasQMC(check)) {
-              recursions = -1;
-              recursionNotified = false;
-              check(check);
-            }
-          }
-        }
-      }
-    }
-    for (int i = 0; i < Item.itemsList.length; i++) {
-      if (Item.itemsList[i] != null) {
+    for (int i = 0; i < 32000; i++) { // Length of ItemList Array
+      if (ItemStackUtil.isBlock(i) || ItemStackUtil.isItem(i)) {
         int[] Meta = meta(i);
         for (int m : Meta) {
-          ItemStack check = new ItemStack(Item.itemsList[i], 0, m);
-          if (!QMC.hasQMC(check)) {
+          ItemStack check = new ItemStack(i, 0, m);
+          if (check != null && !QMC.hasQMC(check)) {
             recursions = -1;
             recursionNotified = false;
             check(check);
@@ -142,12 +125,6 @@ public class Guess {
     }
     recursions++;
     int ore = OreDictionary.getOreID(itemstack);
-    // Stops itemstacks from being checked that have already been checked and returned no value;
-    for (ItemStack stack : noValue) {
-      if (itemstack.itemID == stack.itemID && itemstack.getItemDamage() == stack.getItemDamage() || (ore != -1 && ore == OreDictionary.getOreID(stack))) {
-        return -1;
-      }
-    }
     // Tries to stop recursions before they happen
     if (recursions == 0) {
       stackCheck = itemstack;
@@ -167,11 +144,6 @@ public class Guess {
       if (data.QMC > -1) {
         ItemStack toAdd = itemstack.copy();
         QMC.add(toAdd, data.QMC);
-      } else {
-        ItemStack[] tmp = new ItemStack[noValue.length + 1];
-        System.arraycopy(noValue, 0, tmp, 0, noValue.length);
-        noValue = tmp;
-        noValue[noValue.length - 1] = itemstack;
       }
     }
     if (data != null) {

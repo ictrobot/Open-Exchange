@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 public class CustomQMCValuesReader {
   
   public static void read() {
-    read(new File(OpenExchange.configdir + "/OpenExchange/CustomValues.cfg"), true);
+    read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true);
   }
   
   public static void read(File file) {
@@ -30,9 +30,11 @@ public class CustomQMCValuesReader {
           bw.newLine();
           bw.write("#                          #");
           bw.newLine();
-          bw.write("#    Open-Exchange         #");
+          bw.write("#      Open-Exchange       #");
           bw.newLine();
-          bw.write("#    Custom Values File    #");
+          bw.write("#     Custom ItemStack     #");
+          bw.newLine();
+          bw.write("#     " + QMC.name + " Values File      #");
           bw.newLine();
           bw.write("#                          #");
           bw.newLine();
