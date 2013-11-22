@@ -6,7 +6,7 @@ import java.io.File;
 import oe.OpenExchange;
 import oe.lib.Debug;
 import oe.lib.Log;
-import oe.lib.helper.ConfigHelper;
+import oe.lib.util.ConfigUtil;
 import oe.qmc.QMC;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,9 +30,9 @@ public class QMCSynchronizationPacket {
       return;
     }
     
-    ConfigHelper.load();
-    boolean dump = ConfigHelper.other("DEBUG", "Dump Server-->Client QMC Snapshots", false);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    boolean dump = ConfigUtil.other("DEBUG", "Dump Server-->Client QMC Snapshots", false);
+    ConfigUtil.save();
     
     try {
       if (dump) {

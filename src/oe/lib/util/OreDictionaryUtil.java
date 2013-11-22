@@ -1,4 +1,4 @@
-package oe.lib.helper;
+package oe.lib.util;
 
 import java.util.ArrayList;
 import net.minecraft.block.Block;
@@ -6,17 +6,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class OreDictionaryHelper {
+public class OreDictionaryUtil {
   
   public static void minecraftInit() {
-    Register.Ore("oreCoal", Block.oreCoal);
-    Register.Ore("ingotGold", Item.ingotGold);
-    Register.Ore("ingotIron", Item.ingotIron);
-    Register.Ore("materialCoal", Item.coal);
-    Register.Ore("gemDiamond", Item.diamond);
-    Register.Ore("materialRedstone", Item.redstone);
-    Register.Ore("gemEmerald", Item.emerald);
-    Register.Ore("materialNetherQuartz", Item.netherQuartz);
+    RegisterUtil.Ore("oreCoal", Block.oreCoal);
+    RegisterUtil.Ore("ingotGold", Item.ingotGold);
+    RegisterUtil.Ore("ingotIron", Item.ingotIron);
+    RegisterUtil.Ore("materialCoal", Item.coal);
+    RegisterUtil.Ore("gemDiamond", Item.diamond);
+    RegisterUtil.Ore("materialRedstone", Item.redstone);
+    RegisterUtil.Ore("gemEmerald", Item.emerald);
+    RegisterUtil.Ore("materialNetherQuartz", Item.netherQuartz);
   }
   
   public static ItemStack[] getItemStacks(String ore) {

@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.OETileInterface;
 import oe.api.OE_API;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 
 public class ItemReader extends Item {
@@ -22,7 +22,7 @@ public class ItemReader extends Item {
   }
   
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    if (Sided.isClient()) {
+    if (Util.isClient()) {
       if (Minecraft.getMinecraft().objectMouseOver != null) {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;

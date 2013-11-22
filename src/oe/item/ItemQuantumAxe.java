@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 
 public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
@@ -60,7 +60,7 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   }
   
   public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
-    if (Sided.isClient()) {
+    if (Util.isClient()) {
       if (Minecraft.getMinecraft().objectMouseOver != null) {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;

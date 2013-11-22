@@ -13,8 +13,8 @@ import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.ConfigHelper;
-import oe.lib.helper.Sided;
+import oe.lib.util.ConfigUtil;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -31,9 +31,9 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   public TileCondenser() {
     super();
-    ConfigHelper.load();
-    shouldEat = ConfigHelper.other("block", "Condenser turns items other than the target into QMC", false);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    shouldEat = ConfigUtil.other("block", "Condenser turns items other than the target into QMC", false);
+    ConfigUtil.save();
     this.chestContents = new ItemStack[getSizeInventory()];
   }
   
@@ -45,7 +45,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   @Override
   public void updateEntity() {
     updateDifferent();
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         if (prevStored != stored) {

@@ -1,4 +1,4 @@
-package oe.lib.helper;
+package oe.lib.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -7,7 +7,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class Register {
+public class RegisterUtil {
   
   public static void Item(Item Item, String Name) {
     LanguageRegistry.addName(Item, Name);

@@ -13,7 +13,7 @@ import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -36,7 +36,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   
   @Override
   public void updateEntity() {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int i = 1; i <= 4; i++) {

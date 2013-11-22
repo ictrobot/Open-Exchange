@@ -9,6 +9,7 @@ import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
 import oe.item.ItemIDs;
 import oe.item.Items;
+import oe.lib.CraftingRecipes;
 import oe.lib.Log;
 import oe.lib.OECommand;
 import oe.lib.Reference;
@@ -17,12 +18,11 @@ import oe.lib.handler.PlayerInteractHandler;
 import oe.lib.handler.PlayerTracker;
 import oe.lib.handler.QMCFuelHandler;
 import oe.lib.handler.ToolTipHandler;
-import oe.lib.helper.ConfigHelper;
-import oe.lib.helper.OreDictionaryHelper;
-import oe.lib.util.CraftingRecipes;
-import oe.lib.util.FakePlayer;
-import oe.lib.util.QuantumToolBlackList;
-import oe.lib.util.RemoteDrillData;
+import oe.lib.misc.FakePlayer;
+import oe.lib.misc.QuantumToolBlackList;
+import oe.lib.misc.RemoteDrillData;
+import oe.lib.util.ConfigUtil;
+import oe.lib.util.OreDictionaryUtil;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
@@ -68,10 +68,10 @@ public class OpenExchange {
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     configdir = event.getModConfigurationDirectory();
-    ConfigHelper.load();
-    debug = ConfigHelper.other("DEBUG", "Debug enabled", false);
-    boolean fuelHandler = ConfigHelper.other("FuelHandler", "Allow any item to be burnt if it has a QMC value", false);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    debug = ConfigUtil.other("DEBUG", "Debug enabled", false);
+    boolean fuelHandler = ConfigUtil.other("FuelHandler", "Allow any item to be burnt if it has a QMC value", false);
+    ConfigUtil.save();
     if (debug) {
       Log.info("Debugging Enabled");
     }
@@ -107,7 +107,7 @@ public class OpenExchange {
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
-    OreDictionaryHelper.minecraftInit();
+    OreDictionaryUtil.minecraftInit();
     Log.debug("Loading QMC Values");
     QMC.load();
     Log.debug("Adding QMC Guessers");
@@ -135,7 +135,7 @@ public class OpenExchange {
   
   @EventHandler
   public void serverStarting(FMLServerStartingEvent event) {
-    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
       event.registerServerCommand(new OECommand());
     }
     RemoteDrillData.loadNBT();
@@ -152,7 +152,7 @@ public class OpenExchange {
   
   @EventHandler
   public void serverStop(FMLServerStoppingEvent event) {
-    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
       RemoteDrillData.saveNBT();
     }
     fakePlayer = null;

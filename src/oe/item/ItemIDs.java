@@ -1,6 +1,6 @@
 package oe.item;
 
-import oe.lib.helper.ConfigHelper;
+import oe.lib.util.ConfigUtil;
 
 public class ItemIDs {
   
@@ -13,16 +13,16 @@ public class ItemIDs {
   public static int blockMover;
   
   public static void Load() {
-    ConfigHelper.load();
+    ConfigUtil.load();
     
-    buildRing = ConfigHelper.item("buildRing");
-    reader = ConfigHelper.item("reader");
-    pickaxe = ConfigHelper.item("pickaxe");
-    axe = ConfigHelper.item("axe");
-    shovel = ConfigHelper.item("shovel");
-    repair = ConfigHelper.item("repair");
-    blockMover = ConfigHelper.item("blockMover");
+    buildRing = ConfigUtil.item("buildRing");
+    reader = ConfigUtil.item("reader");
+    pickaxe = ConfigUtil.item("pickaxe");
+    axe = ConfigUtil.item("axe");
+    shovel = ConfigUtil.item("shovel");
+    repair = ConfigUtil.item("repair");
+    blockMover = ConfigUtil.item("blockMover");
     
-    ConfigHelper.save();
+    ConfigUtil.save();
   }
 }

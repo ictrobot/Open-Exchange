@@ -9,7 +9,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import oe.OpenExchange;
 import oe.lib.Debug;
 import oe.lib.Log;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -19,7 +19,7 @@ public class PlayerTracker implements IPlayerTracker {
   
   @Override
   public void onPlayerLogin(EntityPlayer player) {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (OpenExchange.proxy.isSinglePlayer()) {
         return;
       }

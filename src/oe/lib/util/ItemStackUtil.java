@@ -1,8 +1,9 @@
 package oe.lib.util;
 
 import java.util.ArrayList;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oe.lib.helper.OreDictionaryHelper;
 
 public class ItemStackUtil {
   
@@ -17,7 +18,7 @@ public class ItemStackUtil {
         return getSingleItemStack(fStacks, "bucket"); // Prefer buckets
       }
       String ore = (String) o;
-      ItemStack[] stacks = OreDictionaryHelper.getItemStacks(ore);
+      ItemStack[] stacks = OreDictionaryUtil.getItemStacks(ore);
       if (stacks != null) {
         return stacks[0];
       }
@@ -61,5 +62,28 @@ public class ItemStackUtil {
   
   public static boolean isValidTool(ItemStack o) {
     return o.getItem().isItemTool(o);
+  }
+  
+  public static boolean isItem(int ID) {
+    if (isBlock(ID)) {
+      return false;
+    }
+    if (Item.itemsList[ID] == null) {
+      return false;
+    }
+    return true;
+  }
+  
+  public static boolean isBlock(int ID) {
+    if (ID > 4096) {
+      return false;
+    }
+    if (Block.blocksList[ID].getUnlocalizedName().contains("ForgeFiller")) {
+      return false;
+    }
+    if (Block.blocksList[ID] == null) {
+      return false;
+    }
+    return true;
   }
 }

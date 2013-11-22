@@ -12,8 +12,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.ConfigHelper;
-import oe.lib.helper.Sided;
+import oe.lib.util.ConfigUtil;
+import oe.lib.util.Util;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileDrill extends TileEntity implements OETileInterface {
@@ -26,11 +26,11 @@ public class TileDrill extends TileEntity implements OETileInterface {
   
   public TileDrill() {
     super();
-    ConfigHelper.load();
-    mineCost = ConfigHelper.other("block", "Drill Mine Block Cost", 256.0);
-    delayTicks = ConfigHelper.other("block", "Drill Tick Delay", 100);
-    range = ConfigHelper.other("block", "Drill Range", 8);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    mineCost = ConfigUtil.other("block", "Drill Mine Block Cost", 256.0);
+    delayTicks = ConfigUtil.other("block", "Drill Tick Delay", 100);
+    range = ConfigUtil.other("block", "Drill Range", 8);
+    ConfigUtil.save();
   }
   
   @Override
@@ -43,7 +43,7 @@ public class TileDrill extends TileEntity implements OETileInterface {
   }
   
   private void drill() {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       currTicks++;
       if (getQMC() < mineCost) {
         return;

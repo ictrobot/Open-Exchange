@@ -1,8 +1,8 @@
 package oe.qmc;
 
-import oe.lib.helper.OreDictionaryHelper;
 import oe.lib.util.FluidUtil;
 import oe.lib.util.ItemStackUtil;
+import oe.lib.util.OreDictionaryUtil;
 import oe.qmc.QMCFluid.FluidItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
@@ -95,7 +95,7 @@ public class QMCItemStack {
     } else if (o instanceof Item) {
       return getQMC(new ItemStack((Item) o));
     } else if (o instanceof String) {
-      ItemStack[] stacks = OreDictionaryHelper.getItemStacks((String) o);
+      ItemStack[] stacks = OreDictionaryUtil.getItemStacks((String) o);
       if (stacks != null) {
         return getQMC(stacks[0]);
       }
@@ -144,7 +144,7 @@ public class QMCItemStack {
           d.type = Type.Itemstack;
         }
       } else {
-        ItemStack[] stacks = OreDictionaryHelper.getItemStacks(d.oreDictionary);
+        ItemStack[] stacks = OreDictionaryUtil.getItemStacks(d.oreDictionary);
         if (stacks != null) {
           d.itemstack = stacks[0];
           d.type = Type.OreDictionary_Itemstack;
@@ -227,7 +227,7 @@ public class QMCItemStack {
     } else if (o instanceof Item) {
       return getReference(new ItemStack((Item) o));
     } else if (o instanceof String) {
-      ItemStack[] stacks = OreDictionaryHelper.getItemStacks((String) o);
+      ItemStack[] stacks = OreDictionaryUtil.getItemStacks((String) o);
       if (stacks != null) {
         return getReference(stacks[0]);
       }

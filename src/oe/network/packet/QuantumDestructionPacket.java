@@ -6,8 +6,8 @@ import java.io.IOException;
 import oe.api.OEItemInterface;
 import oe.api.OE_API;
 import oe.lib.Debug;
-import oe.lib.helper.ConfigHelper;
-import oe.lib.util.QuantumToolBlackList;
+import oe.lib.misc.QuantumToolBlackList;
+import oe.lib.util.ConfigUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -36,9 +36,9 @@ public class QuantumDestructionPacket {
     }
     if (Player instanceof EntityPlayer) {
       EntityPlayer player = (EntityPlayer) Player;
-      ConfigHelper.load();
-      QMCNeeded = ConfigHelper.other("Item", "Quantum tools right click cost per block", 5);
-      ConfigHelper.save();
+      ConfigUtil.load();
+      QMCNeeded = ConfigUtil.other("Item", "Quantum tools right click cost per block", 5);
+      ConfigUtil.save();
       blockBreak(x, y, z, player);
     }
   }

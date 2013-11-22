@@ -15,7 +15,7 @@ import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileCharging extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
@@ -36,7 +36,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public void updateEntity() {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int slot = 0; slot <= 8; slot++) {
           if (getStackInSlot(slot) != null) {

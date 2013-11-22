@@ -1,6 +1,6 @@
 package oe.block;
 
-import oe.lib.helper.ConfigHelper;
+import oe.lib.util.ConfigUtil;
 
 public class BlockIDs {
   
@@ -15,18 +15,18 @@ public class BlockIDs {
   public static int drillRemoteReceiver;
   
   public static void Load() {
-    ConfigHelper.load();
+    ConfigUtil.load();
     
-    condenser = ConfigHelper.block("condenser");
-    charging = ConfigHelper.block("charging");
-    extractor = ConfigHelper.block("extractor");
-    storage = ConfigHelper.block("storage");
-    experienceConsumer = ConfigHelper.block("experienceConsumer");
-    pipe = ConfigHelper.block("pipe");
-    drill = ConfigHelper.block("drill");
-    drillRemote = ConfigHelper.block("drillRemote");
-    drillRemoteReceiver = ConfigHelper.block("drillRemoteReceiver");
+    condenser = ConfigUtil.block("condenser");
+    charging = ConfigUtil.block("charging");
+    extractor = ConfigUtil.block("extractor");
+    storage = ConfigUtil.block("storage");
+    experienceConsumer = ConfigUtil.block("experienceConsumer");
+    pipe = ConfigUtil.block("pipe");
+    drill = ConfigUtil.block("drill");
+    drillRemote = ConfigUtil.block("drillRemote");
+    drillRemoteReceiver = ConfigUtil.block("drillRemoteReceiver");
     
-    ConfigHelper.save();
+    ConfigUtil.save();
   }
 }

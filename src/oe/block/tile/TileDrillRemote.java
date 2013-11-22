@@ -7,8 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.lib.Location;
 import oe.block.BlockIDs;
-import oe.lib.helper.Sided;
-import oe.lib.util.RemoteDrillData;
+import oe.lib.misc.RemoteDrillData;
+import oe.lib.util.Util;
 
 public class TileDrillRemote extends TileEntity {
   int delayTicks = 100;
@@ -37,7 +37,7 @@ public class TileDrillRemote extends TileEntity {
   }
   
   private void drill() {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       RemoteDrillData.setLocationDrill(RemoteID, new Location(xCoord, yCoord, zCoord, worldObj.provider.dimensionId));
       currTicks++;
       if (RemoteDrillData.getQMC(RemoteID) < RemoteDrillData.mineCost || !RemoteDrillData.isReady(RemoteID)) {

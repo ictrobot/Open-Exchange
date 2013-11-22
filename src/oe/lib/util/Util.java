@@ -1,9 +1,9 @@
-package oe.lib.helper;
+package oe.lib.util;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-public class Sided {
+public class Util {
   
   public static boolean isServer() {
     return getSide().isServer();

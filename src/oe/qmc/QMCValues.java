@@ -91,7 +91,7 @@ public class QMCValues extends QMC {
     
     add(FluidRegistry.LAVA, 16);
     add(FluidRegistry.WATER, 0.25);
-    add(Item.bucketMilk, 784); // Becuase milk is not a fluid
+    add(Item.bucketMilk, 784); // Because milk is not a fluid
     
     add(Item.record13, 16384);
     add(Item.recordCat, getQMC(Item.record11));

@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEGuesser;
 import oe.lib.Log;
-import oe.lib.helper.OreDictionaryHelper;
+import oe.lib.util.OreDictionaryUtil;
 import oe.qmc.QMC;
 
 public class Ore extends OEGuesser {
@@ -34,13 +34,13 @@ public class Ore extends OEGuesser {
   
   public static void init() {
     Log.debug("Loading Ore Guesser");
-    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("ingot", true)) {
+    for (String ore : OreDictionaryUtil.getOreDictionaryStartingWith("ingot", true)) {
       addOre("ingot" + ore, ore);
     }
-    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("gem", true)) {
+    for (String ore : OreDictionaryUtil.getOreDictionaryStartingWith("gem", true)) {
       addOre("gem" + ore, ore);
     }
-    for (String ore : OreDictionaryHelper.getOreDictionaryStartingWith("material", true)) {
+    for (String ore : OreDictionaryUtil.getOreDictionaryStartingWith("material", true)) {
       addOre("material" + ore, ore);
     }
   }
@@ -74,7 +74,7 @@ public class Ore extends OEGuesser {
       if (o != null) {
         double value = QMC.getQMC(o.full);
         if (value > 0) {
-          ItemStack[] src = new ItemStack[] { OreDictionaryHelper.getItemStacks(o.full)[0] };
+          ItemStack[] src = new ItemStack[] { OreDictionaryUtil.getItemStacks(o.full)[0] };
           Guess.Data guess = new Guess.Data(src, value * prefix.ingotsNum, (int) prefix.ingotsNum);
           return guess;
         }

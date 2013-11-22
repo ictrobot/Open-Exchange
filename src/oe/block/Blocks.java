@@ -1,9 +1,9 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import oe.lib.helper.ConfigHelper;
-import oe.lib.helper.Register;
-import oe.lib.util.RemoteDrillData;
+import oe.lib.misc.RemoteDrillData;
+import oe.lib.util.ConfigUtil;
+import oe.lib.util.RegisterUtil;
 import oe.qmc.QMC;
 
 public class Blocks {
@@ -19,64 +19,64 @@ public class Blocks {
   public static Block drillRemoteReceiver;
   
   public static void Load() {
-    ConfigHelper.load();
-    if (ConfigHelper.other("block", "condenserEnabled", true)) {
+    ConfigUtil.load();
+    if (ConfigUtil.other("block", "condenserEnabled", true)) {
       condenser = new BlockCondenser(BlockIDs.condenser);
     }
-    if (ConfigHelper.other("block", "chargingEnabled", true)) {
+    if (ConfigUtil.other("block", "chargingEnabled", true)) {
       charging = new BlockCharging(BlockIDs.charging);
     }
-    if (ConfigHelper.other("block", "extractorEnabled", true)) {
+    if (ConfigUtil.other("block", "extractorEnabled", true)) {
       extractor = new BlockExtractor(BlockIDs.extractor);
     }
-    if (ConfigHelper.other("block", "storageEnabled", true)) {
+    if (ConfigUtil.other("block", "storageEnabled", true)) {
       storage = new BlockStorage(BlockIDs.storage);
     }
-    if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
+    if (ConfigUtil.other("block", "experienceConsumerEnabled", true)) {
       experienceConsumer = new BlockExperienceConsumer(BlockIDs.experienceConsumer);
     }
-    if (ConfigHelper.other("block", "pipeEnabled", true)) {
+    if (ConfigUtil.other("block", "pipeEnabled", true)) {
       pipe = new BlockPipe(BlockIDs.pipe);
     }
-    if (ConfigHelper.other("block", "drillEnabled", true)) {
+    if (ConfigUtil.other("block", "drillEnabled", true)) {
       RemoteDrillData.init();
       drill = new BlockDrill(BlockIDs.drill);
     }
-    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
+    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
       drillRemote = new BlockDrillRemote(BlockIDs.drillRemote);
       drillRemoteReceiver = new BlockDrillRemoteReceiver(BlockIDs.drillRemoteReceiver);
     }
-    ConfigHelper.save();
+    ConfigUtil.save();
   }
   
   public static void Register() {
-    ConfigHelper.load();
-    if (ConfigHelper.other("block", "condenserEnabled", true)) {
-      Register.Block(condenser, QMC.name + " Condenser", "pickaxe", 2);
+    ConfigUtil.load();
+    if (ConfigUtil.other("block", "condenserEnabled", true)) {
+      RegisterUtil.Block(condenser, QMC.name + " Condenser", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "chargingEnabled", true)) {
-      Register.Block(charging, QMC.name + " Charging Bench", "pickaxe", 2);
+    if (ConfigUtil.other("block", "chargingEnabled", true)) {
+      RegisterUtil.Block(charging, QMC.name + " Charging Bench", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "extractorEnabled", true)) {
-      Register.Block(extractor, QMC.name + " Extractor", "pickaxe", 2);
+    if (ConfigUtil.other("block", "extractorEnabled", true)) {
+      RegisterUtil.Block(extractor, QMC.name + " Extractor", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "storageEnabled", true)) {
-      Register.Block(storage, QMC.name + " Storage", "pickaxe", 2);
+    if (ConfigUtil.other("block", "storageEnabled", true)) {
+      RegisterUtil.Block(storage, QMC.name + " Storage", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "experienceConsumerEnabled", true)) {
-      Register.Block(experienceConsumer, QMC.name + " Experience Consumer", "pickaxe", 2);
+    if (ConfigUtil.other("block", "experienceConsumerEnabled", true)) {
+      RegisterUtil.Block(experienceConsumer, QMC.name + " Experience Consumer", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "pipeEnabled", true)) {
-      Register.Block(pipe, QMC.name + " Pipe", "pickaxe", 2);
+    if (ConfigUtil.other("block", "pipeEnabled", true)) {
+      RegisterUtil.Block(pipe, QMC.name + " Pipe", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "drillEnabled", true)) {
-      Register.Block(drill, QMC.name + " Drill", "pickaxe", 2);
+    if (ConfigUtil.other("block", "drillEnabled", true)) {
+      RegisterUtil.Block(drill, QMC.name + " Drill", "pickaxe", 2);
     }
-    if (ConfigHelper.other("block", "drillRemoteEnabled", true)) {
-      Register.Block(drillRemote, QMC.name + " Remote Drill", "pickaxe", 2);
-      Register.Block(drillRemoteReceiver, QMC.name + " Remote Drill Receiver", "pickaxe", 2);
+    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
+      RegisterUtil.Block(drillRemote, QMC.name + " Remote Drill", "pickaxe", 2);
+      RegisterUtil.Block(drillRemoteReceiver, QMC.name + " Remote Drill Receiver", "pickaxe", 2);
     }
-    ConfigHelper.save();
+    ConfigUtil.save();
   }
   
   public static String Texture(String str) {

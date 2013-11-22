@@ -11,8 +11,8 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.api.lib.Location;
 import oe.block.tile.TileDrillRemoteReceiver;
-import oe.lib.helper.Sided;
-import oe.lib.util.RemoteDrillData;
+import oe.lib.misc.RemoteDrillData;
+import oe.lib.util.Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,7 +34,7 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
   
   @Override
   public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int i1, float f1, float f2, float f3) {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       TileEntity te = world.getBlockTileEntity(i, j, k);
       if (te == null || !(te instanceof TileDrillRemoteReceiver) || world.isRemote) {
         return true;

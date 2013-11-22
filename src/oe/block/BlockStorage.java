@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,7 +34,7 @@ public class BlockStorage extends BlockContainer {
   
   @Override
   public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int i1, float f1, float f2, float f3) {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       TileEntity te = world.getBlockTileEntity(i, j, k);
       if (te == null || !(te instanceof TileStorage) || world.isRemote) {
         return true;

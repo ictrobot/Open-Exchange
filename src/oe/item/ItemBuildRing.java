@@ -10,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.helper.BlockOrItem;
-import oe.lib.helper.Sided;
+import oe.lib.util.ItemStackUtil;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 
 public class ItemBuildRing extends Item implements OEItemInterface {
@@ -25,13 +25,13 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   
   public void onUpdate(ItemStack itemStack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemStack);
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (itemStack.getTagCompound().getBoolean("Enabled")) {
         if (entity instanceof EntityPlayer) {
           EntityPlayer player = (EntityPlayer) entity;
           ItemStack held = player.getHeldItem();
           if (held != null) {
-            if (BlockOrItem.isBlock(held.itemID)) {
+            if (ItemStackUtil.isBlock(held.itemID)) {
               if (held.stackSize == 1) {
                 if (QMC.hasQMC(held)) {
                   double v = itemStack.getTagCompound().getDouble("Value");
@@ -69,7 +69,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
     NBTTagCompound tag = itemStack.getTagCompound();
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (tag.getBoolean("Enabled")) {
         tag.setBoolean("Enabled", false);
         player.addChatMessage("\u00A73\u00A7lBuilder's Ring:\u00A7r\u00A77 Disabled");

@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import oe.qmc.QMC;
 
 public class ItemRepair extends Item implements OEItemInterface {
@@ -24,7 +24,7 @@ public class ItemRepair extends Item implements OEItemInterface {
   
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemstack);
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (itemstack.getTagCompound().getBoolean("Enabled")) {
         if (entity instanceof EntityPlayer) {
           EntityPlayer player = (EntityPlayer) entity;
@@ -68,7 +68,7 @@ public class ItemRepair extends Item implements OEItemInterface {
   
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
     NBTTagCompound tag = itemStack.getTagCompound();
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (tag.getBoolean("Enabled")) {
         tag.setBoolean("Enabled", false);
         player.addChatMessage("\u00A73\u00A7lRepair:\u00A7r\u00A77 Disabled");

@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.lib.misc;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import oe.OpenExchange;
 import oe.api.lib.Location;
-import oe.lib.helper.ConfigHelper;
+import oe.lib.util.ConfigUtil;
 
 public class RemoteDrillData {
   public static double mineCost = 256;
@@ -20,12 +20,12 @@ public class RemoteDrillData {
   private static String path;
   
   public static void init() {
-    ConfigHelper.load();
-    mineCost = ConfigHelper.other("block", "DrillRemote Mine Block Cost", 256.0);
-    moveCost = ConfigHelper.other("block", "DrillRemote Move Block Cost", 8096.0);
-    delayTicks = ConfigHelper.other("block", "DrillRemote Tick Delay", 50);
-    range = ConfigHelper.other("block", "DrillRemote Range", 8);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    mineCost = ConfigUtil.other("block", "DrillRemote Mine Block Cost", 256.0);
+    moveCost = ConfigUtil.other("block", "DrillRemote Move Block Cost", 8096.0);
+    delayTicks = ConfigUtil.other("block", "DrillRemote Tick Delay", 50);
+    range = ConfigUtil.other("block", "DrillRemote Range", 8);
+    ConfigUtil.save();
     rangeX2 = range * 2;
   }
   

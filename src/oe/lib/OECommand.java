@@ -12,9 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.lib.helper.BlockOrItem;
-import oe.lib.helper.OreDictionaryHelper;
 import oe.lib.util.FluidUtil;
+import oe.lib.util.ItemStackUtil;
+import oe.lib.util.OreDictionaryUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -115,13 +115,13 @@ public class OECommand implements ICommand {
       ItemStack held = player.getHeldItem();
       if (held != null) {
         GameRegistry.UniqueIdentifier id = null;
-        if (BlockOrItem.isBlock(held.itemID)) {
+        if (ItemStackUtil.isBlock(held.itemID)) {
           Block block = Block.blocksList[held.itemID];
           if (block == null) {
             return;
           }
           id = GameRegistry.findUniqueIdentifierFor(block);
-        } else if (BlockOrItem.isItem(held.itemID)) {
+        } else if (ItemStackUtil.isItem(held.itemID)) {
           Item item = Item.itemsList[held.itemID];
           if (item == null) {
             return;
@@ -149,7 +149,7 @@ public class OECommand implements ICommand {
         if (oreID != -1) {
           String ore = OreDictionary.getOreName(oreID);
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + ore));
-          ItemStack[] oreStacks = OreDictionaryHelper.getItemStacks(ore);
+          ItemStack[] oreStacks = OreDictionaryUtil.getItemStacks(ore);
           if (oreStacks != null) {
             for (ItemStack stack : oreStacks) {
               sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + stack.getUnlocalizedName() + " (ID:" + stack.itemID + " Meta:" + stack.getItemDamage() + ")"));

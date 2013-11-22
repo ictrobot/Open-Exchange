@@ -1,10 +1,10 @@
-package oe.lib.helper;
+package oe.lib.util;
 
 import java.io.File;
 import net.minecraftforge.common.Configuration;
 import oe.OpenExchange;
 
-public class ConfigHelper {
+public class ConfigUtil {
   // Starting BLock + Item IDs
   static int BlockID = 500;
   static int ItemID = 10000 - 256;

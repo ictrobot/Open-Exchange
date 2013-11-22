@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import oe.item.ItemIDs;
 import oe.lib.Debug;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -16,7 +16,7 @@ public class PlayerInteractHandler {
   
   @ForgeSubscribe
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
-    if (Sided.isClient()) {
+    if (Util.isClient()) {
       if (event.action != Action.RIGHT_CLICK_BLOCK) {
         return;
       }

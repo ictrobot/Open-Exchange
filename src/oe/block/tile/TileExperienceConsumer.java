@@ -14,7 +14,7 @@ import oe.api.OETileInterface;
 import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.helper.ConfigHelper;
+import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileExperienceConsumer extends TileEntity implements OETileInterface {
@@ -23,9 +23,9 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
   
   public TileExperienceConsumer() {
     super();
-    ConfigHelper.load();
-    factor = ConfigHelper.other("QMC", "XP to QMC Factor", 10);
-    ConfigHelper.save();
+    ConfigUtil.load();
+    factor = ConfigUtil.other("QMC", "XP to QMC Factor", 10);
+    ConfigUtil.save();
   }
   
   @Override

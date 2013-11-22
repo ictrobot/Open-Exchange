@@ -14,7 +14,7 @@ import oe.OpenExchange;
 import oe.api.OEGuesser;
 import oe.lib.Debug;
 import oe.lib.Log;
-import oe.lib.util.FakeContainer;
+import oe.lib.misc.FakeContainer;
 import oe.lib.util.ItemStackUtil;
 import oe.lib.util.PlayerUtil;
 import cpw.mods.fml.common.registry.GameRegistry;

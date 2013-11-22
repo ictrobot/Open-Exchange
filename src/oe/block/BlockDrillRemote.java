@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileDrillRemote;
-import oe.lib.helper.Sided;
+import oe.lib.util.Util;
 
 public class BlockDrillRemote extends BlockContainer {
   
@@ -35,7 +35,7 @@ public class BlockDrillRemote extends BlockContainer {
   
   @Override
   public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int i1, float f1, float f2, float f3) {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       TileEntity te = world.getBlockTileEntity(i, j, k);
       if (te == null || !(te instanceof TileDrillRemote) || world.isRemote) {
         return true;
@@ -73,7 +73,7 @@ public class BlockDrillRemote extends BlockContainer {
   }
   
   public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemstack) {
-    if (Sided.isServer()) {
+    if (Util.isServer()) {
       if (world.isAirBlock(x, y + 1, z)) {
         world.setBlock(x, y + 1, z, BlockIDs.drillRemoteReceiver);
       }

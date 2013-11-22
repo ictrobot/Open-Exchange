@@ -6,7 +6,7 @@ import java.io.IOException;
 import oe.item.ItemIDs;
 import oe.lib.Debug;
 import oe.lib.Log;
-import oe.lib.util.QuantumToolBlackList;
+import oe.lib.misc.QuantumToolBlackList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;

@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.lib.misc;
 
 import oe.block.Blocks;
 import net.minecraft.block.Block;
