@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.misc.InWorldQMC;
+import oe.qmc.InWorldQMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileStorage extends TileEntity implements OETileInterface {

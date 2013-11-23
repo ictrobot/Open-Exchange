@@ -50,7 +50,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeQD", "oeBM", "oeQMC", "oeQMCReset" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeQD", "oeBM", "oeQMC", "oeQMCReset", "oeTileInfo" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;

@@ -1,18 +1,17 @@
 package oe.item;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
-import oe.api.OEPipeInterface;
-import oe.api.OETileInterface;
-import oe.api.OE_API;
-import oe.lib.misc.InWorldQMC;
+import oe.lib.Debug;
 import oe.lib.util.Util;
-import oe.qmc.QMC;
 
 public class ItemReader extends Item {
   
@@ -30,19 +29,28 @@ public class ItemReader extends Item {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;
         int z = Minecraft.getMinecraft().objectMouseOver.blockZ;
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        // TODO packet to server
-        if (te != null) {
-          if (OE_API.isOE(te.getClass())) {
-            OETileInterface oe = (OETileInterface) te;
-            player.addChatMessage("\u00A73\u00A7l" + QMC.name + " Reader:\u00A7r\u00A77 " + oe.getQMC() + " " + QMC.name + ", " + oe.getMaxQMC() + " Max " + QMC.name + ", Type: " + oe.getType());
-          } else if (InWorldQMC.isOEPipe(te.getClass())) {
-            OEPipeInterface oe = (OEPipeInterface) te;
-            player.addChatMessage("\u00A73\u00A7l" + QMC.name + " Reader:\u00A7r\u00A77 " + (oe.getMaxQMC() - oe.passThroughLeft()) + " " + QMC.name + ", " + oe.getMaxQMC() + " Max " + QMC.name);
-          }
-        }
+        packet(x, y, z, player);
       }
     }
     return itemStack;
+  }
+  
+  private void packet(int x, int y, int z, EntityPlayer tmpplayer) {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+    DataOutputStream outputStream = new DataOutputStream(bos);
+    try {
+      outputStream.writeInt(x);
+      outputStream.writeInt(y);
+      outputStream.writeInt(z);
+    } catch (Exception e) {
+      Debug.handleException(e);
+    }
+    
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+    packet.channel = "oeTileInfo";
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+    EntityClientPlayerMP player = (EntityClientPlayerMP) tmpplayer;
+    player.sendQueue.addToSendQueue(packet);
   }
 }

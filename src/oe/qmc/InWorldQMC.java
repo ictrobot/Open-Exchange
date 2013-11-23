@@ -1,10 +1,11 @@
-package oe.lib.misc;
+package oe.qmc;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.OEPipeInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.lib.misc.BlockLocation;
 import oe.lib.util.WorldUtil;
 
 public class InWorldQMC {
@@ -29,6 +30,8 @@ public class InWorldQMC {
     }
   }
   
+  public static final double factor = 32;
+  
   /**
    * Provide other blocks with QMC, Coords are for the block providing
    * 
@@ -42,16 +45,25 @@ public class InWorldQMC {
     if (qmc == 0) {
       return 0;
     }
+    int srcTier = 0;
+    TileEntity srcTile = world.getBlockTileEntity(X, Y, Z);
+    if (srcTile != null && isOETile(srcTile.getClass())) {
+      OETileInterface oe = (OETileInterface) srcTile;
+      srcTier = oe.getTier();
+    } else {
+      return qmc;
+    }
     double qmcLeftOver = qmc;
-    for (Path p : getPaths(X, Y, Z, world)) {
+    double qmcCanTransfer = srcTier * factor;
+    Path[] paths = getPaths(X, Y, Z, world);
+    for (Path p : paths) {
       TileEntity tile = world.getBlockTileEntity(p.block.x, p.block.y, p.block.z);
-      if (tile != null) {
-        if (isOETile(tile.getClass())) {
+      if (!p.block.equals(new BlockLocation(X, Y, Z))) {
+        if (tile != null && isOETile(tile.getClass())) {
           OETileInterface oe = (OETileInterface) tile;
           if (oe.getType() == OEType.Consumer || oe.getType() == OEType.Storage) {
-            int tier = oe.getTier();
             double canHandle = oe.getMaxQMC() - oe.getQMC();
-            double maxPipeTransfer = tier * 10;
+            double maxPipeTransfer = qmcCanTransfer;
             for (BlockLocation pipeLoc : p.pipes) {
               TileEntity tilePipe = world.getBlockTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
               if (tilePipe != null) {
@@ -72,6 +84,7 @@ public class InWorldQMC {
             }
             oe.increaseQMC(amount);
             qmcLeftOver = qmcLeftOver - amount;
+            qmcCanTransfer = qmcCanTransfer - amount;
             for (BlockLocation pipeLoc : p.pipes) {
               TileEntity tilePipe = world.getBlockTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
               if (tilePipe != null) {

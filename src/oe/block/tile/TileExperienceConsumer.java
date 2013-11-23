@@ -13,8 +13,8 @@ import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
-import oe.lib.misc.InWorldQMC;
 import oe.lib.util.ConfigUtil;
+import oe.qmc.InWorldQMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileExperienceConsumer extends TileEntity implements OETileInterface {
