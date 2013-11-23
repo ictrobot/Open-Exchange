@@ -36,7 +36,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   
   @Override
   public void updateEntity() {
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int i = 1; i <= 4; i++) {
@@ -72,7 +72,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
         }
       }
     } else {
-      double per = (double) stored / (double) getMaxQMC();
+      double per = stored / getMaxQMC();
       per = 100 * per;
       this.percent = (int) per;
       return;
@@ -181,7 +181,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
     if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
       return false;
     }
-    return entityplayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
+    return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
   }
   
   @Override
@@ -194,6 +194,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
     return false;
   }
   
+  @Override
   public ItemStack getStackInSlotOnClosing(int par1) {
     if (this.chestContents[par1] != null) {
       ItemStack var2 = this.chestContents[par1];

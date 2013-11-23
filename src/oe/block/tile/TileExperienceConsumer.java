@@ -44,7 +44,7 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
     Block block = Block.blocksList[worldObj.getBlockId(xCoord, yCoord, zCoord)];
     AxisAlignedBB boundingBox = block.getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord);
     int radius = 2;
-    List<EntityXPOrb> list = (List<EntityXPOrb>) worldObj.getEntitiesWithinAABB((Class<?>) EntityXPOrb.class, boundingBox.expand(radius, radius, radius));
+    List<EntityXPOrb> list = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, boundingBox.expand(radius, radius, radius));
     for (EntityXPOrb xp : list) {
       if (xp.xpOrbAge >= 20) {
         increaseQMC(xp.getXpValue() * factor);

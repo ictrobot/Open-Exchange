@@ -3,15 +3,15 @@ package oe.network.packet;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import oe.OpenExchange;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.util.ConfigUtil;
 import oe.qmc.QMC;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.Player;
 
 public class QMCSynchronizationPacket {

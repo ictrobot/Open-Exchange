@@ -27,6 +27,7 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
     setUnlocalizedName("BlockDrillRemoteReceiver");
   }
   
+  @Override
   public TileEntity createNewTileEntity(World par1World) {
     TileDrillRemoteReceiver drill = new TileDrillRemoteReceiver();
     return drill;
@@ -34,7 +35,7 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
   
   @Override
   public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int i1, float f1, float f2, float f3) {
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       TileEntity te = world.getBlockTileEntity(i, j, k);
       if (te == null || !(te instanceof TileDrillRemoteReceiver) || world.isRemote) {
         return true;
@@ -46,6 +47,7 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
     return true;
   }
   
+  @Override
   public int quantityDropped(Random rand) {
     return 0;
   }
@@ -53,12 +55,14 @@ public class BlockDrillRemoteReceiver extends BlockContainer {
   @SideOnly(Side.CLIENT)
   private Icon[] icons;
   
+  @Override
   @SideOnly(Side.CLIENT)
   public void registerIcons(IconRegister par1IconRegister) {
     icons = new Icon[1];
     icons[0] = par1IconRegister.registerIcon(Blocks.Texture("Drill_Side"));
   }
   
+  @Override
   @SideOnly(Side.CLIENT)
   public Icon getIcon(int par1, int par2) {
     return icons[0];

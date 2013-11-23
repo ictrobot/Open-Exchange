@@ -20,6 +20,7 @@ public class BlockPipe extends BlockContainer {
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
+  @Override
   public TileEntity createNewTileEntity(World par1World) {
     TilePipe pipe = new TilePipe();
     return pipe;

@@ -22,9 +22,10 @@ public class ItemRepair extends Item implements OEItemInterface {
     setUnlocalizedName("ItemRepair");
   }
   
+  @Override
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemstack);
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       if (itemstack.getTagCompound().getBoolean("Enabled")) {
         if (entity instanceof EntityPlayer) {
           EntityPlayer player = (EntityPlayer) entity;
@@ -54,6 +55,7 @@ public class ItemRepair extends Item implements OEItemInterface {
     }
   }
   
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
     if (itemStack.getTagCompound() != null) {
@@ -66,9 +68,10 @@ public class ItemRepair extends Item implements OEItemInterface {
     }
   }
   
+  @Override
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
     NBTTagCompound tag = itemStack.getTagCompound();
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       if (tag.getBoolean("Enabled")) {
         tag.setBoolean("Enabled", false);
         player.addChatMessage("\u00A73\u00A7lRepair:\u00A7r\u00A77 Disabled");

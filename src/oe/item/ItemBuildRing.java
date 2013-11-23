@@ -23,9 +23,10 @@ public class ItemBuildRing extends Item implements OEItemInterface {
     setUnlocalizedName("ItemBuildRing");
   }
   
+  @Override
   public void onUpdate(ItemStack itemStack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemStack);
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       if (itemStack.getTagCompound().getBoolean("Enabled")) {
         if (entity instanceof EntityPlayer) {
           EntityPlayer player = (EntityPlayer) entity;
@@ -55,6 +56,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
     }
   }
   
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
     if (itemStack.getTagCompound() != null) {
@@ -67,9 +69,10 @@ public class ItemBuildRing extends Item implements OEItemInterface {
     }
   }
   
+  @Override
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
     NBTTagCompound tag = itemStack.getTagCompound();
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       if (tag.getBoolean("Enabled")) {
         tag.setBoolean("Enabled", false);
         player.addChatMessage("\u00A73\u00A7lBuilder's Ring:\u00A7r\u00A77 Disabled");

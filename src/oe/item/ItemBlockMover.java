@@ -22,10 +22,12 @@ public class ItemBlockMover extends Item implements OEItemInterface {
     setMaxStackSize(1);
   }
   
+  @Override
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemstack);
   }
   
+  @Override
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
     return itemStack;
   }
@@ -36,6 +38,7 @@ public class ItemBlockMover extends Item implements OEItemInterface {
     }
   }
   
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
     if (itemStack.getTagCompound() != null) {

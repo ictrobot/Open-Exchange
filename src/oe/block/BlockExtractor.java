@@ -26,6 +26,7 @@ public class BlockExtractor extends BlockContainer {
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
+  @Override
   public TileEntity createNewTileEntity(World par1World) {
     TileExtractor tileextractor = new TileExtractor();
     return tileextractor;
@@ -45,6 +46,7 @@ public class BlockExtractor extends BlockContainer {
   @SideOnly(Side.CLIENT)
   private Icon[] icons;
   
+  @Override
   @SideOnly(Side.CLIENT)
   public void registerIcons(IconRegister par1IconRegister) {
     icons = new Icon[4];
@@ -54,6 +56,7 @@ public class BlockExtractor extends BlockContainer {
     icons[3] = par1IconRegister.registerIcon(Blocks.Texture("Extractor_Side_Spin"));
   }
   
+  @Override
   @SideOnly(Side.CLIENT)
   public Icon getIcon(int par1, int par2) {
     switch (par1) {

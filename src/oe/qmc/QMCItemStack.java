@@ -1,15 +1,15 @@
 package oe.qmc;
 
-import oe.lib.util.FluidUtil;
-import oe.lib.util.ItemStackUtil;
-import oe.lib.util.OreDictionaryUtil;
-import oe.qmc.QMCFluid.FluidItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.lib.util.FluidUtil;
+import oe.lib.util.ItemStackUtil;
+import oe.lib.util.OreDictionaryUtil;
+import oe.qmc.QMCFluid.FluidItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class QMCItemStack {
   public static enum Type {
@@ -63,23 +63,13 @@ public class QMCItemStack {
       }
     }
     // Other Itemstacks
-    boolean noNBTItemStack = ((ItemStack) o).stackTagCompound == null;
     if (o instanceof ItemStack) {
       ItemStack itemstack = (ItemStack) o;
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
         if (check.type != Type.OreDictionary) {
           if (check.itemstack.itemID == ((ItemStack) o).itemID) {
-            boolean noNBTCheck = check.itemstack.stackTagCompound == null;
-            boolean sameNBT = false;
-            if (noNBTItemStack && noNBTCheck) {
-              sameNBT = true;
-            } else if ((!noNBTCheck && noNBTItemStack) || (noNBTCheck && !noNBTItemStack)) {
-              sameNBT = false;
-            } else {
-              sameNBT = ((ItemStack) o).stackTagCompound.equals(itemstack.stackTagCompound);
-            }
-            if (sameNBT) {
+            if (ItemStackUtil.equalsNBT((ItemStack) o, check.itemstack)) {
               if (check.itemstack.getItemDamage() == ((ItemStack) o).getItemDamage()) {
                 return new Double(check.QMC);
               } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {
@@ -214,7 +204,7 @@ public class QMCItemStack {
         Data check = data[i];
         if (check.type != Type.OreDictionary) {
           if (check.itemstack.itemID == ((ItemStack) o).itemID) {
-            if ((((ItemStack) o).stackTagCompound == null && check.itemstack.stackTagCompound == null) || (((ItemStack) o).stackTagCompound == itemstack.stackTagCompound)) {
+            if (ItemStackUtil.equalsNBT((ItemStack) o, check.itemstack)) {
               if (check.itemstack.getItemDamage() == ((ItemStack) o).getItemDamage()) {
                 return i;
               } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {

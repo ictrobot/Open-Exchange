@@ -43,7 +43,7 @@ public class TileDrill extends TileEntity implements OETileInterface {
   }
   
   private void drill() {
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       currTicks++;
       if (getQMC() < mineCost) {
         return;

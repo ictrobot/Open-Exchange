@@ -36,7 +36,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public void updateEntity() {
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int slot = 0; slot <= 8; slot++) {
           if (getStackInSlot(slot) != null) {
@@ -190,7 +190,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
     if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
       return false;
     }
-    return entityplayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
+    return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
   }
   
   @Override
@@ -203,6 +203,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
     return false;
   }
   
+  @Override
   public ItemStack getStackInSlotOnClosing(int par1) {
     if (this.chestContents[par1] != null) {
       ItemStack var2 = this.chestContents[par1];

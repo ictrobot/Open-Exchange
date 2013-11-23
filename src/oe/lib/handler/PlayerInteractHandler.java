@@ -2,21 +2,21 @@ package oe.lib.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import oe.item.ItemIDs;
-import oe.lib.Debug;
-import oe.lib.util.Util;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import oe.item.ItemIDs;
+import oe.lib.Debug;
+import oe.lib.util.Util;
 
 public class PlayerInteractHandler {
   
   @ForgeSubscribe
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
-    if (Util.isClient()) {
+    if (Util.isClientSide()) {
       if (event.action != Action.RIGHT_CLICK_BLOCK) {
         return;
       }

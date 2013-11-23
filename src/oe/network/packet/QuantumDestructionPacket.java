@@ -3,11 +3,6 @@ package oe.network.packet;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import oe.api.OEItemInterface;
-import oe.api.OE_API;
-import oe.lib.Debug;
-import oe.lib.misc.QuantumToolBlackList;
-import oe.lib.util.ConfigUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -15,6 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
+import oe.api.OEItemInterface;
+import oe.api.OE_API;
+import oe.lib.Debug;
+import oe.lib.misc.QuantumToolBlackList;
+import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.Player;
 
 public class QuantumDestructionPacket {

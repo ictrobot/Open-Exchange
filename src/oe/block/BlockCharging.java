@@ -26,6 +26,7 @@ public class BlockCharging extends BlockContainer {
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
+  @Override
   public TileEntity createNewTileEntity(World par1World) {
     TileCharging tilecharging = new TileCharging();
     return tilecharging;
@@ -45,6 +46,7 @@ public class BlockCharging extends BlockContainer {
   @SideOnly(Side.CLIENT)
   private Icon[] icons;
   
+  @Override
   @SideOnly(Side.CLIENT)
   public void registerIcons(IconRegister par1IconRegister) {
     icons = new Icon[3];
@@ -53,6 +55,7 @@ public class BlockCharging extends BlockContainer {
     icons[2] = par1IconRegister.registerIcon(Blocks.Texture("Charging_Side"));
   }
   
+  @Override
   @SideOnly(Side.CLIENT)
   public Icon getIcon(int par1, int par2) {
     switch (par1) {

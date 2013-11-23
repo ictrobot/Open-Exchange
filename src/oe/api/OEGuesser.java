@@ -1,7 +1,7 @@
 package oe.api;
 
-import oe.qmc.guess.Guess;
 import net.minecraft.item.ItemStack;
+import oe.qmc.guess.Guess;
 
 public class OEGuesser {
   /*

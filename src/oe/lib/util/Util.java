@@ -1,16 +1,21 @@
 package oe.lib.util;
 
+import oe.OpenExchange;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class Util {
   
-  public static boolean isServer() {
+  public static boolean isServerSide() {
     return getSide().isServer();
   }
   
-  public static boolean isClient() {
+  public static boolean isClientSide() {
     return getSide().isClient();
+  }
+  
+  public static boolean isClient() {
+    return OpenExchange.proxy.isClient();
   }
   
   public static Side getSide() {

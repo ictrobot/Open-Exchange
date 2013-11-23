@@ -1,6 +1,5 @@
 package oe.lib.misc;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
@@ -11,6 +10,7 @@ import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class FakePlayer extends EntityPlayerMP {
   public FakePlayer(World world, String name) {
@@ -20,10 +20,12 @@ public class FakePlayer extends EntityPlayerMP {
   public void sendChatToPlayer(String s) {
   }
   
+  @Override
   public boolean canCommandSenderUseCommand(int i, String s) {
     return false;
   }
   
+  @Override
   public ChunkCoordinates getPlayerCoordinates() {
     return new ChunkCoordinates(0, 0, 0);
   }
@@ -32,6 +34,7 @@ public class FakePlayer extends EntityPlayerMP {
   public void sendChatToPlayer(ChatMessageComponent chatmessagecomponent) {
   }
   
+  @Override
   public void addStat(StatBase par1StatBase, int par2) {
   }
   

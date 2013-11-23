@@ -21,8 +21,9 @@ public class ItemReader extends Item {
     setUnlocalizedName("ItemReader");
   }
   
+  @Override
   public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    if (Util.isClient()) {
+    if (Util.isClientSide()) {
       if (Minecraft.getMinecraft().objectMouseOver != null) {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;

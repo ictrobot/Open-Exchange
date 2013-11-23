@@ -14,8 +14,9 @@ public class Server {
   }
   
   public void resetPlayerInAirTime(EntityPlayer player) {
-    if (!(player instanceof EntityPlayerMP))
+    if (!(player instanceof EntityPlayerMP)) {
       return;
+    }
     ((EntityPlayerMP) player).playerNetServerHandler.ticksForFloatKick = 0;
   }
   

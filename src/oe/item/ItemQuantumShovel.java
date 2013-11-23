@@ -32,14 +32,17 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
     setNoRepair();
   }
   
+  @Override
   public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
     return false;
   }
   
+  @Override
   public void onUpdate(ItemStack itemstack, World world, Entity entity, int par4, boolean par5) {
     checkNBT(itemstack);
   }
   
+  @Override
   public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLivingBase par7EntityLivingBase) {
     decreaseQMC(1, par1ItemStack);
     return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, par7EntityLivingBase);
@@ -52,6 +55,7 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
     }
   }
   
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
     if (itemStack.getTagCompound() != null) {
@@ -59,8 +63,9 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
     }
   }
   
+  @Override
   public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
-    if (Util.isClient()) {
+    if (Util.isClientSide()) {
       if (Minecraft.getMinecraft().objectMouseOver != null) {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;

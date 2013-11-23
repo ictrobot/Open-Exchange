@@ -25,6 +25,7 @@ public class BlockExperienceConsumer extends BlockContainer {
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
+  @Override
   public TileEntity createNewTileEntity(World par1World) {
     TileExperienceConsumer storage = new TileExperienceConsumer();
     return storage;
@@ -45,12 +46,14 @@ public class BlockExperienceConsumer extends BlockContainer {
   @SideOnly(Side.CLIENT)
   private Icon[] icons;
   
+  @Override
   @SideOnly(Side.CLIENT)
   public void registerIcons(IconRegister par1IconRegister) {
     icons = new Icon[1];
     icons[0] = par1IconRegister.registerIcon(Blocks.Texture("ExperienceConsumer"));
   }
   
+  @Override
   @SideOnly(Side.CLIENT)
   public Icon getIcon(int par1, int par2) {
     return icons[0];

@@ -3,17 +3,17 @@ package oe.network.packet;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import oe.item.ItemIDs;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.misc.QuantumToolBlackList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.nbt.NBTTagCompound;
+import oe.item.ItemIDs;
+import oe.lib.Debug;
+import oe.lib.Log;
+import oe.lib.misc.QuantumToolBlackList;
 import cpw.mods.fml.common.network.Player;
 
 public class BlockMoverPacket {

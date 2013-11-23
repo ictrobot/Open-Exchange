@@ -89,4 +89,29 @@ public class ItemStackUtil {
     }
     return true;
   }
+  
+  public static boolean equals(ItemStack itemstack1, ItemStack itemstack2) {
+    if (itemstack1 == null || itemstack2 == null) {
+      return false;
+    }
+    boolean id = itemstack1.itemID == itemstack2.itemID;
+    boolean meta = itemstack1.getItemDamage() == itemstack2.getItemDamage();
+    boolean nbt = equalsNBT(itemstack1, itemstack2);
+    if (id && meta && nbt) {
+      return true;
+    }
+    return false;
+  }
+  
+  public static boolean equalsNBT(ItemStack itemstack1, ItemStack itemstack2) {
+    boolean noNBT1 = itemstack1.stackTagCompound == null;
+    boolean noNBT2 = itemstack2.stackTagCompound == null;
+    if (noNBT1 && noNBT2) {
+      return true;
+    } else if ((!noNBT1 && noNBT2) || (noNBT1 && !noNBT2)) {
+      return false;
+    } else {
+      return itemstack1.stackTagCompound.equals(itemstack2.stackTagCompound);
+    }
+  }
 }

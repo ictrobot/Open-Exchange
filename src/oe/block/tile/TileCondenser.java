@@ -45,7 +45,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   @Override
   public void updateEntity() {
     updateDifferent();
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         if (prevStored != stored) {
@@ -99,7 +99,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         target.stackSize = 1;
         if (QMC.hasQMC(target)) {
           double V = QMC.getQMC(target);
-          double per = (double) stored / (double) V;
+          double per = stored / V;
           per = 100 * per;
           this.percent = (int) per;
           return;
@@ -260,7 +260,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
       return false;
     }
-    return entityplayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
+    return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
   }
   
   private int ValueSlot() {
@@ -288,6 +288,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     return false;
   }
   
+  @Override
   public ItemStack getStackInSlotOnClosing(int par1) {
     if (this.chestContents[par1] != null) {
       ItemStack var2 = this.chestContents[par1];

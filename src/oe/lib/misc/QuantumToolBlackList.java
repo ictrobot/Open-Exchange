@@ -1,7 +1,7 @@
 package oe.lib.misc;
 
-import oe.block.Blocks;
 import net.minecraft.block.Block;
+import oe.block.Blocks;
 
 public class QuantumToolBlackList {
   private static Block[] blocks = new Block[0];

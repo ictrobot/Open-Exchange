@@ -37,7 +37,7 @@ public class TileDrillRemote extends TileEntity {
   }
   
   private void drill() {
-    if (Util.isServer()) {
+    if (Util.isServerSide()) {
       RemoteDrillData.setLocationDrill(RemoteID, new Location(xCoord, yCoord, zCoord, worldObj.provider.dimensionId));
       currTicks++;
       if (RemoteDrillData.getQMC(RemoteID) < RemoteDrillData.mineCost || !RemoteDrillData.isReady(RemoteID)) {

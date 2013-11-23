@@ -1,10 +1,10 @@
 package oe.qmc;
 
-import net.minecraftforge.fluids.Fluid;
-import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class QMCFluid {
   
@@ -113,7 +113,7 @@ public class QMCFluid {
     if (o instanceof Fluid) {
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
-        if (check.fluid.equals((Fluid) o)) {
+        if (check.fluid.equals(o)) {
           return i;
         }
       }
