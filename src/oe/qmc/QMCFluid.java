@@ -35,9 +35,9 @@ public class QMCFluid {
   public static Double getQMC(Object o) {
     if (o instanceof FluidItemStack) {
       FluidItemStack f = (FluidItemStack) o;
-      if (f.containerQMC >= 0) {
+      if (f.containerQMC > 0) {
         double fluidQMC = getQMC(f.fluid);
-        if (fluidQMC >= 0) {
+        if (fluidQMC > 0) {
           return f.containerQMC + fluidQMC;
         }
       }

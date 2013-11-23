@@ -39,13 +39,14 @@ public class Crafting extends OEGuesser {
         IRecipe recipe = (IRecipe) recipeObject;
         ItemStack output = recipe.getRecipeOutput();
         if (output != null) {
-          ItemStack[] input = getCraftingInputs(recipe);
+          ItemStack[] input = getInputs(recipe);
           if (input != null) {
-            int id = output.itemID;
-            increaseCrafting(id);
-            ItemStack[] returned = afterCrafting(recipe, input, output);
-            crafting[id][crafting[id].length - 1] = new Data(output, input, returned);
-            recipes++;
+            ItemStack[] returned = getReturned(recipe, input, output);
+            if (returned != null) {
+              increaseData(output.itemID);
+              crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
+              recipes++;
+            }
           }
         }
       }
@@ -58,20 +59,11 @@ public class Crafting extends OEGuesser {
       return null;
     }
     int id = itemstack.itemID;
-    Data[] data = new Data[0];
-    for (Data gd : crafting[id]) {
-      if (itemstack.getItemDamage() == gd.output.getItemDamage()) {
-        Data[] tmp = new Data[data.length + 1];
-        System.arraycopy(data, 0, tmp, 0, data.length);
-        data = tmp;
-        data[data.length - 1] = gd;
-      }
-    }
-    if (data.length > 0) {
-      for (Data gd : data) {
+    for (Data d : crafting[id]) {
+      if (itemstack.getItemDamage() == d.output.getItemDamage()) {
         double value = 0;
-        for (int i = 0; i < gd.input.length; i++) {
-          ItemStack stack = gd.input[i];
+        for (int i = 0; i < d.input.length; i++) {
+          ItemStack stack = d.input[i];
           if (stack != null) {
             double v = checkQMC(stack);
             if (v == -1) {
@@ -81,8 +73,8 @@ public class Crafting extends OEGuesser {
             }
           }
         }
-        for (int i = 0; i < gd.returned.length; i++) {
-          ItemStack stack = gd.returned[i];
+        for (int i = 0; i < d.returned.length; i++) {
+          ItemStack stack = d.returned[i];
           if (stack != null) {
             double v = checkQMC(stack);
             if (v == -1) {
@@ -93,8 +85,8 @@ public class Crafting extends OEGuesser {
           }
         }
         if (value > 0) {
-          value = value / gd.output.stackSize;
-          Guess.Data toReturn = new Guess.Data(gd.input, value, gd.output.stackSize);
+          value = value / d.output.stackSize;
+          Guess.Data toReturn = new Guess.Data(d.input, value, d.output.stackSize);
           return toReturn;
         }
       }
@@ -118,20 +110,17 @@ public class Crafting extends OEGuesser {
   }
   
   public static int[] meta(int ID) {
-    ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];
-    for (Data gd : crafting[ID]) {
-      if (gd.output.itemID == itemstack.itemID) {
-        int[] tmp = new int[data.length + 1];
-        System.arraycopy(data, 0, tmp, 0, data.length);
-        data = tmp;
-        data[data.length - 1] = gd.output.getItemDamage();
-      }
+    for (Data d : crafting[ID]) {
+      int[] tmp = new int[data.length + 1];
+      System.arraycopy(data, 0, tmp, 0, data.length);
+      data = tmp;
+      data[data.length - 1] = d.output.getItemDamage();
     }
     return data;
   }
   
-  private static ItemStack[] getCraftingInputs(IRecipe recipe) {
+  private static ItemStack[] getInputs(IRecipe recipe) {
     int nullNum = 0;
     ItemStack[] inputs = new ItemStack[9];
     if (recipe instanceof ShapedRecipes) {
@@ -197,18 +186,17 @@ public class Crafting extends OEGuesser {
       Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       Debug.printObject(recipe);
-      return null; // Failed to read Recipe
     }
     return inputs;
   }
   
-  private static void increaseCrafting(int id) {
+  private static void increaseData(int id) {
     Data[] tmp = new Data[crafting[id].length + 1];
     System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
     crafting[id] = tmp;
   }
   
-  private static ItemStack[] afterCrafting(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+  private static ItemStack[] getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
     ItemStack[] toReturn = new ItemStack[0];
     try {
       FakeContainer fake = new FakeContainer();
@@ -236,8 +224,7 @@ public class Crafting extends OEGuesser {
         }
       }
     } catch (Exception e) {
-      Log.debug("After Crafting Failed for " + output.toString());
-      Debug.printObject(recipe);
+      Log.debug("Get Returned Failed for " + output.toString() + " IRecipe Type: " + recipe.getClass());
       Debug.handleException(e);
     }
     return toReturn;

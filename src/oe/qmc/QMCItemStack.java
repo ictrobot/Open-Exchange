@@ -53,27 +53,37 @@ public class QMCItemStack {
       ItemStack container = FluidUtil.getEmpty((ItemStack) o);
       if (container != null) {
         double containerQMC = getQMC(container);
-        if (containerQMC >= 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
+        if (containerQMC > 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
           FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));
           double qmc = QMC.getQMC(f);
-          if (qmc >= 0) {
+          if (qmc > 0) {
             return new Double(qmc);
           }
         }
       }
     }
     // Other Itemstacks
+    boolean noNBTItemStack = ((ItemStack) o).stackTagCompound == null;
     if (o instanceof ItemStack) {
       ItemStack itemstack = (ItemStack) o;
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
         if (check.type != Type.OreDictionary) {
           if (check.itemstack.itemID == ((ItemStack) o).itemID) {
-            if ((((ItemStack) o).stackTagCompound == null && check.itemstack.stackTagCompound == null) || (((ItemStack) o).stackTagCompound == itemstack.stackTagCompound)) {
+            boolean noNBTCheck = check.itemstack.stackTagCompound == null;
+            boolean sameNBT = false;
+            if (noNBTItemStack && noNBTCheck) {
+              sameNBT = true;
+            } else if ((!noNBTCheck && noNBTItemStack) || (noNBTCheck && !noNBTItemStack)) {
+              sameNBT = false;
+            } else {
+              sameNBT = ((ItemStack) o).stackTagCompound.equals(itemstack.stackTagCompound);
+            }
+            if (sameNBT) {
               if (check.itemstack.getItemDamage() == ((ItemStack) o).getItemDamage()) {
                 return new Double(check.QMC);
               } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {
-                double q = check.QMC - (check.QMC / check.itemstack.getMaxDamage() * ((ItemStack) o).getItemDamage());
+                double q = check.QMC - (check.QMC / (check.itemstack.getMaxDamage() + 1) * ((ItemStack) o).getItemDamage());
                 if (q > 0) {
                   return new Double(q);
                 }
