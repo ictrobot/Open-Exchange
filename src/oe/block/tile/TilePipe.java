@@ -24,6 +24,7 @@ public class TilePipe extends TileEntity implements OEPipeInterface {
   
   @Override
   public void updateEntity() {
+    onInventoryChanged();
     passThrough = 0;
   }
   

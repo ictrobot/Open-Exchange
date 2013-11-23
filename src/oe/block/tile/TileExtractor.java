@@ -10,9 +10,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
-import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
+import oe.lib.misc.InWorldQMC;
 import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -60,7 +60,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
           sendChangeToClients();
           tmpWorking = true;
         }
-        stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
+        stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
         sendChangeToClients();
       }
       if (tmpWorking != working) {

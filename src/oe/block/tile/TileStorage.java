@@ -7,9 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OETileInterface;
-import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
+import oe.lib.misc.InWorldQMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileStorage extends TileEntity implements OETileInterface {
@@ -27,7 +27,7 @@ public class TileStorage extends TileEntity implements OETileInterface {
   @Override
   public void updateEntity() {
     double pStored = stored;
-    stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
+    stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
     if (pStored != stored) {
       onInventoryChanged();
     }

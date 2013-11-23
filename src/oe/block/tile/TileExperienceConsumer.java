@@ -11,9 +11,9 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
-import oe.api.OE_API;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
+import oe.lib.misc.InWorldQMC;
 import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -37,7 +37,7 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
   @Override
   public void updateEntity() {
     double pStored = stored;
-    stored = OE_API.provide(xCoord, yCoord, zCoord, worldObj, stored);
+    stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
     if (pStored != stored) {
       onInventoryChanged();
     }

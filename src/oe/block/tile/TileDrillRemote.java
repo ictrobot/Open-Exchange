@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.api.lib.Location;
 import oe.block.BlockIDs;
+import oe.lib.misc.Location;
 import oe.lib.misc.RemoteDrillData;
 import oe.lib.util.Util;
 

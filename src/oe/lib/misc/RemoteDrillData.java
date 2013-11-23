@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import oe.OpenExchange;
-import oe.api.lib.Location;
 import oe.lib.util.ConfigUtil;
 
 public class RemoteDrillData {
