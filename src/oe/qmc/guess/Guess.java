@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.api.OE_API;
+import oe.api.OE;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.util.ItemStackUtil;
@@ -41,7 +41,7 @@ public class Guess {
   private static ItemStack stackCheck;
   
   public static boolean add(Class<?> c) {
-    if (OE_API.isOEGuessable(c)) {
+    if (OE.isOEGuessable(c)) {
       increaseClasses();
       classes[classes.length - 1] = c;
       return true;

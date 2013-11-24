@@ -11,7 +11,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
-import oe.api.OE_API;
+import oe.api.OE;
 import oe.lib.Debug;
 import oe.lib.misc.QuantumToolBlackList;
 import oe.lib.util.ConfigUtil;
@@ -46,7 +46,7 @@ public class QuantumDestructionPacket {
   private static void blockBreak(int x, int y, int z, EntityPlayer player) {
     int ID = player.worldObj.getBlockId(x, y, z);
     int meta = player.worldObj.getBlockMetadata(x, y, z);
-    if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {
+    if (OE.isOE(player.getHeldItem().getItem().getClass())) {
       Item item = player.getHeldItem().getItem();
       Float f = item.getStrVsBlock(player.getHeldItem(), Block.blocksList[ID], meta);
       if (f <= 1) {
@@ -69,7 +69,7 @@ public class QuantumDestructionPacket {
         return;
       }
       if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
-        if (OE_API.isOE(player.getHeldItem().getItem().getClass())) {
+        if (OE.isOE(player.getHeldItem().getItem().getClass())) {
           OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
           if (oe.getQMC(player.getHeldItem()) > QMCNeeded) {
             Object[] drops = block.getBlockDropped(player.worldObj, x, y, x, meta, 0).toArray();

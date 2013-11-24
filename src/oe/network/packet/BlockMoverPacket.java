@@ -42,7 +42,7 @@ public class BlockMoverPacket {
         }
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
           Block block = Block.blocksList[world.getBlockId(x, y, z)];
-          if (QuantumToolBlackList.isBlackListed(block)) {
+          if (QuantumToolBlackList.isBlackListed(block) && !player.capabilities.isCreativeMode) {
             return;
           }
           NBTTagCompound nbt = new NBTTagCompound();

@@ -12,7 +12,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
-import oe.api.OE_API;
+import oe.api.OE;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
 import oe.lib.util.Util;
@@ -40,7 +40,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int slot = 0; slot <= 8; slot++) {
           if (getStackInSlot(slot) != null) {
-            if (OE_API.isOE(getStackInSlot(slot).getItem().getClass())) {
+            if (OE.isOE(getStackInSlot(slot).getItem().getClass())) {
               ItemStack itemstack = getStackInSlot(slot);
               OEItemInterface oe = (OEItemInterface) getStackInSlot(slot).getItem();
               for (int i = 1; i < 6; i++) {

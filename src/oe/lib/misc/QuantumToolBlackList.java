@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import oe.block.Blocks;
 
 public class QuantumToolBlackList {
+  
   private static Block[] blocks = new Block[0];
   
   public static void init() {
