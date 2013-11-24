@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.EnumHelper;
 import oe.lib.util.ConfigUtil;
 import oe.lib.util.RegisterUtil;
-import oe.qmc.QMC;
 
 public class Items {
   
@@ -44,21 +43,21 @@ public class Items {
   public static void Register() {
     ConfigUtil.load();
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
-      RegisterUtil.Item(buildRing, "Builder's Ring");
+      RegisterUtil.Item(buildRing);
     }
     if (ConfigUtil.other("item", "readerEnabled", true)) {
-      RegisterUtil.Item(reader, QMC.name + " Reader");
+      RegisterUtil.Item(reader);
     }
     if (ConfigUtil.other("item", "toolsEnabled", true)) {
-      RegisterUtil.Item(pickaxe, "Quantum Pickaxe");
-      RegisterUtil.Item(axe, "Quantum Axe");
-      RegisterUtil.Item(shovel, "Quantum Shovel");
+      RegisterUtil.Item(pickaxe);
+      RegisterUtil.Item(axe);
+      RegisterUtil.Item(shovel);
     }
     if (ConfigUtil.other("item", "repairEnabled", true)) {
-      RegisterUtil.Item(repair, QMC.name + " Repair");
+      RegisterUtil.Item(repair);
     }
     if (ConfigUtil.other("item", "blockManipulatorEnabled", true)) {
-      RegisterUtil.Item(blockMover, "Block Manipulator");
+      RegisterUtil.Item(blockMover);
     }
   }
   

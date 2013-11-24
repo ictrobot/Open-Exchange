@@ -1,10 +1,8 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,7 +14,7 @@ import oe.lib.util.Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockDrillRemote extends BlockContainer {
+public class BlockDrillRemote extends BlockOE {
   
   public BlockDrillRemote(int id) {
     super(id, Material.iron);
@@ -25,7 +23,6 @@ public class BlockDrillRemote extends BlockContainer {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("BlockDrillRemote");
-    setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override

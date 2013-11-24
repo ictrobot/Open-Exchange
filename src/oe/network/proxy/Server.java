@@ -27,4 +27,12 @@ public class Server {
   public boolean isClient() {
     return false;
   }
+  
+  public String getCurrentLanguage() {
+    return null;
+  }
+  
+  public void addLocalization(String key, String string) {
+    
+  }
 }

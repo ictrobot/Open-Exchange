@@ -1,10 +1,8 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -15,7 +13,7 @@ import oe.qmc.QMC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockStorage extends BlockContainer {
+public class BlockStorage extends BlockOE {
   
   public BlockStorage(int id) {
     super(id, Material.iron);
@@ -24,7 +22,6 @@ public class BlockStorage extends BlockContainer {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("BlockStorage");
-    setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override

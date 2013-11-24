@@ -4,7 +4,6 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -13,7 +12,7 @@ import oe.api.lib.OEType;
 import oe.lib.util.Util;
 import oe.qmc.QMC;
 
-public class ItemRepair extends Item implements OEItemInterface {
+public class ItemRepair extends ItemOE implements OEItemInterface {
   
   public ItemRepair(int id) {
     super(id);

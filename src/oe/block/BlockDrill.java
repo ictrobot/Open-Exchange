@@ -2,10 +2,8 @@ package oe.block;
 
 import java.util.Random;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -13,7 +11,7 @@ import oe.block.tile.TileDrill;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockDrill extends BlockContainer {
+public class BlockDrill extends BlockOE {
   
   public BlockDrill(int id) {
     super(id, Material.iron);
@@ -22,7 +20,6 @@ public class BlockDrill extends BlockContainer {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("BlockDrill");
-    setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override

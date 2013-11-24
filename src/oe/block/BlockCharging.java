@@ -1,10 +1,8 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -14,7 +12,7 @@ import oe.block.tile.TileCharging;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCharging extends BlockContainer {
+public class BlockCharging extends BlockOE {
   
   public BlockCharging(int id) {
     super(id, Material.iron);
@@ -23,7 +21,6 @@ public class BlockCharging extends BlockContainer {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("BlockCharging");
-    setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override

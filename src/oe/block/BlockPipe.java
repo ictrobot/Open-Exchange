@@ -1,14 +1,12 @@
 package oe.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.block.tile.TilePipe;
 
-public class BlockPipe extends BlockContainer {
+public class BlockPipe extends BlockOE {
   
   public BlockPipe(int id) {
     super(id, Material.iron);
@@ -17,7 +15,6 @@ public class BlockPipe extends BlockContainer {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("Pipe");
-    setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override

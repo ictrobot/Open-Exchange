@@ -160,4 +160,9 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   public OEType getType() {
     return OEType.Consumer;
   }
+  
+  @Override
+  public String getItemDisplayName(ItemStack itemstack) {
+    return Util.localize(getUnlocalizedName(itemstack));
+  }
 }

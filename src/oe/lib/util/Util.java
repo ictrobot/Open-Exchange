@@ -1,6 +1,7 @@
 package oe.lib.util;
 
 import oe.OpenExchange;
+import oe.lib.misc.Localization;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
@@ -28,5 +29,9 @@ public class Util {
   
   public static String getDate() {
     return new java.text.SimpleDateFormat("dd,MM,yyyy").format(java.util.Calendar.getInstance().getTime());
+  }
+  
+  public static String localize(String key) {
+    return Localization.get(key);
   }
 }
