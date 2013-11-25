@@ -9,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import oe.lib.Log;
-import oe.lib.util.ConfigUtil;
 import oe.lib.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
 
@@ -25,16 +24,12 @@ public class QMC {
     }
   }
   
-  public static String name = "QMC";
-  public static String nameFull = "Quantum Matter Currency";
+  public static final String name = "QMC";
+  public static final String nameFull = "Quantum Matter Currency";
   public static DecimalFormat formatter = new DecimalFormat("0.00");
   public static Data[] data = new Data[0];
   
   public static void load() {
-    ConfigUtil.load();
-    name = ConfigUtil.other("QMC", "Name", "QMC");
-    nameFull = ConfigUtil.other("QMC", "Stands For", "Quantum Matter Currency");
-    ConfigUtil.save();
     CustomQMCValuesReader.read();
     QMCValues.load();
   }

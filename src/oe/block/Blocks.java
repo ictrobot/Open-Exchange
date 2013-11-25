@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import oe.lib.misc.RemoteDrillData;
 import oe.lib.util.ConfigUtil;
 import oe.lib.util.RegisterUtil;
-import oe.qmc.QMC;
 
 public class Blocks {
   
@@ -52,29 +51,29 @@ public class Blocks {
   public static void Register() {
     ConfigUtil.load();
     if (ConfigUtil.other("block", "condenserEnabled", true)) {
-      RegisterUtil.Block(condenser, QMC.name + " Condenser", "pickaxe", 2);
+      RegisterUtil.Block(condenser, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "chargingEnabled", true)) {
-      RegisterUtil.Block(charging, QMC.name + " Charging Bench", "pickaxe", 2);
+      RegisterUtil.Block(charging, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "extractorEnabled", true)) {
-      RegisterUtil.Block(extractor, QMC.name + " Extractor", "pickaxe", 2);
+      RegisterUtil.Block(extractor, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "storageEnabled", true)) {
-      RegisterUtil.Block(storage, QMC.name + " Storage", "pickaxe", 2);
+      RegisterUtil.Block(storage, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "experienceConsumerEnabled", true)) {
-      RegisterUtil.Block(experienceConsumer, QMC.name + " Experience Consumer", "pickaxe", 2);
+      RegisterUtil.Block(experienceConsumer, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "pipeEnabled", true)) {
-      RegisterUtil.Block(pipe, QMC.name + " Pipe", "pickaxe", 2);
+      RegisterUtil.Block(pipe, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "drillEnabled", true)) {
-      RegisterUtil.Block(drill, QMC.name + " Drill", "pickaxe", 2);
+      RegisterUtil.Block(drill, "pickaxe", 2);
     }
     if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
-      RegisterUtil.Block(drillRemote, QMC.name + " Remote Drill", "pickaxe", 2);
-      RegisterUtil.Block(drillRemoteReceiver, QMC.name + " Remote Drill Receiver", "pickaxe", 2);
+      RegisterUtil.Block(drillRemote, "pickaxe", 2);
+      RegisterUtil.Block(drillRemoteReceiver, "pickaxe", 2);
     }
     ConfigUtil.save();
   }
