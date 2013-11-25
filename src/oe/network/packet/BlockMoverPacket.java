@@ -10,10 +10,12 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import oe.api.OEItemInterface;
 import oe.item.ItemIDs;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.misc.QuantumToolBlackList;
+import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.Player;
 
 public class BlockMoverPacket {
@@ -41,6 +43,14 @@ public class BlockMoverPacket {
           return;
         }
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
+          OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
+          ConfigUtil.load();
+          double cost = ConfigUtil.other("item", "blockManipulatorCost", 128.00);
+          ConfigUtil.save();
+          if (oe.getQMC(player.getHeldItem()) < cost) {
+            return;
+          }
+          oe.decreaseQMC(cost, player.getHeldItem());
           Block block = Block.blocksList[world.getBlockId(x, y, z)];
           if (QuantumToolBlackList.isBlackListed(block) && !player.capabilities.isCreativeMode) {
             return;

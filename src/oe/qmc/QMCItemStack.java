@@ -132,6 +132,14 @@ public class QMCItemStack {
     return true;
   }
   
+  public static Boolean isBlacklisted(Object o) {
+    int r = getReference(o);
+    if (r >= 0 && getQMC(o) == -1) {
+      return true;
+    }
+    return false;
+  }
+  
   public static void updateOreDictionary() {
     for (Data d : data) {
       if (d.type != Type.OreDictionary) {

@@ -77,6 +77,14 @@ public class QMCFluid {
     return true;
   }
   
+  public static Boolean isBlacklisted(Object o) {
+    int r = getReference(o);
+    if (r >= 0 && getQMC(o) == -1) {
+      return true;
+    }
+    return false;
+  }
+  
   public static NBTTagCompound snapshot() {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {

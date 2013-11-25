@@ -123,6 +123,9 @@ public class Guess {
     if (QMC.hasQMC(itemstack)) {
       return QMC.getQMC(itemstack);
     }
+    if (QMC.isBlacklisted(itemstack)) {
+      return -1;
+    }
     recursions++;
     int ore = OreDictionary.getOreID(itemstack);
     // Tries to stop recursions before they happen

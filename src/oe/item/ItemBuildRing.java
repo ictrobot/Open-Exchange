@@ -1,6 +1,5 @@
 package oe.item;
 
-import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,19 +52,6 @@ public class ItemBuildRing extends Item implements OEItemInterface {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
       itemstack.getTagCompound().setDouble("Value", 0);
-    }
-  }
-  
-  @Override
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-    if (itemStack.getTagCompound() != null) {
-      if (itemStack.getTagCompound().getBoolean("Enabled")) {
-        list.add("\u00A77Enabled");
-      } else {
-        list.add("\u00A77Disabled");
-      }
-      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
     }
   }
   

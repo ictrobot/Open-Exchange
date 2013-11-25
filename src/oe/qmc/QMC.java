@@ -94,6 +94,23 @@ public class QMC {
     return false;
   }
   
+  public static boolean isBlacklisted(Object o) {
+    Class<?> c = getHandler(o);
+    if (c == null) {
+      return false;
+    }
+    try {
+      Method m = c.getDeclaredMethod("isBlacklisted", Object.class);
+      Object r = m.invoke(null, o);
+      if (r != null && r instanceof Boolean) {
+        return (Boolean) r;
+      }
+      return true;
+    } catch (Exception e) {
+    }
+    return false;
+  }
+  
   public static int length() {
     int l = 0;
     for (int i = 0; i < data.length; i++) {

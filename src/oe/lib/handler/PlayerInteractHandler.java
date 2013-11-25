@@ -8,6 +8,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import oe.api.OEItemInterface;
 import oe.item.ItemIDs;
 import oe.lib.Debug;
 import oe.lib.util.Util;
@@ -24,7 +25,7 @@ public class PlayerInteractHandler {
       if (player == null) {
         return;
       }
-      if (player.getHeldItem() == null || player.getHeldItem().itemID != ItemIDs.blockMover + 256 || player.getHeldItem().stackTagCompound == null) {
+      if (player.getHeldItem() == null || player.getHeldItem().itemID != ItemIDs.blockMover + 256 || player.getHeldItem().stackTagCompound == null || !(player.getHeldItem().getItem() instanceof OEItemInterface)) {
         return;
       }
       int x = event.x;

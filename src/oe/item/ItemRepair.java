@@ -64,7 +64,6 @@ public class ItemRepair extends Item implements OEItemInterface {
       } else {
         list.add("\u00A77Disabled");
       }
-      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
     }
   }
   

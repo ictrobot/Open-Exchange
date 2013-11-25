@@ -18,6 +18,10 @@ public class OEQMC {
     return false;
   }
   
+  public static Boolean isBlacklisted(Object o) {
+    return false;
+  }
+  
   public static NBTTagCompound snapshot() {
     return null;
   }

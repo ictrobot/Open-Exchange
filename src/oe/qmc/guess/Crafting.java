@@ -1,6 +1,7 @@
 package oe.qmc.guess;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -157,8 +158,13 @@ public class Crafting extends OEGuesser {
         }
         
         if (value != null) {
-          if (value.getClass().isArray()) {
-            Object[] os = (Object[]) value;
+          if (value.getClass().isArray() || value instanceof ArrayList) {
+            Object[] os;
+            if (value instanceof ArrayList) {
+              os = ((ArrayList<?>) value).toArray();
+            } else {
+              os = (Object[]) value;
+            }
             for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
               if (r != null) {

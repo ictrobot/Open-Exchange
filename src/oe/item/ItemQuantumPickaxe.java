@@ -2,7 +2,6 @@ package oe.item;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -19,7 +18,6 @@ import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
 import oe.lib.util.Util;
-import oe.qmc.QMC;
 
 public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
   
@@ -52,14 +50,6 @@ public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
       itemstack.getTagCompound().setDouble("Value", 0);
-    }
-  }
-  
-  @Override
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-    if (itemStack.getTagCompound() != null) {
-      list.add(QMC.name + ": " + itemStack.getTagCompound().getDouble("Value"));
     }
   }
   

@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.api.OEItemInterface;
 import oe.lib.util.FluidUtil;
 import oe.lib.util.ItemStackUtil;
 import oe.lib.util.OreDictionaryUtil;
@@ -165,24 +166,24 @@ public class OECommand implements ICommand {
   private void commandData(ICommandSender sender, String[] arguments) {
     EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
     if (player != null) {
-      Log.info(player.username + " queried the database");
-      sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Data ---"));
       ItemStack held = player.getHeldItem();
       if (held != null) {
+        Log.info(player.username + " queried the database");
+        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Data ---"));
         if (QMC.hasQMC(held)) {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText(QMC.getQMC(held) + " " + QMC.name));
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("Itemstack " + held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
-          int oreID = OreDictionary.getOreID(held);
-          if (oreID != -1) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
-          }
         } else {
           sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held item does not have a value"));
           sender.sendChatToPlayer(ChatMessageComponent.createFromText(held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
-          int oreID = OreDictionary.getOreID(held);
-          if (oreID != -1) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
-          }
+        }
+        if (held.getItem() instanceof OEItemInterface) {
+          OEItemInterface oe = (OEItemInterface) held.getItem();
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Stored " + oe.getQMC(held) + " " + QMC.name + ", Max " + oe.getMaxQMC() + " " + QMC.name));
+        }
+        int oreID = OreDictionary.getOreID(held);
+        if (oreID != -1) {
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
         }
       }
     }
