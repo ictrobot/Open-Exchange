@@ -6,13 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import oe.lib.Debug;
 import oe.lib.util.Util;
 
-public class ItemReader extends ItemOE {
+public class ItemReader extends Item {
   
   public ItemReader(int id) {
     super(id);

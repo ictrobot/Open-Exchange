@@ -2,6 +2,7 @@ package oe.block;
 
 import java.util.Random;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +16,7 @@ import oe.lib.util.Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockDrillRemoteReceiver extends BlockOE {
+public class BlockDrillRemoteReceiver extends BlockContainer {
   
   public BlockDrillRemoteReceiver(int id) {
     super(id, Material.iron);
@@ -24,7 +25,6 @@ public class BlockDrillRemoteReceiver extends BlockOE {
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
     setUnlocalizedName("BlockDrillRemoteReceiver");
-    setCreativeTab(null);
   }
   
   @Override

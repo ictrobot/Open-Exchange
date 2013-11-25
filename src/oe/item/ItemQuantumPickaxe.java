@@ -160,9 +160,4 @@ public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
   public OEType getType() {
     return OEType.Consumer;
   }
-  
-  @Override
-  public String getItemDisplayName(ItemStack itemstack) {
-    return Util.localize(getUnlocalizedName(itemstack));
-  }
 }

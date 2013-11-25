@@ -2,20 +2,24 @@ package oe.item;
 
 import java.util.List;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
 
-public class ItemBlockMover extends ItemOE implements OEItemInterface {
+public class ItemBlockMover extends Item implements OEItemInterface {
   
   public ItemBlockMover(int id) {
     super(id);
     setTextureName(Items.Texture("BlockMover"));
+    setCreativeTab(CreativeTabs.tabTools);
     setUnlocalizedName("ItemBlockMover");
+    setMaxStackSize(1);
   }
   
   @Override

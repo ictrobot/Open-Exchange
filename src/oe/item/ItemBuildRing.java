@@ -1,8 +1,10 @@
 package oe.item;
 
 import java.util.List;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -12,11 +14,12 @@ import oe.lib.util.ItemStackUtil;
 import oe.lib.util.Util;
 import oe.qmc.QMC;
 
-public class ItemBuildRing extends ItemOE implements OEItemInterface {
+public class ItemBuildRing extends Item implements OEItemInterface {
   
   public ItemBuildRing(int id) {
     super(id);
     setTextureName(Items.Texture("BuildRing"));
+    setCreativeTab(CreativeTabs.tabTools);
     setUnlocalizedName("ItemBuildRing");
   }
   
