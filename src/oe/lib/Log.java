@@ -26,7 +26,7 @@ public class Log {
   
   public static void debug(Object o) {
     if (OpenExchange.debug) {
-      output(Level.INFO, "[DEBUG]: " + o.toString());
+      output(Level.INFO, "[DEBUG] " + o.toString());
     }
   }
 }
