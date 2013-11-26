@@ -16,7 +16,7 @@ public class CraftingRecipes {
       GameRegistry.addRecipe(new ItemStack(Items.buildRing), "o o", " e ", "o o", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotIron));
     }
     if (ConfigUtil.other("item", "readerEnabled", true)) {
-      GameRegistry.addRecipe(new ItemStack(Items.reader), "   ", "eoe", "   ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotIron));
+      GameRegistry.addRecipe(new ItemStack(Items.info), "   ", "eoe", "   ", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotIron));
     }
     if (ConfigUtil.other("item", "toolsEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Items.pickaxe), "ttt", " s ", " s ", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
@@ -27,7 +27,7 @@ public class CraftingRecipes {
       GameRegistry.addRecipe(new ItemStack(Items.repair), "ttt", "sss", "sss", 't', new ItemStack(Block.obsidian), 's', new ItemStack(Item.ingotIron));
     }
     if (ConfigUtil.other("item", "blockManipulatorEnabled", true)) {
-      GameRegistry.addShapelessRecipe(new ItemStack(Items.blockMover), new ItemStack(Block.obsidian), new ItemStack(Item.ingotIron));
+      GameRegistry.addShapelessRecipe(new ItemStack(Items.blockManipulator), new ItemStack(Block.obsidian), new ItemStack(Item.ingotIron));
     }
     // Blocks
     if (ConfigUtil.other("block", "condenserEnabled", true)) {

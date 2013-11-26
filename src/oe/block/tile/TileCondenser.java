@@ -134,7 +134,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public String getInvName() {
-    return "Condenser";
+    return "container." + this.getClass().getSimpleName().substring(4);
   }
   
   @Override

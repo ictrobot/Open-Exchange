@@ -18,11 +18,11 @@ public class BlockCharging extends BlockContainer {
   
   public BlockCharging(int id) {
     super(id, Material.iron);
-    setTextureName(Blocks.Texture("Charging"));
+    setTextureName(Blocks.Texture(this.getClass().getSimpleName().substring(5).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setHardness(3.0F);
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
-    setUnlocalizedName("BlockCharging");
     setCreativeTab(CreativeTabs.tabBlock);
   }
   

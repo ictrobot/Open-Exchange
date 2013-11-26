@@ -12,13 +12,13 @@ import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
 
-public class ItemBlockMover extends Item implements OEItemInterface {
+public class ItemBlockManipulator extends Item implements OEItemInterface {
   
-  public ItemBlockMover(int id) {
+  public ItemBlockManipulator(int id) {
     super(id);
-    setTextureName(Items.Texture("BlockMover"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemBlockMover");
     setMaxStackSize(1);
   }
   

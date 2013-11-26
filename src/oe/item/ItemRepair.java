@@ -17,9 +17,10 @@ public class ItemRepair extends Item implements OEItemInterface {
   
   public ItemRepair(int id) {
     super(id);
-    setTextureName(Items.Texture("Repair"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemRepair");
+    setMaxStackSize(1);
   }
   
   @Override

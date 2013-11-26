@@ -99,7 +99,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public String getInvName() {
-    return "Charging";
+    return "container." + this.getClass().getSimpleName().substring(4);
   }
   
   @Override

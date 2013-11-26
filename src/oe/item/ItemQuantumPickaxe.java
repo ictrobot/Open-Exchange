@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,11 +24,15 @@ public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
   
   public ItemQuantumPickaxe(int id) {
     super(id, Items.quantum);
-    setTextureName(Items.Texture("QuantumPickaxe"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemQuantumPickaxe");
     setMaxDamage(0);
     setNoRepair();
+  }
+  
+  public EnumRarity getRarity(ItemStack par1ItemStack) {
+    return EnumRarity.rare;
   }
   
   @Override

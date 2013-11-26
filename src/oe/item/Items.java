@@ -9,12 +9,12 @@ import oe.lib.util.RegisterUtil;
 public class Items {
   
   public static Item buildRing;
-  public static Item reader;
+  public static Item info;
   public static Item pickaxe;
   public static Item shovel;
   public static Item axe;
   public static Item repair;
-  public static Item blockMover;
+  public static Item blockManipulator;
   
   public static EnumToolMaterial quantum = EnumHelper.addToolMaterial("quantum", 3, 0, 8.0F, 3.0F, 10);
   
@@ -23,8 +23,8 @@ public class Items {
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
       buildRing = new ItemBuildRing(ItemIDs.buildRing);
     }
-    if (ConfigUtil.other("item", "readerEnabled", true)) {
-      reader = new ItemReader(ItemIDs.reader);
+    if (ConfigUtil.other("item", "infoEnabled", true)) {
+      info = new ItemInfo(ItemIDs.reader);
     }
     if (ConfigUtil.other("item", "toolsEnabled", true)) {
       pickaxe = new ItemQuantumPickaxe(ItemIDs.pickaxe);
@@ -35,7 +35,7 @@ public class Items {
       repair = new ItemRepair(ItemIDs.repair);
     }
     if (ConfigUtil.other("item", "blockManipulatorEnabled", true)) {
-      blockMover = new ItemBlockMover(ItemIDs.blockMover);
+      blockManipulator = new ItemBlockManipulator(ItemIDs.blockMover);
     }
     ConfigUtil.save();
   }
@@ -45,8 +45,8 @@ public class Items {
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
       RegisterUtil.Item(buildRing);
     }
-    if (ConfigUtil.other("item", "readerEnabled", true)) {
-      RegisterUtil.Item(reader);
+    if (ConfigUtil.other("item", "infoEnabled", true)) {
+      RegisterUtil.Item(info);
     }
     if (ConfigUtil.other("item", "toolsEnabled", true)) {
       RegisterUtil.Item(pickaxe);
@@ -57,7 +57,7 @@ public class Items {
       RegisterUtil.Item(repair);
     }
     if (ConfigUtil.other("item", "blockManipulatorEnabled", true)) {
-      RegisterUtil.Item(blockMover);
+      RegisterUtil.Item(blockManipulator);
     }
   }
   

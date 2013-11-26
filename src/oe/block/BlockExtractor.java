@@ -18,11 +18,11 @@ public class BlockExtractor extends BlockContainer {
   
   public BlockExtractor(int id) {
     super(id, Material.iron);
-    setTextureName(Blocks.Texture("Extractor"));
+    setTextureName(Blocks.Texture(this.getClass().getSimpleName().substring(5).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setHardness(3.0F);
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
-    setUnlocalizedName("BlockExtractor");
     setCreativeTab(CreativeTabs.tabBlock);
   }
   

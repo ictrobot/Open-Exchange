@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,11 +24,15 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   
   public ItemQuantumAxe(int id) {
     super(id, Items.quantum);
-    setTextureName(Items.Texture("QuantumAxe"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemQuantumAxe");
     setMaxDamage(0);
     setNoRepair();
+  }
+  
+  public EnumRarity getRarity(ItemStack par1ItemStack) {
+    return EnumRarity.rare;
   }
   
   @Override

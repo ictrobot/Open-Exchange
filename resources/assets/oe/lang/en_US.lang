@@ -2,12 +2,12 @@
 
 #Items
 item.ItemBuildRing.name=Build Ring
-item.ItemReader.name=QMC Info
+item.ItemInfo.name=QMC Info
 item.ItemQuantumPickaxe.name=Quantum Pickaxe
 item.ItemQuantumAxe.name=Quantum Axe
 item.ItemQuantumShovel.name=Quantum Shovel
 item.ItemRepair.name=QMC Repair
-item.ItemBlockMover.name=Block Manipulator
+item.ItemBlockManipulator.name=Block Manipulator
 
 #Blocks
 tile.BlockCondenser.name=QMC Condenser
@@ -15,7 +15,7 @@ tile.BlockCharging.name=QMC Charging Bench
 tile.BlockExtractor.name=QMC Extractor
 tile.BlockStorage.name=QMC Storage
 tile.BlockExperienceConsumer.name=QMC Experience Consumer
-tile.Pipe.name=QMC Pipe
+tile.BlockPipe.name=QMC Pipe
 tile.BlockDrill.name=QMC Drill
 tile.BlockDrillRemote.name=QMC Remote Drill
 tile.BlockDrillRemoteReceiver.name=QMC Remote Drill Receiver

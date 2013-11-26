@@ -90,7 +90,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   
   @Override
   public String getInvName() {
-    return "Extractor";
+    return "container." + this.getClass().getSimpleName().substring(4);
   }
   
   @Override

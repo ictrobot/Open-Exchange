@@ -13,13 +13,14 @@ import net.minecraft.world.World;
 import oe.lib.Debug;
 import oe.lib.util.Util;
 
-public class ItemReader extends Item {
+public class ItemInfo extends Item {
   
-  public ItemReader(int id) {
+  public ItemInfo(int id) {
     super(id);
-    setTextureName(Items.Texture("Reader"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemReader");
+    setMaxStackSize(1);
   }
   
   @Override

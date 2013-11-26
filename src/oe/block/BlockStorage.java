@@ -3,27 +3,23 @@ package oe.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
 import oe.lib.util.Util;
 import oe.qmc.QMC;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockStorage extends BlockContainer {
   
   public BlockStorage(int id) {
     super(id, Material.iron);
-    setTextureName(Blocks.Texture("Storage"));
+    setTextureName(Blocks.Texture(this.getClass().getSimpleName().substring(5).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setHardness(3.0F);
     setResistance(5.0F);
     setStepSound(Block.soundMetalFootstep);
-    setUnlocalizedName("BlockStorage");
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
@@ -46,21 +42,5 @@ public class BlockStorage extends BlockContainer {
       storage.onClick(player);
     }
     return true;
-  }
-  
-  @SideOnly(Side.CLIENT)
-  private Icon[] icons;
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void registerIcons(IconRegister par1IconRegister) {
-    icons = new Icon[1];
-    icons[0] = par1IconRegister.registerIcon(Blocks.Texture("Storage"));
-  }
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public Icon getIcon(int par1, int par2) {
-    return icons[0];
   }
 }

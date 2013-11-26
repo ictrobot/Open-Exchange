@@ -17,9 +17,10 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   
   public ItemBuildRing(int id) {
     super(id);
-    setTextureName(Items.Texture("BuildRing"));
+    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+    setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
-    setUnlocalizedName("ItemBuildRing");
+    setMaxStackSize(1);
   }
   
   @Override
