@@ -3,15 +3,11 @@ package oe.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import oe.block.tile.TileExperienceConsumer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockExperienceConsumer extends BlockContainer {
   
@@ -41,21 +37,5 @@ public class BlockExperienceConsumer extends BlockContainer {
     experienceConsumer.onClick(player);
     experienceConsumer.onInventoryChanged();
     return true;
-  }
-  
-  @SideOnly(Side.CLIENT)
-  private Icon[] icons;
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void registerIcons(IconRegister par1IconRegister) {
-    icons = new Icon[1];
-    icons[0] = par1IconRegister.registerIcon(Blocks.Texture("ExperienceConsumer"));
-  }
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public Icon getIcon(int par1, int par2) {
-    return icons[0];
   }
 }
