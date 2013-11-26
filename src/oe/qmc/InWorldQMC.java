@@ -94,6 +94,9 @@ public class InWorldQMC {
                 }
               }
             }
+            if (qmcCanTransfer == 0) {
+              break;
+            }
           }
         }
       }
@@ -101,7 +104,7 @@ public class InWorldQMC {
     return qmcLeftOver;
   }
   
-  public static Path[] getPaths(int x, int y, int z, World world) {
+  private static Path[] getPaths(int x, int y, int z, World world) {
     Path[] path = new Path[0];
     for (int i = 0; i < 6; i++) {
       BlockLocation b = WorldUtil.getLocationOnSide(x, y, z, i);
@@ -111,7 +114,33 @@ public class InWorldQMC {
       }
     }
     path = getPaths(x, y, z, world, new PathFinderData(path), new BlockLocation[] {}).paths;
+    path = sortByPipeLength(path);
     return path;
+  }
+  
+  private static Path[] sortByPipeLength(Path[] path) {
+    Path[][] sort = new Path[0][0];
+    for (Path p : path) {
+      int l = p.pipes.length;
+      while (sort.length < l + 1) {
+        Path[][] tmp = new Path[sort.length + 1][0];
+        System.arraycopy(sort, 0, tmp, 0, sort.length);
+        sort = tmp;
+      }
+      Path[] tmp = new Path[sort[l].length + 1];
+      System.arraycopy(sort[l], 0, tmp, 0, sort[l].length);
+      sort[l] = tmp;
+      sort[l][sort[l].length - 1] = p;
+    }
+    Path[] toReturn = new Path[path.length];
+    int i = 0;
+    for (Path[] pSquare : sort) {
+      for (Path p : pSquare) {
+        toReturn[i] = p;
+        i++;
+      }
+    }
+    return toReturn;
   }
   
   private static PathFinderData getPaths(int x, int y, int z, World world, PathFinderData data, BlockLocation[] Pipes) {
@@ -123,8 +152,7 @@ public class InWorldQMC {
         if (isOEPipe(tile.getClass())) {
           if (!WorldUtil.exists(data.checkedPipes, check)) {
             data.checkedPipes = WorldUtil.increaseAdd(data.checkedPipes, check);
-            pipes = WorldUtil.increaseAdd(pipes, check);
-            data = getPaths(check.x, check.y, check.z, world, data, pipes);
+            data = getPaths(check.x, check.y, check.z, world, data, WorldUtil.increaseAdd(pipes, check));
           }
         } else if (isOETile(tile.getClass())) {
           boolean checked = false;
@@ -135,15 +163,20 @@ public class InWorldQMC {
             }
           }
           if (!checked) {
-            Path[] tmp = new Path[data.paths.length + 1];
-            System.arraycopy(data.paths, 0, tmp, 0, data.paths.length);
-            data.paths = tmp;
-            data.paths[data.paths.length - 1] = new Path(check, Pipes);
+            data.paths = addPath(data.paths, check, Pipes);
           }
         }
       }
     }
     return data;
+  }
+  
+  private static Path[] addPath(Path[] path, BlockLocation block, BlockLocation[] pipes) {
+    Path[] tmp = new Path[path.length + 1];
+    System.arraycopy(path, 0, tmp, 0, path.length);
+    path = tmp;
+    path[path.length - 1] = new Path(block, pipes);
+    return path;
   }
   
   /**
@@ -170,13 +203,5 @@ public class InWorldQMC {
       }
     }
     return false;
-  }
-  
-  private static Path[] addPath(Path[] path, BlockLocation block, BlockLocation[] pipes) {
-    Path[] tmp = new Path[path.length + 1];
-    System.arraycopy(path, 0, tmp, 0, path.length);
-    path = tmp;
-    path[path.length - 1] = new Path(block, pipes);
-    return path;
   }
 }
