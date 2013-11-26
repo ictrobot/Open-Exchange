@@ -12,4 +12,4 @@ Contributing
 ------------
 Please use [Eclipse](http://www.eclipse.org/) and the [Eclipse formatter](https://github.com/ictrobot/Open-Exchange/blob/master/Eclipse%20Formatter.xml)
 
-[Credits](/Credits.md)
+[***Credits***](/Credits.md)
