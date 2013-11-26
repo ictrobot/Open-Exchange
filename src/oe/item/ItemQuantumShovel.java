@@ -119,6 +119,7 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
       } else {
         current = current + value;
       }
+      stack.getTagCompound().setDouble("Value", current);
     }
   }
   
