@@ -79,11 +79,14 @@ public class QuantumDestructionPacket {
                 Boolean inv = player.inventory.addItemStackToInventory((ItemStack) o);
                 if (inv && !invSpace) {
                   invSpace = true;
+                  break;
                 }
               }
             }
             if (invSpace) {
-              oe.decreaseQMC(QMCNeeded, player.getHeldItem());
+              if (!player.capabilities.isCreativeMode) {
+                oe.decreaseQMC(QMCNeeded, player.getHeldItem());
+              }
               world.setBlockToAir(x, y, z);
             } else {
               return;

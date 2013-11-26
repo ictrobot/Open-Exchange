@@ -2,6 +2,11 @@ package oe.api;
 
 import java.lang.reflect.Method;
 
+/**
+ * Notice:
+ * All the classes in this package are not needed.
+ * They are just examples for interfacing with OE
+ */
 public class OE {
   
   /**

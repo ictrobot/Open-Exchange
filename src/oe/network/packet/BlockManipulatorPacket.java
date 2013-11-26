@@ -18,7 +18,7 @@ import oe.lib.misc.QuantumToolBlackList;
 import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.Player;
 
-public class BlockMoverPacket {
+public class BlockManipulatorPacket {
   
   public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player Player) {
     DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
@@ -47,10 +47,12 @@ public class BlockMoverPacket {
           ConfigUtil.load();
           double cost = ConfigUtil.other("item", "blockManipulatorCost", 128.00);
           ConfigUtil.save();
-          if (oe.getQMC(player.getHeldItem()) < cost) {
+          if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
             return;
           }
-          oe.decreaseQMC(cost, player.getHeldItem());
+          if (!player.capabilities.isCreativeMode) {
+            oe.decreaseQMC(cost, player.getHeldItem());
+          }
           Block block = Block.blocksList[world.getBlockId(x, y, z)];
           if (QuantumToolBlackList.isBlackListed(block) && !player.capabilities.isCreativeMode) {
             return;

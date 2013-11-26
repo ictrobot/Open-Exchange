@@ -14,7 +14,7 @@ public class PacketHandler implements IPacketHandler {
     } else if (packet.channel.contentEquals("oeQD")) {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeBM")) {
-      BlockMoverPacket.packet(manager, packet, playerEntity);
+      BlockManipulatorPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQMC")) {
       QMCSynchronizationPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQMCReset")) {

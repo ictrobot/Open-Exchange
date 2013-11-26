@@ -46,9 +46,11 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
   }
   
   @Override
-  public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLivingBase par7EntityLivingBase) {
-    decreaseQMC(1, par1ItemStack);
-    return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, par7EntityLivingBase);
+  public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLivingBase entity) {
+    if (!(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)) {
+      decreaseQMC(1, par1ItemStack);
+    }
+    return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, entity);
   }
   
   private void checkNBT(ItemStack itemstack) {
@@ -66,7 +68,6 @@ public class ItemQuantumShovel extends ItemSpade implements OEItemInterface {
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;
         int z = Minecraft.getMinecraft().objectMouseOver.blockZ;
         packet(x, y, z, player);
-        decreaseQMC(1, itemstack);
       }
     }
     return itemstack;
