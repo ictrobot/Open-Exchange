@@ -25,5 +25,9 @@ public class OE_IMC {
     FMLInterModComms.sendMessage("OE", "addQMCItemStack", nbt);
   }
   
-  // TODO QuantumToolBlackList
+  public static void addToolBlacklist(int BlockID) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setInteger("blockID", BlockID);
+    FMLInterModComms.sendMessage("OE", "addQuantumToolBlackList", nbt);
+  }
 }

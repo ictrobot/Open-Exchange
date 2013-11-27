@@ -54,7 +54,7 @@ public class BlockManipulatorPacket {
             oe.decreaseQMC(cost, player.getHeldItem());
           }
           Block block = Block.blocksList[world.getBlockId(x, y, z)];
-          if (QuantumToolBlackList.isBlackListed(block) && !player.capabilities.isCreativeMode) {
+          if (QuantumToolBlackList.isBlackListed(block)) {
             return;
           }
           NBTTagCompound nbt = new NBTTagCompound();

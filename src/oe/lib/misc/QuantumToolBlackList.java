@@ -5,7 +5,7 @@ import oe.block.Blocks;
 
 public class QuantumToolBlackList {
   
-  private static Block[] blocks = new Block[0];
+  private static int[] blockIDs = new int[0];
   
   public static void init() {
     add(Block.bedrock);
@@ -14,15 +14,23 @@ public class QuantumToolBlackList {
   }
   
   public static void add(Block block) {
-    Block[] tmp = new Block[blocks.length + 1];
-    System.arraycopy(blocks, 0, tmp, 0, blocks.length);
-    blocks = tmp;
-    blocks[blocks.length - 1] = block;
+    add(block.blockID);
+  }
+  
+  public static void add(int blockID) {
+    int[] tmp = new int[blockIDs.length + 1];
+    System.arraycopy(blockIDs, 0, tmp, 0, blockIDs.length);
+    blockIDs = tmp;
+    blockIDs[blockIDs.length - 1] = blockID;
   }
   
   public static boolean isBlackListed(Block block) {
-    for (Block block2 : blocks) {
-      if (block2.equals(block)) {
+    return isBlackListed(block.blockID);
+  }
+  
+  public static boolean isBlackListed(int blockID) {
+    for (int id : blockIDs) {
+      if (id == blockID) {
         return true;
       }
     }
