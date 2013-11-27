@@ -122,7 +122,6 @@ public class Crafting extends OEGuesser {
   }
   
   private static ItemStack[] getInputs(IRecipe recipe) {
-    int nullNum = 0;
     ItemStack[] inputs = new ItemStack[9];
     if (recipe instanceof ShapedRecipes) {
       ShapedRecipes shaped = (ShapedRecipes) recipe;
@@ -148,7 +147,18 @@ public class Crafting extends OEGuesser {
       }
     } else {
       Object o = recipe;
-      for (Field field : o.getClass().getDeclaredFields()) {
+      Field[] f = o.getClass().getDeclaredFields();
+      Class<?> c = o.getClass();
+      int times = 0;
+      while (f.length == 0 && c.getSuperclass() != null && !c.getSuperclass().equals(IRecipe.class)) {
+        f = c.getSuperclass().getDeclaredFields();
+        c = c.getSuperclass();
+        times++;
+        if (times == 50) {
+          break;
+        }
+      }
+      for (Field field : f) {
         field.setAccessible(true);
         Object value = null;
         try {
@@ -172,7 +182,10 @@ public class Crafting extends OEGuesser {
                 if (fromObject != null) {
                   inputs[i] = fromObject;
                 } else {
-                  nullNum = 1000;
+                  Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().itemID + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
+                  Log.debug("IRecipe Type: " + recipe.getClass());
+                  Debug.printObject(recipe);
+                  return null;
                 }
               }
             }
@@ -181,6 +194,7 @@ public class Crafting extends OEGuesser {
         }
       }
     }
+    int nullNum = 0;
     for (ItemStack stack : inputs) {
       if (stack == null) {
         nullNum++;
@@ -189,9 +203,10 @@ public class Crafting extends OEGuesser {
       }
     }
     if (nullNum >= inputs.length) {
-      Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().toString() + " (ID: " + recipe.getRecipeOutput().itemID + ")");
+      Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().itemID + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       Debug.printObject(recipe);
+      return null;
     }
     return inputs;
   }

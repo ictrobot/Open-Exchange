@@ -68,7 +68,7 @@ public class QMCValues extends QMC {
     add(Item.enderPearl, 1024);
     add(Item.blazeRod, 512);
     add(Item.emerald, 16384);
-    add(Item.netherQuartz, 512);
+    add(Item.netherQuartz, 256);
     add(Block.cocoaPlant, 24);
     add(Item.flint, 1);
     add(Item.feather, 12);

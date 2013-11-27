@@ -24,6 +24,13 @@ public class ItemStackUtil {
       }
     } else if (o instanceof ArrayList) {
       return getItemStackFromObject(((ArrayList<?>) o).toArray()[0]);
+    } else if (o.getClass().isArray()) {
+      for (Object c : (Object[]) o) {
+        ItemStack stack = getItemStackFromObject(c);
+        if (stack != null) {
+          return stack;
+        }
+      }
     }
     return null;
   }

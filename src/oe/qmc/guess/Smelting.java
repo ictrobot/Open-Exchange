@@ -56,32 +56,17 @@ public class Smelting extends OEGuesser {
     if (itemstack == null) {
       return null;
     }
-    Data[] data = new Data[0];
     for (Data gd : smelting) {
-      if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == gd.output.getItemDamage()) {
-        Data[] tmp = new Data[data.length + 1];
-        System.arraycopy(data, 0, tmp, 0, data.length);
-        data = tmp;
-        data[data.length - 1] = gd;
-      }
-    }
-    if (data.length != 0) {
-      for (Data gd : data) {
-        ItemStack output = gd.output;
-        if (output.getItemDamage() == 32767) {
-          output.setItemDamage(0);
+      if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == itemstack.getItemDamage()) {
+        double value = 0;
+        ItemStack stack = gd.input;
+        if (stack != null) {
+          double v = Guess.check(stack);
+          value = v;
         }
-        if (output.itemID == itemstack.itemID && output.getItemDamage() == itemstack.getItemDamage()) {
-          double value = 0;
-          ItemStack stack = gd.input;
-          if (stack != null) {
-            double v = Guess.check(stack);
-            value = v;
-          }
-          if (value > 0) {
-            Guess.Data toReturn = new Guess.Data(gd.input, value, 1);
-            return toReturn;
-          }
+        if (value > 0) {
+          Guess.Data toReturn = new Guess.Data(gd.input, value, 1);
+          return toReturn;
         }
       }
     }

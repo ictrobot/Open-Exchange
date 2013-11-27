@@ -65,6 +65,7 @@ public class ModIntegration {
     mod("AppliedEnergistics");
     item("AppEngMaterials", 7, 512); // Quartz Dust
     item("AppEngMaterials", 6, 512); // Quartz
+    ore("dustNetherQuartz", 256);
     
     fluid("oil", 128);
     fluid("fuel", 192);
