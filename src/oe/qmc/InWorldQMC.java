@@ -1,5 +1,6 @@
 package oe.qmc;
 
+import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.OEPipeInterface;
@@ -10,7 +11,7 @@ import oe.lib.util.WorldUtil;
 
 public class InWorldQMC {
   
-  private static class Path {
+  public static class Path {
     public BlockLocation block;
     public BlockLocation[] pipes;
     
@@ -104,7 +105,7 @@ public class InWorldQMC {
     return qmcLeftOver;
   }
   
-  private static Path[] getPaths(int x, int y, int z, World world) {
+  public static Path[] getPaths(int x, int y, int z, World world) {
     Path[] path = new Path[0];
     for (int i = 0; i < 6; i++) {
       BlockLocation b = WorldUtil.getLocationOnSide(x, y, z, i);
@@ -114,6 +115,11 @@ public class InWorldQMC {
       }
     }
     path = getPaths(x, y, z, world, new PathFinderData(path), new BlockLocation[] {}).paths;
+    for (Path p : path) {
+      if (p.block.x == x && p.block.y == y && p.block.z == z) {
+        path = ArrayUtils.removeElement(path, p);
+      }
+    }
     path = sortByPipeLength(path);
     return path;
   }

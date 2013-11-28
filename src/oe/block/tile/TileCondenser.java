@@ -444,7 +444,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public OEType getType() {
-    if (chestContents[0] != null) {
+    if (chestContents[0] != null && QMC.hasQMC(chestContents[0])) {
       return OEType.Consumer;
     } else {
       return OEType.None;

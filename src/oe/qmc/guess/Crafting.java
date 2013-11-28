@@ -36,20 +36,24 @@ public class Crafting extends OEGuesser {
     Log.debug("Loading Crafting Guesser");
     int recipes = 0;
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
-      if (recipeObject instanceof IRecipe) {
-        IRecipe recipe = (IRecipe) recipeObject;
-        ItemStack output = recipe.getRecipeOutput();
-        if (output != null) {
-          ItemStack[] input = getInputs(recipe);
-          if (input != null) {
-            ItemStack[] returned = getReturned(recipe, input, output);
-            if (returned != null) {
-              increaseData(output.itemID);
-              crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
-              recipes++;
+      try {
+        if (recipeObject instanceof IRecipe) {
+          IRecipe recipe = (IRecipe) recipeObject;
+          ItemStack output = recipe.getRecipeOutput();
+          if (output != null) {
+            ItemStack[] input = getInputs(recipe);
+            if (input != null) {
+              ItemStack[] returned = getReturned(recipe, input, output);
+              if (returned != null) {
+                increaseData(output.itemID);
+                crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
+                recipes++;
+              }
             }
           }
         }
+      } catch (Exception e) {
+        
       }
     }
     Log.debug("Found " + recipes + " Crafting Recipes");
@@ -169,11 +173,13 @@ public class Crafting extends OEGuesser {
         
         if (value != null) {
           if (value.getClass().isArray() || value instanceof ArrayList) {
-            Object[] os;
+            Object[] os = null;
             if (value instanceof ArrayList) {
               os = ((ArrayList<?>) value).toArray();
-            } else {
+            } else if (value instanceof Object[]) {
               os = (Object[]) value;
+            } else if (value instanceof ItemStack[]) {
+              os = (ItemStack[]) value;
             }
             for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
