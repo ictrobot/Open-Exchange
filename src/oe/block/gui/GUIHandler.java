@@ -15,12 +15,14 @@ public class GUIHandler implements IGuiHandler {
   @Override
   public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
     TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    if (tileEntity instanceof TileCondenser) {
-      return new ContainerCondenser(player.inventory, (TileCondenser) tileEntity);
-    } else if (tileEntity instanceof TileCharging) {
-      return new ContainerCharging(player.inventory, (TileCharging) tileEntity);
-    } else if (tileEntity instanceof TileExtractor) {
-      return new ContainerExtractor(player.inventory, (TileExtractor) tileEntity);
+    if (id == 0) {
+      if (tileEntity instanceof TileCondenser) {
+        return new ContainerCondenser(player.inventory, (TileCondenser) tileEntity);
+      } else if (tileEntity instanceof TileCharging) {
+        return new ContainerCharging(player.inventory, (TileCharging) tileEntity);
+      } else if (tileEntity instanceof TileExtractor) {
+        return new ContainerExtractor(player.inventory, (TileExtractor) tileEntity);
+      }
     }
     return null;
   }
@@ -28,12 +30,14 @@ public class GUIHandler implements IGuiHandler {
   @Override
   public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
     TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    if (tileEntity instanceof TileCondenser) {
-      return new GUICondenser(player.inventory, (TileCondenser) tileEntity);
-    } else if (tileEntity instanceof TileCharging) {
-      return new GUICharging(player.inventory, (TileCharging) tileEntity);
-    } else if (tileEntity instanceof TileExtractor) {
-      return new GUIExtractor(player.inventory, (TileExtractor) tileEntity);
+    if (id == 0) {
+      if (tileEntity instanceof TileCondenser) {
+        return new GUICondenser(player.inventory, (TileCondenser) tileEntity);
+      } else if (tileEntity instanceof TileCharging) {
+        return new GUICharging(player.inventory, (TileCharging) tileEntity);
+      } else if (tileEntity instanceof TileExtractor) {
+        return new GUIExtractor(player.inventory, (TileExtractor) tileEntity);
+      }
     }
     return null;
   }

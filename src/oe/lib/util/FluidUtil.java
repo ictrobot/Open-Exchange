@@ -22,6 +22,9 @@ public class FluidUtil {
   }
   
   public static FluidStack getFluidStack(ItemStack itemstack) {
+    if (itemstack == null) {
+      return null;
+    }
     if (itemstack.getItem() instanceof IFluidContainerItem) {
       IFluidContainerItem f = (IFluidContainerItem) itemstack.getItem();
       FluidStack r = f.getFluid(itemstack);

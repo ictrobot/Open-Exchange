@@ -9,6 +9,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
@@ -17,12 +22,13 @@ import oe.qmc.InWorldQMC;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileExtractor extends TileEntity implements IInventory, OETileInterface {
+public class TileExtractor extends TileEntity implements OETileInterface, IInventory, IFluidHandler {
   public ItemStack[] chestContents;
   public final int size = 27;
   public double stored;
   public int percent = 0; // CLIENT SIDE
-  boolean working = false;
+  private FluidStack fluid;
+  private boolean working = false;
   
   public TileExtractor() {
     super();
@@ -39,6 +45,7 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
     if (Util.isServerSide()) {
       boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
+        // ITEMS
         for (int i = 1; i <= 4; i++) {
           int slot = -1;
           for (int s = 0; s < size; s++) {
@@ -59,6 +66,15 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
           decrStackSize(slot, 1);
           sendChangeToClients();
           tmpWorking = true;
+        }
+        
+        // FLUID
+        if (fluid != null) {
+          double fluidQMC = QMC.getQMC(fluid);
+          if (fluidQMC > 0) {
+            fluid = null;
+            stored = stored + fluidQMC;
+          }
         }
         stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
         sendChangeToClients();
@@ -149,22 +165,28 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
         chestContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
       }
     }
+    if (TagCompound.hasKey("Fluid")) {
+      fluid = FluidStack.loadFluidStackFromNBT(TagCompound.getCompoundTag("Fluid"));
+    }
     stored = TagCompound.getDouble("OE_Stored_Value");
   }
   
   @Override
   public void writeToNBT(NBTTagCompound TagCompound) {
     super.writeToNBT(TagCompound);
-    NBTTagList TagList = new NBTTagList();
+    NBTTagList itemsNBT = new NBTTagList();
     for (int i = 0; i < chestContents.length; i++) {
       if (chestContents[i] != null) {
         NBTTagCompound nbttagcompound1 = new NBTTagCompound();
         nbttagcompound1.setByte("Slot", (byte) i);
         chestContents[i].writeToNBT(nbttagcompound1);
-        TagList.appendTag(nbttagcompound1);
+        itemsNBT.appendTag(nbttagcompound1);
       }
     }
-    TagCompound.setTag("Items", TagList);
+    TagCompound.setTag("Items", itemsNBT);
+    if (fluid != null) {
+      TagCompound.setCompoundTag("Fluid", fluid.writeToNBT(new NBTTagCompound()));
+    }
     TagCompound.setDouble("OE_Stored_Value", stored);
   }
   
@@ -276,5 +298,73 @@ public class TileExtractor extends TileEntity implements IInventory, OETileInter
   @Override
   public OEType getType() {
     return OEType.Producer;
+  }
+  
+  // Fluids
+  private final int capacity = 2048;
+  
+  @Override
+  public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    if (resource == null || QMC.getQMC(resource) < 0) {
+      return 0;
+    }
+    
+    if (!doFill) {
+      if (fluid == null) {
+        return Math.min(capacity, resource.amount);
+      }
+      
+      if (!fluid.isFluidEqual(resource)) {
+        return 0;
+      }
+      
+      return Math.min(capacity - fluid.amount, resource.amount);
+    }
+    
+    if (fluid == null) {
+      fluid = new FluidStack(resource, Math.min(capacity, resource.amount));
+      return fluid.amount;
+    }
+    
+    if (!fluid.isFluidEqual(resource)) {
+      return 0;
+    }
+    int filled = capacity - fluid.amount;
+    
+    if (resource.amount < filled) {
+      fluid.amount += resource.amount;
+      filled = resource.amount;
+    } else {
+      fluid.amount = capacity;
+    }
+    return filled;
+  }
+  
+  @Override
+  public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    return null;
+  }
+  
+  @Override
+  public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    return null;
+  }
+  
+  @Override
+  public boolean canFill(ForgeDirection from, Fluid fluid) {
+    if (fluid != null && QMC.getQMC(fluid) > 0 && this.fluid.fluidID == fluid.getID()) {
+      return true;
+    }
+    return false;
+  }
+  
+  @Override
+  public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    return false;
+  }
+  
+  @Override
+  public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    return new FluidTankInfo[] { new FluidTankInfo(fluid, capacity) };
   }
 }

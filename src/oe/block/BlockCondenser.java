@@ -39,6 +39,10 @@ public class BlockCondenser extends BlockContainer {
       return true;
     }
     te.onInventoryChanged();
+    if (player.isSneaking()) {
+      player.addChatMessage("\u00A73\u00A7lCondenser:\u00A7r\u00A77 " + ((TileCondenser) te).toggleFluidBehaviour());
+      return true;
+    }
     player.openGui(OpenExchange.instance, 0, world, i, j, k);
     return true;
   }

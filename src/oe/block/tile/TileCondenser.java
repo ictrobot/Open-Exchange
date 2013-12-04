@@ -10,15 +10,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.lib.Debug;
 import oe.lib.util.ConfigUtil;
+import oe.lib.util.FluidUtil;
 import oe.lib.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
+public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface, IFluidHandler {
   public ItemStack[] chestContents;
   public final int size = 28;
   public double stored;
@@ -28,6 +34,9 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public int percent = 0; // CLIENT SIDE
   public boolean[] isDifferent = new boolean[size];
   public boolean shouldEat = false;
+  public FluidStack fluidTarget;
+  public FluidStack fluidStored;
+  private boolean fluidBehaviour = true;
   
   public TileCondenser() {
     super();
@@ -35,6 +44,23 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     shouldEat = ConfigUtil.other("block", "Condenser turns items other than the target into QMC", false);
     ConfigUtil.save();
     this.chestContents = new ItemStack[getSizeInventory()];
+  }
+  
+  public String getFluidBehaviour() {
+    if (fluidBehaviour) {
+      return "Pump out Fluids";
+    } else {
+      return "Condense Fluid Containing Item";
+    }
+  }
+  
+  public String toggleFluidBehaviour() {
+    if (fluidBehaviour) {
+      fluidBehaviour = false;
+    } else {
+      fluidBehaviour = true;
+    }
+    return getFluidBehaviour();
   }
   
   @Override
@@ -57,22 +83,41 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
           prevStored = stored;
         }
         for (int i = 1; i <= 4; i++) {
-          if (getStackInSlot(0) != null) {
-            ItemStack target = getStackInSlot(0).copy();
-            target.stackSize = 1;
-            if (QMC.hasQMC(target)) {
-              hasTarget = true;
-              onInventoryChanged();
-              double V = QMC.getQMC(target);
+          fluidTarget = FluidUtil.getFluidStack(getStackInSlot(0));
+          if (fluidTarget != null && fluidBehaviour) {
+            FluidStack toAdd = new FluidStack(fluidTarget.fluidID, 25);
+            if (fluidStored == null || fluidTarget.fluidID == fluidStored.fluidID) {
+              double V = QMC.getQMC(toAdd);
               if (stored >= V) {
-                if (incrTarget()) {
+                if (fluidStored == null || toAdd.amount + fluidStored.amount <= capacity) {
+                  if (fluidStored == null) {
+                    fluidStored = toAdd.copy();
+                  } else {
+                    fluidStored.amount += toAdd.amount;
+                  }
                   stored = stored - V;
                   onInventoryChanged();
                 }
               }
-            } else {
-              hasTarget = false;
-              onInventoryChanged();
+            }
+          } else {
+            if (getStackInSlot(0) != null) {
+              ItemStack target = getStackInSlot(0).copy();
+              target.stackSize = 1;
+              if (QMC.hasQMC(target)) {
+                hasTarget = true;
+                onInventoryChanged();
+                double V = QMC.getQMC(target);
+                if (stored >= V) {
+                  if (incrTarget()) {
+                    stored = stored - V;
+                    onInventoryChanged();
+                  }
+                }
+              } else {
+                hasTarget = false;
+                onInventoryChanged();
+              }
             }
           }
           updateDifferent();
@@ -94,15 +139,20 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         }
       }
     } else {
-      if (getStackInSlot(0) != null) {
-        ItemStack target = getStackInSlot(0).copy();
-        target.stackSize = 1;
-        if (QMC.hasQMC(target)) {
-          double V = QMC.getQMC(target);
-          double per = stored / V;
-          per = 100 * per;
-          this.percent = (int) per;
-          return;
+      fluidTarget = FluidUtil.getFluidStack(getStackInSlot(0));
+      if (fluidTarget != null && fluidBehaviour) {
+        this.percent = 0;
+      } else {
+        if (getStackInSlot(0) != null) {
+          ItemStack target = getStackInSlot(0).copy();
+          target.stackSize = 1;
+          if (QMC.hasQMC(target)) {
+            double V = QMC.getQMC(target);
+            double per = stored / V;
+            per = 100 * per;
+            this.percent = (int) per;
+            return;
+          }
         }
       }
     }
@@ -228,6 +278,10 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         chestContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
       }
     }
+    fluidBehaviour = TagCompound.getBoolean("FluidBehaviour");
+    if (TagCompound.hasKey("Fluid")) {
+      fluidStored = FluidStack.loadFluidStackFromNBT(TagCompound.getCompoundTag("Fluid"));
+    }
     stored = TagCompound.getDouble("OE_Stored_Value");
   }
   
@@ -244,6 +298,10 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       }
     }
     TagCompound.setTag("Items", TagList);
+    TagCompound.setBoolean("FluidBehaviour", fluidBehaviour);
+    if (fluidStored != null) {
+      TagCompound.setCompoundTag("Fluid", fluidStored.writeToNBT(new NBTTagCompound()));
+    }
     TagCompound.setDouble("OE_Stored_Value", stored);
   }
   
@@ -449,5 +507,73 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     } else {
       return OEType.None;
     }
+  }
+  
+  // Fluids
+  private final int capacity = 2048;
+  
+  @Override
+  public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    return 0;
+  }
+  
+  @Override
+  public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    if (fluidStored == null || resource.fluidID != fluidStored.fluidID) {
+      return null;
+    }
+    
+    int drained = resource.amount;
+    if (fluidStored.amount < drained) {
+      drained = fluidStored.amount;
+    }
+    
+    FluidStack stack = new FluidStack(fluidStored.fluidID, drained);
+    if (doDrain) {
+      fluidStored.amount -= drained;
+      if (fluidStored.amount <= 0) {
+        fluidStored = null;
+      }
+    }
+    return stack;
+  }
+  
+  @Override
+  public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    if (fluidStored == null) {
+      return null;
+    }
+    
+    int drained = maxDrain;
+    if (fluidStored.amount < drained) {
+      drained = fluidStored.amount;
+    }
+    
+    FluidStack stack = new FluidStack(fluidStored.fluidID, drained);
+    if (doDrain) {
+      fluidStored.amount -= drained;
+      if (fluidStored.amount <= 0) {
+        fluidStored = null;
+      }
+    }
+    return stack;
+  }
+  
+  @Override
+  public boolean canFill(ForgeDirection from, Fluid fluid) {
+    return false;
+  }
+  
+  @Override
+  public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    if (fluid != null && QMC.getQMC(fluid) > 0 && this.fluidTarget.fluidID == fluid.getID()) {
+      return true;
+    }
+    return false;
+  }
+  
+  @Override
+  public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    return new FluidTankInfo[] { new FluidTankInfo(fluidStored, capacity) };
   }
 }
