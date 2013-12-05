@@ -11,11 +11,11 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
+import oe.core.Debug;
+import oe.core.Log;
+import oe.core.data.QuantumToolBlackList;
+import oe.core.util.ConfigUtil;
 import oe.item.ItemIDs;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.misc.QuantumToolBlackList;
-import oe.lib.util.ConfigUtil;
 import cpw.mods.fml.common.network.Player;
 
 public class BlockManipulatorPacket {

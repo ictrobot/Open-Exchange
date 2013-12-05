@@ -1,4 +1,4 @@
-package oe.lib.misc;
+package oe.core.data;
 
 public class Location {
   public double x;

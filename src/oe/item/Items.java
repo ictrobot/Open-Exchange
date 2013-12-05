@@ -3,8 +3,8 @@ package oe.item;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.EnumHelper;
-import oe.lib.util.ConfigUtil;
-import oe.lib.util.RegisterUtil;
+import oe.core.util.ConfigUtil;
+import oe.core.util.RegisterUtil;
 
 public class Items {
   

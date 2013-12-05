@@ -1,4 +1,4 @@
-package oe.lib.handler;
+package oe.core.handler;
 
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;

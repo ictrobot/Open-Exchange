@@ -10,12 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import oe.api.OE;
 import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
-import oe.api.OE;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.util.Util;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileCharging extends TileEntity implements IInventory, ISidedInventory, OETileInterface {

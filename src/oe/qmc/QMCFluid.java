@@ -33,6 +33,7 @@ public class QMCFluid extends QMCHandler {
   
   private Data[] data = new Data[0];
   
+  @Override
   public Double getQMC(Object o) {
     if (o instanceof FluidItemStack) {
       FluidItemStack f = (FluidItemStack) o;
@@ -56,6 +57,7 @@ public class QMCFluid extends QMCHandler {
     return new Double(-1);
   }
   
+  @Override
   public Boolean add(Object o, Double Value) {
     if (o instanceof Fluid) {
       increase();
@@ -69,6 +71,7 @@ public class QMCFluid extends QMCHandler {
     return false;
   }
   
+  @Override
   public Boolean blacklist(Object o) {
     int r = getReference(o);
     if (r >= 0) {
@@ -78,6 +81,7 @@ public class QMCFluid extends QMCHandler {
     return true;
   }
   
+  @Override
   public Boolean isBlacklisted(Object o) {
     int r = getReference(o);
     if (r >= 0 && getQMC(o) == -1) {
@@ -86,6 +90,7 @@ public class QMCFluid extends QMCHandler {
     return false;
   }
   
+  @Override
   public NBTTagCompound snapshot() {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
@@ -98,6 +103,7 @@ public class QMCFluid extends QMCHandler {
     return nbt;
   }
   
+  @Override
   public void restoreSnapshot(NBTTagCompound nbt) {
     data = new Data[0];
     for (int i = 0; i < nbt.getInteger("Length"); i++) {
@@ -132,6 +138,7 @@ public class QMCFluid extends QMCHandler {
     return -1;
   }
   
+  @Override
   public Integer length() {
     return data.length;
   }

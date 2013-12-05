@@ -1,6 +1,6 @@
-package oe.lib.util;
+package oe.core.util;
 
-import oe.lib.misc.BlockLocation;
+import oe.core.data.BlockLocation;
 
 public class WorldUtil {
   

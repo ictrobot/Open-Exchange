@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OEPipeInterface;
-import oe.lib.Debug;
+import oe.core.Debug;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TilePipe extends TileEntity implements OEPipeInterface {

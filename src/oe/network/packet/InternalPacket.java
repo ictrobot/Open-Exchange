@@ -13,7 +13,7 @@ import oe.block.tile.TileDrill;
 import oe.block.tile.TileExtractor;
 import oe.block.tile.TilePipe;
 import oe.block.tile.TileStorage;
-import oe.lib.Debug;
+import oe.core.Debug;
 import cpw.mods.fml.common.network.Player;
 
 public class InternalPacket {

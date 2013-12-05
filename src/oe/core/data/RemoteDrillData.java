@@ -1,4 +1,4 @@
-package oe.lib.misc;
+package oe.core.data;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import oe.OpenExchange;
-import oe.lib.util.ConfigUtil;
+import oe.core.util.ConfigUtil;
 
 public class RemoteDrillData {
   public static double mineCost = 256;

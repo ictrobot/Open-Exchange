@@ -4,16 +4,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import oe.api.GuessHandler;
-import oe.lib.util.FluidUtil;
+import oe.core.util.FluidUtil;
 
 /*
  * This tries to make sure all fluid containers get guessed
  */
 public class FluidGuessHandler extends GuessHandler {
   
+  @Override
   public void init() {
   }
   
+  @Override
   public Guess.Data check(ItemStack itemstack) {
     if (FluidUtil.storesFluid(itemstack)) {
       Guess.check(FluidUtil.getEmpty(itemstack));
@@ -21,6 +23,7 @@ public class FluidGuessHandler extends GuessHandler {
     return null;
   }
   
+  @Override
   public int[] meta(int ID) {
     int[] meta = new int[0];
     FluidContainerData[] data = FluidContainerRegistry.getRegisteredFluidContainerData();

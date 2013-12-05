@@ -10,11 +10,11 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import oe.OpenExchange;
 import oe.api.GuessHandler;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.misc.FakeContainer;
-import oe.lib.util.ItemStackUtil;
-import oe.lib.util.PlayerUtil;
+import oe.core.Debug;
+import oe.core.Log;
+import oe.core.data.FakeContainer;
+import oe.core.util.ItemStackUtil;
+import oe.core.util.PlayerUtil;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingGuessHandler extends GuessHandler {
@@ -32,6 +32,7 @@ public class CraftingGuessHandler extends GuessHandler {
   
   private Data[][] crafting = new Data[32000][0];
   
+  @Override
   public void init() {
     Log.debug("Loading Crafting Guesser");
     int recipes = 0;
@@ -59,6 +60,7 @@ public class CraftingGuessHandler extends GuessHandler {
     Log.debug("Found " + recipes + " Crafting Recipes");
   }
   
+  @Override
   public Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
@@ -114,6 +116,7 @@ public class CraftingGuessHandler extends GuessHandler {
     return v;
   }
   
+  @Override
   public int[] meta(int ID) {
     int[] data = new int[0];
     for (Data d : crafting[ID]) {

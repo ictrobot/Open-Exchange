@@ -12,8 +12,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
-import oe.lib.util.ConfigUtil;
+import oe.core.Debug;
+import oe.core.util.ConfigUtil;
 import oe.qmc.InWorldQMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 

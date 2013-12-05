@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.core.util;
 
 import java.util.ArrayList;
 import net.minecraft.block.Block;

@@ -1,11 +1,11 @@
-package oe.lib.handler;
+package oe.core.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import oe.lib.Log;
-import oe.lib.misc.QuantumToolBlackList;
-import oe.lib.util.ItemStackUtil;
+import oe.core.Log;
+import oe.core.data.QuantumToolBlackList;
+import oe.core.util.ItemStackUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;

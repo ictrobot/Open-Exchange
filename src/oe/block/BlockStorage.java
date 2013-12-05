@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
-import oe.lib.util.Util;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 
 public class BlockStorage extends BlockContainer {

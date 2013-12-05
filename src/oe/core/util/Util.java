@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.core.util;
 
 import oe.OpenExchange;
 import cpw.mods.fml.common.FMLCommonHandler;

@@ -8,9 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import oe.OpenExchange;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.util.ConfigUtil;
+import oe.core.Debug;
+import oe.core.Log;
+import oe.core.util.ConfigUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.Player;
 

@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.QMCHandler;
-import oe.lib.util.FluidUtil;
-import oe.lib.util.ItemStackUtil;
-import oe.lib.util.OreDictionaryUtil;
+import oe.core.util.FluidUtil;
+import oe.core.util.ItemStackUtil;
+import oe.core.util.OreDictionaryUtil;
 import oe.qmc.QMCFluid.FluidItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -48,6 +48,7 @@ public class QMCItemStack extends QMCHandler {
   
   private Data[] data = new Data[0];
   
+  @Override
   public Double getQMC(Object o) {
     if (o instanceof ItemStack) {
       // Fluid Storing Itemstacks
@@ -104,6 +105,7 @@ public class QMCItemStack extends QMCHandler {
     return new Double(-1);
   }
   
+  @Override
   public Boolean add(Object o, Double Value) {
     if (getReference(o) != -1) {
       return false;
@@ -124,6 +126,7 @@ public class QMCItemStack extends QMCHandler {
     return false;
   }
   
+  @Override
   public Boolean blacklist(Object o) {
     int r = getReference(o);
     if (r >= 0) {
@@ -133,6 +136,7 @@ public class QMCItemStack extends QMCHandler {
     return true;
   }
   
+  @Override
   public Boolean isBlacklisted(Object o) {
     int r = getReference(o);
     if (r >= 0 && getQMC(o) == -1) {
@@ -162,6 +166,7 @@ public class QMCItemStack extends QMCHandler {
     }
   }
   
+  @Override
   public NBTTagCompound snapshot() {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
@@ -180,6 +185,7 @@ public class QMCItemStack extends QMCHandler {
     return nbt;
   }
   
+  @Override
   public void restoreSnapshot(NBTTagCompound nbt) {
     data = new Data[0];
     for (int i = 0; i < nbt.getInteger("Length"); i++) {
@@ -244,6 +250,7 @@ public class QMCItemStack extends QMCHandler {
     return -1;
   }
   
+  @Override
   public Integer length() {
     return data.length;
   }

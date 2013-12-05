@@ -1,6 +1,6 @@
 package oe.block;
 
-import oe.lib.util.ConfigUtil;
+import oe.core.util.ConfigUtil;
 
 public class BlockIDs {
   

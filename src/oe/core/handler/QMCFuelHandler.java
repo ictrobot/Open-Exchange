@@ -1,7 +1,7 @@
-package oe.lib.handler;
+package oe.core.handler;
 
 import net.minecraft.item.ItemStack;
-import oe.lib.util.ConfigUtil;
+import oe.core.util.ConfigUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.IFuelHandler;
 

@@ -1,6 +1,6 @@
 package oe.item;
 
-import oe.lib.util.ConfigUtil;
+import oe.core.util.ConfigUtil;
 
 public class ItemIDs {
   

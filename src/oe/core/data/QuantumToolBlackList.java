@@ -1,4 +1,4 @@
-package oe.lib.misc;
+package oe.core.data;
 
 import net.minecraft.block.Block;
 import oe.block.Blocks;

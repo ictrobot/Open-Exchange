@@ -2,7 +2,7 @@ package oe.network.packet;
 
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-import oe.lib.Log;
+import oe.core.Log;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.Player;
 

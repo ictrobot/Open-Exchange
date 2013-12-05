@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.util.Util;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 
 public class ItemRepair extends Item implements OEItemInterface {

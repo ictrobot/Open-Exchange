@@ -9,8 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.util.ItemStackUtil;
-import oe.lib.util.Util;
+import oe.core.util.ItemStackUtil;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 
 public class ItemBuildRing extends Item implements OEItemInterface {

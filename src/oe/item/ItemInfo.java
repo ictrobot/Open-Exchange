@@ -10,8 +10,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
-import oe.lib.Debug;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.util.Util;
 
 public class ItemInfo extends Item {
   

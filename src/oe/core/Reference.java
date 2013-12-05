@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.core;
 
 public class Reference {
   public static final String MOD_ID = "OE";

@@ -10,11 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
-import oe.api.OEItemInterface;
 import oe.api.OE;
-import oe.lib.Debug;
-import oe.lib.misc.QuantumToolBlackList;
-import oe.lib.util.ConfigUtil;
+import oe.api.OEItemInterface;
+import oe.core.Debug;
+import oe.core.data.QuantumToolBlackList;
+import oe.core.util.ConfigUtil;
 import cpw.mods.fml.common.network.Player;
 
 public class QuantumDestructionPacket {

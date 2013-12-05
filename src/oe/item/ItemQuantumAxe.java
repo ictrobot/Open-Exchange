@@ -17,8 +17,8 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.util.Util;
 
 public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   
@@ -31,6 +31,7 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
     setNoRepair();
   }
   
+  @Override
   public EnumRarity getRarity(ItemStack par1ItemStack) {
     return EnumRarity.rare;
   }

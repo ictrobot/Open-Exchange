@@ -8,9 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.block.tile.TileDrillRemoteReceiver;
-import oe.lib.misc.Location;
-import oe.lib.misc.RemoteDrillData;
-import oe.lib.util.Util;
+import oe.core.data.Location;
+import oe.core.data.RemoteDrillData;
+import oe.core.util.Util;
 
 public class BlockDrillRemoteReceiver extends BlockContainer {
   

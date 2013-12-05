@@ -11,9 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
-import oe.lib.util.ConfigUtil;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.util.ConfigUtil;
+import oe.core.util.Util;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileDrill extends TileEntity implements OETileInterface {

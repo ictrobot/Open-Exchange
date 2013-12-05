@@ -1,4 +1,4 @@
-package oe.lib.handler;
+package oe.core.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -7,9 +7,9 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import oe.OpenExchange;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.Log;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;

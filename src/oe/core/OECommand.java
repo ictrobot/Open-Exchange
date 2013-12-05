@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,9 @@ import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEItemInterface;
-import oe.lib.util.FluidUtil;
-import oe.lib.util.ItemStackUtil;
-import oe.lib.util.OreDictionaryUtil;
+import oe.core.util.FluidUtil;
+import oe.core.util.ItemStackUtil;
+import oe.core.util.OreDictionaryUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;

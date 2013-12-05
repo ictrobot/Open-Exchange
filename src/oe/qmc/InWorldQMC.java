@@ -1,13 +1,13 @@
 package oe.qmc;
 
-import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import oe.api.OEPipeInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.lib.misc.BlockLocation;
-import oe.lib.util.WorldUtil;
+import oe.core.data.BlockLocation;
+import oe.core.util.WorldUtil;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class InWorldQMC {
   

@@ -8,8 +8,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import oe.api.QMCHandler;
-import oe.lib.Log;
-import oe.lib.util.Util;
+import oe.core.Log;
+import oe.core.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
 
 public class QMC {

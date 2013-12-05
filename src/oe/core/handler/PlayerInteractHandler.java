@@ -1,4 +1,4 @@
-package oe.lib.handler;
+package oe.core.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -9,9 +9,9 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import oe.api.OEItemInterface;
+import oe.core.Debug;
+import oe.core.util.Util;
 import oe.item.ItemIDs;
-import oe.lib.Debug;
-import oe.lib.util.Util;
 
 public class PlayerInteractHandler {
   

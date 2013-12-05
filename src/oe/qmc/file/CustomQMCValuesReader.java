@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import net.minecraft.item.ItemStack;
 import oe.OpenExchange;
-import oe.lib.Debug;
+import oe.core.Debug;
 import oe.qmc.QMC;
 import org.apache.commons.io.FileUtils;
 

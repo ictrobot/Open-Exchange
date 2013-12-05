@@ -5,7 +5,7 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import oe.api.GuessHandler;
-import oe.lib.Log;
+import oe.core.Log;
 
 public class SmeltingGuessHandler extends GuessHandler {
   public static class Data {
@@ -20,6 +20,7 @@ public class SmeltingGuessHandler extends GuessHandler {
   
   private Data[] smelting = new Data[0];
   
+  @Override
   @SuppressWarnings("unchecked")
   public void init() {
     Log.debug("Loading Smelting Guesser");
@@ -52,6 +53,7 @@ public class SmeltingGuessHandler extends GuessHandler {
     Log.debug("Found " + recipes + " Smelting Recipes");
   }
   
+  @Override
   public Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
@@ -73,6 +75,7 @@ public class SmeltingGuessHandler extends GuessHandler {
     return null;
   }
   
+  @Override
   public int[] meta(int ID) {
     ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];

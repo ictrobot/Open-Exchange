@@ -2,7 +2,7 @@ package oe.qmc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
-import oe.lib.util.FluidUtil;
+import oe.core.util.FluidUtil;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModIntegration {

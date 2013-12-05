@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.core.util;
 
 import java.io.File;
 import net.minecraftforge.common.Configuration;

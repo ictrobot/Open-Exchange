@@ -1,4 +1,4 @@
-package oe.lib.util;
+package oe.core.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;

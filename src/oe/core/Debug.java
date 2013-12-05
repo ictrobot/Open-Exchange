@@ -1,4 +1,4 @@
-package oe.lib;
+package oe.core;
 
 import java.lang.reflect.Field;
 import oe.OpenExchange;

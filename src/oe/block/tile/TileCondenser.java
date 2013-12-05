@@ -17,10 +17,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.lib.Debug;
-import oe.lib.util.ConfigUtil;
-import oe.lib.util.FluidUtil;
-import oe.lib.util.Util;
+import oe.core.Debug;
+import oe.core.util.ConfigUtil;
+import oe.core.util.FluidUtil;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
 

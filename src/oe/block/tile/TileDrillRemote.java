@@ -6,9 +6,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.block.BlockIDs;
-import oe.lib.misc.Location;
-import oe.lib.misc.RemoteDrillData;
-import oe.lib.util.Util;
+import oe.core.data.Location;
+import oe.core.data.RemoteDrillData;
+import oe.core.util.Util;
 
 public class TileDrillRemote extends TileEntity {
   int delayTicks = 100;

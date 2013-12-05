@@ -4,9 +4,9 @@ import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.GuessHandler;
-import oe.lib.Debug;
-import oe.lib.Log;
-import oe.lib.util.ItemStackUtil;
+import oe.core.Debug;
+import oe.core.Log;
+import oe.core.util.ItemStackUtil;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
