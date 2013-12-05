@@ -25,20 +25,6 @@ public class OE {
     return false;
   }
   
-  /**
-   * Checks if a class extends OEGuessable (Checks by looking for a method called "isOEGuessable")
-   * 
-   * @param c
-   * @return
-   */
-  public static boolean isOEGuessable(Class<?> c) {
-    Class<?> e = c.getSuperclass();
-    if (e == null) {
-      return false;
-    }
-    return e.getName().contains("OEGuesser");
-  }
-  
   public static boolean addToolBlacklist(net.minecraft.block.Block block) {
     try {
       Method m = getMethod("add", "oe.lib.misc.QuantumToolBlackList", new Class<?>[] { net.minecraft.block.Block.class });

@@ -27,12 +27,10 @@ import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
-import oe.qmc.QMCItemStack;
-import oe.qmc.guess.Crafting;
-import oe.qmc.guess.Fluid;
+import oe.qmc.guess.CraftingGuessHandler;
+import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
-import oe.qmc.guess.Ore;
-import oe.qmc.guess.Smelting;
+import oe.qmc.guess.SmeltingGuessHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -111,10 +109,9 @@ public class OpenExchange {
     Log.debug("Loading QMC Values");
     QMC.load();
     Log.debug("Adding QMC Guessers");
-    Guess.add(Ore.class);
-    Guess.add(Fluid.class);
-    Guess.add(Crafting.class);
-    Guess.add(Smelting.class);
+    Guess.addHandler(new FluidGuessHandler());
+    Guess.addHandler(new CraftingGuessHandler());
+    Guess.addHandler(new SmeltingGuessHandler());
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }
@@ -124,7 +121,7 @@ public class OpenExchange {
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
     Log.debug("Updating Database Ore Dictionary Values");
-    QMCItemStack.updateOreDictionary();
+    QMC.itemstackHandler.updateOreDictionary();
     QMC.takePostInitSnapshot();
   }
   

@@ -1,6 +1,5 @@
 package oe.qmc;
 
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -8,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import oe.api.QMCHandler;
 import oe.lib.Log;
 import oe.lib.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
@@ -15,11 +15,11 @@ import oe.qmc.file.CustomQMCValuesReader;
 public class QMC {
   
   public static class Data {
-    public Class<?> c;
+    public QMCHandler handler;
     public Class<?>[] canHandle;
     
-    public Data(Class<?> C, Class<?>[] CanHandle) {
-      this.c = C;
+    public Data(QMCHandler Handler, Class<?>[] CanHandle) {
+      this.handler = Handler;
       this.canHandle = CanHandle;
     }
   }
@@ -29,48 +29,33 @@ public class QMC {
   public static DecimalFormat formatter = new DecimalFormat("0.00");
   public static Data[] data = new Data[0];
   
+  public static QMCItemStack itemstackHandler = new QMCItemStack();
+  public static QMCFluid fluidHandler = new QMCFluid();
+  
   public static void load() {
     CustomQMCValuesReader.read();
     QMCValues.load();
   }
   
   public static void loadHandlers() {
-    addHandler(QMCItemStack.class, new Class<?>[] { ItemStack.class, String.class, Block.class, Item.class });
-    addHandler(QMCFluid.class, new Class<?>[] { Fluid.class, FluidStack.class, QMCFluid.FluidItemStack.class });
+    addHandler(itemstackHandler, new Class<?>[] { ItemStack.class, String.class, Block.class, Item.class });
+    addHandler(fluidHandler, new Class<?>[] { Fluid.class, FluidStack.class, QMCFluid.FluidItemStack.class });
   }
   
   public static boolean add(Object o, double Value) {
-    Double d = new Double(Value);
-    Class<?> c = getHandler(o);
-    if (c == null) {
+    QMCHandler h = getHandler(o);
+    if (h == null) {
       return false;
     }
-    try {
-      Method m = c.getDeclaredMethod("add", new Class<?>[] { Object.class, Double.class });
-      Object r = m.invoke(null, new Object[] { o, d });
-      if (r != null && r instanceof Boolean) {
-        return (Boolean) r;
-      }
-      return true;
-    } catch (Exception e) {
-    }
-    return false;
+    return h.add(o, Value);
   }
   
   public static double getQMC(Object o) {
-    Class<?> c = getHandler(o);
-    if (c == null) {
+    QMCHandler h = getHandler(o);
+    if (h == null) {
       return -1;
     }
-    try {
-      Method m = c.getDeclaredMethod("getQMC", Object.class);
-      Object r = m.invoke(null, o);
-      if (r != null && r instanceof Double) {
-        return (Double) r;
-      }
-    } catch (Exception e) {
-    }
-    return -1;
+    return h.getQMC(o);
   }
   
   public static boolean hasQMC(Object o) {
@@ -78,51 +63,26 @@ public class QMC {
   }
   
   public static boolean blacklist(Object o) {
-    Class<?> c = getHandler(o);
-    if (c == null) {
+    QMCHandler h = getHandler(o);
+    if (h == null) {
       return false;
     }
-    try {
-      Method m = c.getDeclaredMethod("blacklist", Object.class);
-      Object r = m.invoke(null, o);
-      if (r != null && r instanceof Boolean) {
-        return (Boolean) r;
-      }
-      return true;
-    } catch (Exception e) {
-    }
-    return false;
+    return h.blacklist(o);
   }
   
   public static boolean isBlacklisted(Object o) {
-    Class<?> c = getHandler(o);
-    if (c == null) {
+    QMCHandler h = getHandler(o);
+    if (h == null) {
       return false;
     }
-    try {
-      Method m = c.getDeclaredMethod("isBlacklisted", Object.class);
-      Object r = m.invoke(null, o);
-      if (r != null && r instanceof Boolean) {
-        return (Boolean) r;
-      }
-      return true;
-    } catch (Exception e) {
-    }
-    return false;
+    return h.isBlacklisted(o);
   }
   
   public static int length() {
     int l = 0;
     for (int i = 0; i < data.length; i++) {
-      Class<?> c = data[i].c;
-      try {
-        Method m = c.getDeclaredMethod("length");
-        Object r = m.invoke(null);
-        if (r != null && r instanceof Integer) {
-          l = l + (Integer) r;
-        }
-      } catch (Exception e) {
-      }
+      QMCHandler h = data[i].handler;
+      l += h.length();
     }
     return l;
   }
@@ -131,14 +91,10 @@ public class QMC {
     Log.info("Taking " + SnapShotName + " " + name + " Snapshot");
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
-      Class<?> c = data[i].c;
-      try {
-        Method m = c.getDeclaredMethod("snapshot");
-        Object r = m.invoke(null);
-        if (r != null && r instanceof NBTTagCompound) {
-          nbt.setCompoundTag(c.getSimpleName(), (NBTTagCompound) r);
-        }
-      } catch (Exception e) {
+      QMCHandler h = data[i].handler;
+      NBTTagCompound snapshot = h.snapshot();
+      if (snapshot != null) {
+        nbt.setCompoundTag(h.getClass().getSimpleName(), snapshot);
       }
     }
     nbt.setString("Name", SnapShotName);
@@ -154,29 +110,24 @@ public class QMC {
     Log.info("Restoring " + nbt.getString("Name") + " " + name + " Snapshot");
     Log.debug("Currently there are " + length() + " " + name + " values");
     for (int i = 0; i < data.length; i++) {
-      Class<?> c = data[i].c;
-      NBTTagCompound snapshot = nbt.getCompoundTag(c.getSimpleName());
-      try {
-        Method m = c.getDeclaredMethod("restoreSnapshot", NBTTagCompound.class);
-        m.invoke(null, snapshot);
-      } catch (Exception e) {
-      }
+      QMCHandler h = data[i].handler;
+      h.restoreSnapshot(nbt.getCompoundTag(h.getClass().getSimpleName()));
     }
     Log.debug("After restoring there are " + length() + " " + name + " values");
   }
   
-  private static Class<?> getHandler(Object o) {
+  public static QMCHandler getHandler(Object o) {
     for (Data d : data) {
       for (Class<?> c : d.canHandle) {
         if (c.isInstance(o)) {
-          return d.c;
+          return d.handler;
         }
       }
     }
     return null;
   }
   
-  public static void addHandler(Class<?> handler, Class<?>[] classesCanHandle) {
+  public static void addHandler(QMCHandler handler, Class<?>[] classesCanHandle) {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;

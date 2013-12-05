@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import oe.api.OEGuesser;
+import oe.api.GuessHandler;
 import oe.lib.Log;
 
-public class Smelting extends OEGuesser {
+public class SmeltingGuessHandler extends GuessHandler {
   public static class Data {
     ItemStack output;
     ItemStack input;
@@ -18,10 +18,10 @@ public class Smelting extends OEGuesser {
     }
   }
   
-  private static Data[] smelting = new Data[0];
+  private Data[] smelting = new Data[0];
   
   @SuppressWarnings("unchecked")
-  public static void init() {
+  public void init() {
     Log.debug("Loading Smelting Guesser");
     int recipes = 0;
     Map<Integer, ItemStack> normal = FurnaceRecipes.smelting().getSmeltingList();
@@ -52,7 +52,7 @@ public class Smelting extends OEGuesser {
     Log.debug("Found " + recipes + " Smelting Recipes");
   }
   
-  public static Guess.Data check(ItemStack itemstack) {
+  public Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
     }
@@ -73,7 +73,7 @@ public class Smelting extends OEGuesser {
     return null;
   }
   
-  public static int[] meta(int ID) {
+  public int[] meta(int ID) {
     ItemStack itemstack = new ItemStack(ID, 0, 0);
     int[] data = new int[0];
     for (Data gd : smelting) {
@@ -87,7 +87,7 @@ public class Smelting extends OEGuesser {
     return data;
   }
   
-  private static void increaseSmelting() {
+  private void increaseSmelting() {
     Data[] tmp = new Data[smelting.length + 1];
     System.arraycopy(smelting, 0, tmp, 0, smelting.length);
     smelting = tmp;

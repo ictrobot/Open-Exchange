@@ -1,10 +1,9 @@
 package oe.qmc.guess;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.api.OE;
+import oe.api.GuessHandler;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.util.ItemStackUtil;
@@ -32,7 +31,7 @@ public class Guess {
     }
   }
   
-  public static Class<?>[] classes = new Class[0];
+  public static GuessHandler[] handlers = new GuessHandler[0];
   
   // To Stop recursions
   private static int recursions = 0;
@@ -40,26 +39,19 @@ public class Guess {
   private static boolean recursionNotified = false;
   private static ItemStack stackCheck;
   
-  public static boolean add(Class<?> c) {
-    if (OE.isOEGuessable(c)) {
-      increaseClasses();
-      classes[classes.length - 1] = c;
-      return true;
-      
-    }
-    return false;
+  public static boolean addHandler(GuessHandler h) {
+    GuessHandler[] tmp = new GuessHandler[handlers.length + 1];
+    System.arraycopy(handlers, 0, tmp, 0, handlers.length);
+    handlers = tmp;
+    handlers[handlers.length - 1] = h;
+    return true;
   }
   
   public static void load() {
     Stopwatch timer = new Stopwatch();
     timer.start();
-    for (Class<?> c : classes) {
-      try {
-        Method m = c.getMethod("init");
-        m.invoke(null);
-      } catch (Exception e) {
-        Debug.handleException(e);
-      }
+    for (GuessHandler h : handlers) {
+      h.init();
     }
     checkLoop();
     timer.stop();
@@ -68,32 +60,22 @@ public class Guess {
   
   public static int[] meta(int ID) {
     int[] possible = new int[] { 0 };
-    for (Class<?> c : classes) {
-      int[] meta;
-      try {
-        Method m = c.getMethod("meta", int.class);
-        Object r = m.invoke(null, ID);
-        if (r != null) {
-          if (r instanceof int[]) {
-            meta = (int[]) r;
-            for (int i : meta) {
-              boolean exists = false;
-              for (int e : possible) {
-                if (e == i) {
-                  exists = true;
-                }
-              }
-              if (!exists) {
-                int[] tmp = new int[possible.length + 1];
-                System.arraycopy(possible, 0, tmp, 0, possible.length);
-                possible = tmp;
-                possible[possible.length - 1] = i;
-              }
-            }
+    for (GuessHandler h : handlers) {
+      int[] meta = h.meta(ID);
+      for (int i : meta) {
+        boolean exists = false;
+        for (int e : possible) {
+          if (e == i) {
+            exists = true;
+            break;
           }
         }
-      } catch (Exception e) {
-        Debug.handleException(e);
+        if (!exists) {
+          int[] tmp = new int[possible.length + 1];
+          System.arraycopy(possible, 0, tmp, 0, possible.length);
+          possible = tmp;
+          possible[possible.length - 1] = i;
+        }
       }
     }
     return possible;
@@ -156,23 +138,16 @@ public class Guess {
   }
   
   public static Data checkClasses(ItemStack itemstack) {
-    for (Class<?> c : classes) {
+    for (GuessHandler h : handlers) {
       try {
-        Method m = c.getMethod("check", ItemStack.class);
-        Object r = m.invoke(null, itemstack);
-        if (r instanceof Data) {
-          return (Data) r;
+        Data d = h.check(itemstack);
+        if (d != null) {
+          return d;
         }
       } catch (Exception e) {
         Debug.handleException(e);
       }
     }
     return null;
-  }
-  
-  private static void increaseClasses() {
-    Class<?>[] tmp = new Class<?>[classes.length + 1];
-    System.arraycopy(classes, 0, tmp, 0, classes.length);
-    classes = tmp;
   }
 }

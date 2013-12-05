@@ -5,13 +5,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+import oe.api.QMCHandler;
 import oe.lib.util.FluidUtil;
 import oe.lib.util.ItemStackUtil;
 import oe.lib.util.OreDictionaryUtil;
 import oe.qmc.QMCFluid.FluidItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class QMCItemStack {
+public class QMCItemStack extends QMCHandler {
   public static enum Type {
     Itemstack, // Itemstack
     OreDictionary, // Ore Dictionary
@@ -45,25 +46,25 @@ public class QMCItemStack {
     }
   }
   
-  private static Data[] data = new Data[0];
+  private Data[] data = new Data[0];
   
-  public static Double getQMC(Object o) {
-    // Fluid Storing Itemstacks
-    if (FluidUtil.storesFluid((ItemStack) o)) {
-      ItemStack container = FluidUtil.getEmpty((ItemStack) o);
-      if (container != null) {
-        double containerQMC = getQMC(container);
-        if (containerQMC > 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
-          FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));
-          double qmc = QMC.getQMC(f);
-          if (qmc > 0) {
-            return new Double(qmc);
+  public Double getQMC(Object o) {
+    if (o instanceof ItemStack) {
+      // Fluid Storing Itemstacks
+      if (FluidUtil.storesFluid((ItemStack) o)) {
+        ItemStack container = FluidUtil.getEmpty((ItemStack) o);
+        if (container != null) {
+          double containerQMC = getQMC(container);
+          if (containerQMC > 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
+            FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));
+            double qmc = QMC.getQMC(f);
+            if (qmc > 0) {
+              return new Double(qmc);
+            }
           }
         }
       }
-    }
-    // Other Itemstacks
-    if (o instanceof ItemStack) {
+      // Other Itemstacks
       ItemStack itemstack = (ItemStack) o;
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
@@ -103,7 +104,7 @@ public class QMCItemStack {
     return new Double(-1);
   }
   
-  public static Boolean add(Object o, Double Value) {
+  public Boolean add(Object o, Double Value) {
     if (getReference(o) != -1) {
       return false;
     }
@@ -123,7 +124,7 @@ public class QMCItemStack {
     return false;
   }
   
-  public static Boolean blacklist(Object o) {
+  public Boolean blacklist(Object o) {
     int r = getReference(o);
     if (r >= 0) {
       remove(r);
@@ -132,7 +133,7 @@ public class QMCItemStack {
     return true;
   }
   
-  public static Boolean isBlacklisted(Object o) {
+  public Boolean isBlacklisted(Object o) {
     int r = getReference(o);
     if (r >= 0 && getQMC(o) == -1) {
       return true;
@@ -140,7 +141,7 @@ public class QMCItemStack {
     return false;
   }
   
-  public static void updateOreDictionary() {
+  public void updateOreDictionary() {
     for (Data d : data) {
       if (d.type != Type.OreDictionary) {
         int oreID = OreDictionary.getOreID(d.itemstack);
@@ -161,7 +162,7 @@ public class QMCItemStack {
     }
   }
   
-  public static NBTTagCompound snapshot() {
+  public NBTTagCompound snapshot() {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
       NBTTagCompound o = new NBTTagCompound();
@@ -179,7 +180,7 @@ public class QMCItemStack {
     return nbt;
   }
   
-  public static void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreSnapshot(NBTTagCompound nbt) {
     data = new Data[0];
     for (int i = 0; i < nbt.getInteger("Length"); i++) {
       NBTTagCompound o = nbt.getCompoundTag(i + "");
@@ -195,17 +196,17 @@ public class QMCItemStack {
     updateOreDictionary();
   }
   
-  private static void increase() {
+  private void increase() {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
   }
   
-  private static void remove(int i) {
+  private void remove(int i) {
     data = ArrayUtils.removeElement(data, data[i]);
   }
   
-  public static int getReference(Object o) {
+  public int getReference(Object o) {
     if (o instanceof ItemStack) {
       ItemStack itemstack = (ItemStack) o;
       for (int i = 0; i < data.length; i++) {
@@ -243,7 +244,7 @@ public class QMCItemStack {
     return -1;
   }
   
-  public static Integer length() {
+  public Integer length() {
     return data.length;
   }
 }

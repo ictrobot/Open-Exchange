@@ -4,9 +4,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import oe.api.QMCHandler;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class QMCFluid {
+public class QMCFluid extends QMCHandler {
   
   public static class Data {
     public double QMC; // QMC Value
@@ -30,9 +31,9 @@ public class QMCFluid {
     }
   }
   
-  private static Data[] data = new Data[0];
+  private Data[] data = new Data[0];
   
-  public static Double getQMC(Object o) {
+  public Double getQMC(Object o) {
     if (o instanceof FluidItemStack) {
       FluidItemStack f = (FluidItemStack) o;
       if (f.containerQMC > 0) {
@@ -55,7 +56,7 @@ public class QMCFluid {
     return new Double(-1);
   }
   
-  public static Boolean add(Object o, Double Value) {
+  public Boolean add(Object o, Double Value) {
     if (o instanceof Fluid) {
       increase();
       data[data.length - 1] = new Data((Fluid) o, Value);
@@ -68,7 +69,7 @@ public class QMCFluid {
     return false;
   }
   
-  public static Boolean blacklist(Object o) {
+  public Boolean blacklist(Object o) {
     int r = getReference(o);
     if (r >= 0) {
       remove(r);
@@ -77,7 +78,7 @@ public class QMCFluid {
     return true;
   }
   
-  public static Boolean isBlacklisted(Object o) {
+  public Boolean isBlacklisted(Object o) {
     int r = getReference(o);
     if (r >= 0 && getQMC(o) == -1) {
       return true;
@@ -85,7 +86,7 @@ public class QMCFluid {
     return false;
   }
   
-  public static NBTTagCompound snapshot() {
+  public NBTTagCompound snapshot() {
     NBTTagCompound nbt = new NBTTagCompound();
     for (int i = 0; i < data.length; i++) {
       NBTTagCompound o = new NBTTagCompound();
@@ -97,7 +98,7 @@ public class QMCFluid {
     return nbt;
   }
   
-  public static void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreSnapshot(NBTTagCompound nbt) {
     data = new Data[0];
     for (int i = 0; i < nbt.getInteger("Length"); i++) {
       NBTTagCompound o = nbt.getCompoundTag(i + "");
@@ -107,17 +108,17 @@ public class QMCFluid {
     }
   }
   
-  private static void increase() {
+  private void increase() {
     Data[] tmp = new Data[data.length + 1];
     System.arraycopy(data, 0, tmp, 0, data.length);
     data = tmp;
   }
   
-  private static void remove(int i) {
+  private void remove(int i) {
     data = ArrayUtils.removeElement(data, data[i]);
   }
   
-  public static int getReference(Object o) {
+  public int getReference(Object o) {
     if (o instanceof Fluid) {
       for (int i = 0; i < data.length; i++) {
         Data check = data[i];
@@ -131,7 +132,7 @@ public class QMCFluid {
     return -1;
   }
   
-  public static Integer length() {
+  public Integer length() {
     return data.length;
   }
 }

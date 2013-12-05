@@ -9,7 +9,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import oe.OpenExchange;
-import oe.api.OEGuesser;
+import oe.api.GuessHandler;
 import oe.lib.Debug;
 import oe.lib.Log;
 import oe.lib.misc.FakeContainer;
@@ -17,7 +17,7 @@ import oe.lib.util.ItemStackUtil;
 import oe.lib.util.PlayerUtil;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Crafting extends OEGuesser {
+public class CraftingGuessHandler extends GuessHandler {
   public static class Data {
     ItemStack output;
     ItemStack[] input;
@@ -30,9 +30,9 @@ public class Crafting extends OEGuesser {
     }
   }
   
-  private static Data[][] crafting = new Data[32000][0];
+  private Data[][] crafting = new Data[32000][0];
   
-  public static void init() {
+  public void init() {
     Log.debug("Loading Crafting Guesser");
     int recipes = 0;
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
@@ -59,7 +59,7 @@ public class Crafting extends OEGuesser {
     Log.debug("Found " + recipes + " Crafting Recipes");
   }
   
-  public static Guess.Data check(ItemStack itemstack) {
+  public Guess.Data check(ItemStack itemstack) {
     if (itemstack == null) {
       return null;
     }
@@ -99,7 +99,7 @@ public class Crafting extends OEGuesser {
     return null;
   }
   
-  private static double checkQMC(ItemStack stack) {
+  private double checkQMC(ItemStack stack) {
     if (stack == null) {
       return -1;
     }
@@ -114,7 +114,7 @@ public class Crafting extends OEGuesser {
     return v;
   }
   
-  public static int[] meta(int ID) {
+  public int[] meta(int ID) {
     int[] data = new int[0];
     for (Data d : crafting[ID]) {
       int[] tmp = new int[data.length + 1];
@@ -217,13 +217,13 @@ public class Crafting extends OEGuesser {
     return inputs;
   }
   
-  private static void increaseData(int id) {
+  private void increaseData(int id) {
     Data[] tmp = new Data[crafting[id].length + 1];
     System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
     crafting[id] = tmp;
   }
   
-  private static ItemStack[] getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+  private ItemStack[] getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
     ItemStack[] toReturn = new ItemStack[0];
     try {
       FakeContainer fake = new FakeContainer();

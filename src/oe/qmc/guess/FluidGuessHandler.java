@@ -3,25 +3,25 @@ package oe.qmc.guess;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
-import oe.api.OEGuesser;
+import oe.api.GuessHandler;
 import oe.lib.util.FluidUtil;
 
 /*
- * This tries to make sure all containers get Guessed
+ * This tries to make sure all fluid containers get guessed
  */
-public class Fluid extends OEGuesser {
+public class FluidGuessHandler extends GuessHandler {
   
-  public static void init() {
+  public void init() {
   }
   
-  public static Guess.Data check(ItemStack itemstack) {
+  public Guess.Data check(ItemStack itemstack) {
     if (FluidUtil.storesFluid(itemstack)) {
       Guess.check(FluidUtil.getEmpty(itemstack));
     }
     return null;
   }
   
-  public static int[] meta(int ID) {
+  public int[] meta(int ID) {
     int[] meta = new int[0];
     FluidContainerData[] data = FluidContainerRegistry.getRegisteredFluidContainerData();
     for (FluidContainerData f : data) {
