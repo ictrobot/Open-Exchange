@@ -57,11 +57,11 @@
   </target>
   
   <target name="replace_tokens">
-    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
-    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@VERSIONSPACES@" value="${build.build_type} ${build.build_number}" />
-    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@BUILD_NUMBER@" value="${build.build_number}" />
-    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@MC@" value="${mc.version}" />
-    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\lib\Reference.java" token="@FORGE@" value="${forge.version}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\core\Reference.java" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\core\Reference.java" token="@VERSIONSPACES@" value="${build.build_type} ${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\core\Reference.java" token="@BUILD_NUMBER@" value="${build.build_number}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\core\Reference.java" token="@MC@" value="${mc.version}" />
+    <replace file="${basedir}\temp\forge\mcp\src\minecraft\oe\core\Reference.java" token="@FORGE@" value="${forge.version}" />
     <replace file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" token="@VERSION@" value="${build.build_type}_${build.build_number}" />
     <replace file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" token="@BUILD_NUMBER@" value="${build.build_number}" />
   </target>
