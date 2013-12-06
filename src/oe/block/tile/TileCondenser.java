@@ -1,14 +1,11 @@
 package oe.block.tile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -17,15 +14,13 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.core.Debug;
 import oe.core.util.ConfigUtil;
 import oe.core.util.FluidUtil;
 import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
 import oe.qmc.QMC;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileCondenser extends TileEntity implements IInventory, ISidedInventory, OETileInterface, IFluidHandler {
+public class TileCondenser extends TileEntity implements TileNetwork, IInventory, ISidedInventory, OETileInterface, IFluidHandler {
   public ItemStack[] chestContents;
   public final int size = 28;
   public double stored;
@@ -60,11 +55,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       fluidBehaviour = true;
     }
     return getFluidBehaviour();
-  }
-  
-  @Override
-  public void onInventoryChanged() {
-    sendChangeToClients();
   }
   
   @Override
@@ -344,26 +334,18 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     }
   }
   
-  public void sendChangeToClients() {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      outputStream.writeInt(10);
-      outputStream.writeInt(this.xCoord);
-      outputStream.writeInt(this.yCoord);
-      outputStream.writeInt(this.zCoord);
-      outputStream.writeDouble(this.stored);
-      outputStream.writeBoolean(this.hasTarget);
-    } catch (Exception ex) {
-      Debug.handleException(ex);
-    }
-    
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oe";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    
-    PacketDispatcher.sendPacketToAllAround(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 64, worldObj.provider.dimensionId, packet);
+  @Override
+  public NBTTagCompound networkSnapshot() {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setDouble("stored", stored);
+    nbt.setBoolean("hasTarget", hasTarget);
+    return nbt;
+  }
+  
+  @Override
+  public void restoreSnapshot(NBTTagCompound nbt) {
+    stored = nbt.getDouble("stored");
+    hasTarget = nbt.getBoolean("hasTarget");
   }
   
   @Override

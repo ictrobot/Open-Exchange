@@ -34,7 +34,7 @@ public class GUIExtractor extends GuiContainer {
     fontRenderer.drawString(StatCollector.translateToLocal(tile.getInvName()), 7, 3, 4210752);
     // Storage Text
     String text = QMC.formatter.format(tile.stored) + " " + QMC.name;
-    int pos = 168 - (text.length() * 5);
+    int pos = 176 - (text.length() * 6);
     fontRenderer.drawString(text, pos, 3, 4210752);
     // Inventory Text
     fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);

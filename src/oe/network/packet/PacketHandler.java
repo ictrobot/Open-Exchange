@@ -1,5 +1,6 @@
 package oe.network.packet;
 
+import oe.core.data.TileSync;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -11,6 +12,8 @@ public class PacketHandler implements IPacketHandler {
   public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerEntity) {
     if (packet.channel.contentEquals("oe")) {
       InternalPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel.contentEquals("oeTileSync")) {
+      TileSync.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQD")) {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeBM")) {

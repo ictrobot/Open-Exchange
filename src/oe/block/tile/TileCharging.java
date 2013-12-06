@@ -1,24 +1,19 @@
 package oe.block.tile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OE;
 import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.core.Debug;
 import oe.core.util.Util;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileCharging extends TileEntity implements IInventory, ISidedInventory, OETileInterface {
+public class TileCharging extends TileEntity implements TileNetwork, IInventory, ISidedInventory, OETileInterface {
   public ItemStack[] chestContents;
   public final int size = 18; // 9 Input, 9 Output
   public double stored;
@@ -30,14 +25,8 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   }
   
   @Override
-  public void onInventoryChanged() {
-    sendChangeToClients();
-  }
-  
-  @Override
   public void updateEntity() {
     if (Util.isServerSide()) {
-      onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int slot = 0; slot <= 8; slot++) {
           if (getStackInSlot(slot) != null) {
@@ -214,25 +203,16 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
     }
   }
   
-  public void sendChangeToClients() {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      outputStream.writeInt(11);
-      outputStream.writeInt(this.xCoord);
-      outputStream.writeInt(this.yCoord);
-      outputStream.writeInt(this.zCoord);
-      outputStream.writeDouble(this.stored);
-    } catch (Exception ex) {
-      Debug.handleException(ex);
-    }
-    
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oe";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    
-    PacketDispatcher.sendPacketToAllAround(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 64, worldObj.provider.dimensionId, packet);
+  @Override
+  public NBTTagCompound networkSnapshot() {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setDouble("stored", stored);
+    return nbt;
+  }
+  
+  @Override
+  public void restoreSnapshot(NBTTagCompound nbt) {
+    stored = nbt.getDouble("stored");
   }
   
   @Override

@@ -1,23 +1,18 @@
 package oe.block.tile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.core.Debug;
 import oe.core.util.ConfigUtil;
 import oe.qmc.InWorldQMC;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileExperienceConsumer extends TileEntity implements OETileInterface {
+public class TileExperienceConsumer extends TileEntity implements TileNetwork, OETileInterface {
   public double stored;
   public int factor;
   
@@ -26,11 +21,6 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
     ConfigUtil.load();
     factor = ConfigUtil.other("QMC", "XP to QMC Factor", 10);
     ConfigUtil.save();
-  }
-  
-  @Override
-  public void onInventoryChanged() {
-    sendChangeToClients();
   }
   
   @SuppressWarnings("unchecked")
@@ -65,25 +55,16 @@ public class TileExperienceConsumer extends TileEntity implements OETileInterfac
     TagCompound.setDouble("OE_Stored_Value", stored);
   }
   
-  public void sendChangeToClients() {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      outputStream.writeInt(14);
-      outputStream.writeInt(this.xCoord);
-      outputStream.writeInt(this.yCoord);
-      outputStream.writeInt(this.zCoord);
-      outputStream.writeDouble(this.stored);
-    } catch (Exception ex) {
-      Debug.handleException(ex);
-    }
-    
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oe";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    
-    PacketDispatcher.sendPacketToAllAround(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 64, worldObj.provider.dimensionId, packet);
+  @Override
+  public NBTTagCompound networkSnapshot() {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setDouble("stored", stored);
+    return nbt;
+  }
+  
+  @Override
+  public void restoreSnapshot(NBTTagCompound nbt) {
+    stored = nbt.getDouble("stored");
   }
   
   @Override
