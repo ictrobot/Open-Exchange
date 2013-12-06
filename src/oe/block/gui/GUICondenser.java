@@ -20,20 +20,7 @@ public class GUICondenser extends GuiContainer {
   @Override
   protected void drawGuiContainerForegroundLayer(int param1, int param2) {
     // Progress Bar
-    ResourceLocation bar_texture = new ResourceLocation("oe:textures/gui/condenser_progress_bar.png");
-    this.mc.renderEngine.bindTexture(bar_texture);
-    int per = 0;
-    if (tile.hasTarget) {
-      per = tile.percent;
-      if (per > 100) {
-        per = 100;
-      }
-    } else {
-      per = 100;
-    }
-    per = per + 3;
-    this.drawTexturedModalRect(35, 9, 0, 20, per, 12);
-    this.drawTexturedModalRect(35, 9, 0, 0, 106, 12);
+    GUIHandler.drawProgressPar(tile.percent, this, this.mc);
     // Charging Bench Text
     fontRenderer.drawString(StatCollector.translateToLocal(tile.getInvName()), 26, 3, 4210752);
     // Storage Text

@@ -52,12 +52,12 @@ public class TileCharging extends TileEntity implements TileNetwork, IInventory,
             }
           }
         }
-      } else {
-        double per = stored / getMaxQMC();
-        per = 100 * per;
-        this.percent = (int) per;
-        return;
       }
+    } else {
+      double per = stored / getMaxQMC();
+      per = 100 * per;
+      this.percent = (int) per;
+      return;
     }
   }
   

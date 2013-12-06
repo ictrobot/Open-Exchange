@@ -1,7 +1,10 @@
 package oe.block.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import oe.block.container.ContainerCharging;
 import oe.block.container.ContainerCondenser;
@@ -40,5 +43,19 @@ public class GUIHandler implements IGuiHandler {
       }
     }
     return null;
+  }
+  
+  public static void drawProgressPar(int percent, GuiContainer gui, Minecraft mc) {
+    mc.renderEngine.bindTexture(new ResourceLocation("oe:textures/gui/progress_bar.png"));
+    if (percent > 100) {
+      percent = 100;
+    }
+    if (percent >= 0) {
+      percent = percent + 3;
+      gui.drawTexturedModalRect(35, 9, 0, 20, percent, 12);
+    } else {
+      gui.drawTexturedModalRect(35, 9, 0, 40, 106, 12);
+    }
+    gui.drawTexturedModalRect(35, 9, 0, 0, 106, 12);
   }
 }

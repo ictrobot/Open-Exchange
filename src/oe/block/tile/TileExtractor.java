@@ -33,47 +33,49 @@ public class TileExtractor extends TileEntity implements TileNetwork, OETileInte
   @Override
   public void updateEntity() {
     if (Util.isServerSide()) {
-      onInventoryChanged();
-      boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
-        // ITEMS
-        for (int i = 1; i <= 4; i++) {
-          int slot = -1;
-          for (int s = 0; s < size; s++) {
-            if (getStackInSlot(s) != null && slot == -1 && QMC.hasQMC(getStackInSlot(s)) && QMC.getQMC(getStackInSlot(s).copy()) + stored <= getMaxQMC()) {
-              slot = s;
+        onInventoryChanged();
+        boolean tmpWorking = false;
+        if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
+          // ITEMS
+          for (int i = 1; i <= 4; i++) {
+            int slot = -1;
+            for (int s = 0; s < size; s++) {
+              if (getStackInSlot(s) != null && slot == -1 && QMC.hasQMC(getStackInSlot(s)) && QMC.getQMC(getStackInSlot(s).copy()) + stored <= getMaxQMC()) {
+                slot = s;
+                break;
+              }
+            }
+            if (slot == -1) {
               break;
             }
+            ItemStack itemstack = getStackInSlot(slot).copy();
+            if (itemstack == null) {
+              break;
+            }
+            double V = QMC.getQMC(itemstack);
+            stored = stored + V;
+            decrStackSize(slot, 1);
+            tmpWorking = true;
           }
-          if (slot == -1) {
-            break;
+          
+          // FLUID
+          if (fluid != null) {
+            double fluidQMC = QMC.getQMC(fluid);
+            if (fluidQMC > 0) {
+              fluid = null;
+              stored = stored + fluidQMC;
+            }
           }
-          ItemStack itemstack = getStackInSlot(slot).copy();
-          if (itemstack == null) {
-            break;
-          }
-          double V = QMC.getQMC(itemstack);
-          stored = stored + V;
-          decrStackSize(slot, 1);
-          tmpWorking = true;
+          stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
         }
-        
-        // FLUID
-        if (fluid != null) {
-          double fluidQMC = QMC.getQMC(fluid);
-          if (fluidQMC > 0) {
-            fluid = null;
-            stored = stored + fluidQMC;
+        if (tmpWorking != working) {
+          working = tmpWorking;
+          if (working) {
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 7);
+          } else {
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 7);
           }
-        }
-        stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
-      }
-      if (tmpWorking != working) {
-        working = tmpWorking;
-        if (working) {
-          worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 7);
-        } else {
-          worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 7);
         }
       }
     } else {

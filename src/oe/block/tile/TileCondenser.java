@@ -14,7 +14,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
-import oe.core.util.ConfigUtil;
 import oe.core.util.FluidUtil;
 import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
@@ -27,16 +26,13 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
   public boolean hasTarget;
   public int percent = 0; // CLIENT SIDE
   public boolean[] isDifferent = new boolean[size];
-  public boolean shouldEat = false;
+  public boolean finished = false;
   public FluidStack fluidTarget;
   public FluidStack fluidStored;
   private boolean fluidBehaviour = true;
   
   public TileCondenser() {
     super();
-    ConfigUtil.load();
-    shouldEat = ConfigUtil.other("block", "Condenser turns items other than the target into QMC", false);
-    ConfigUtil.save();
     this.chestContents = new ItemStack[getSizeInventory()];
   }
   
@@ -68,6 +64,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
           if (fluidTarget != null && fluidBehaviour) {
             FluidStack toAdd = new FluidStack(fluidTarget.fluidID, 25);
             if (fluidStored == null || fluidTarget.fluidID == fluidStored.fluidID) {
+              finished = false;
               double V = QMC.getQMC(toAdd);
               if (stored >= V) {
                 if (fluidStored == null || toAdd.amount + fluidStored.amount <= capacity) {
@@ -90,27 +87,15 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
                 if (stored >= V) {
                   if (incrTarget()) {
                     stored = stored - V;
+                    finished = false;
+                  } else {
+                    finished = true;
                   }
                 }
               } else {
                 hasTarget = false;
               }
             }
-          }
-          updateDifferent();
-          
-          if (shouldEat) {
-            int slot = ValueSlot();
-            if (slot == -1) {
-              return;
-            }
-            ItemStack itemstack = getStackInSlot(slot).copy();
-            if (itemstack == null) {
-              return;
-            }
-            double V = QMC.getQMC(itemstack);
-            stored = stored + V;
-            decrStackSize(slot, 1);
           }
         }
       }
@@ -298,21 +283,6 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
     return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
   }
   
-  private int ValueSlot() {
-    if (getStackInSlot(0) != null) {
-      ItemStack target = getStackInSlot(0).copy();
-      target.stackSize = 1;
-      for (int slot = 1; slot < size; slot++) {
-        if (getStackInSlot(slot) != null) {
-          if (QMC.hasQMC(getStackInSlot(slot)) && isDifferent[slot]) {
-            return slot;
-          }
-        }
-      }
-    }
-    return -1;
-  }
-  
   @Override
   public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
     return true;
@@ -339,6 +309,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     nbt.setBoolean("hasTarget", hasTarget);
+    nbt.setBoolean("fluidBehaviour", fluidBehaviour);
     return nbt;
   }
   
@@ -346,6 +317,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
   public void restoreSnapshot(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
     hasTarget = nbt.getBoolean("hasTarget");
+    fluidBehaviour = nbt.getBoolean("fluidBehaviour");
   }
   
   @Override
@@ -459,7 +431,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
   
   @Override
   public OEType getType() {
-    if (chestContents[0] != null && QMC.hasQMC(chestContents[0])) {
+    if (chestContents[0] != null && QMC.hasQMC(chestContents[0]) && !finished) {
       return OEType.Consumer;
     } else {
       return OEType.None;
