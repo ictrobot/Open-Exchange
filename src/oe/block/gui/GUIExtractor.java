@@ -19,7 +19,6 @@ public class GUIExtractor extends GuiContainer {
   
   @Override
   protected void drawGuiContainerForegroundLayer(int param1, int param2) {
-    // fontRenderer.drawString("Condenser", 8, 6, 4210752);
     // Progress Bar
     ResourceLocation bar_texture = new ResourceLocation("oe:textures/gui/extractor_progress_bar.png");
     this.mc.renderEngine.bindTexture(bar_texture);
@@ -31,9 +30,11 @@ public class GUIExtractor extends GuiContainer {
     per = per + 3;
     this.drawTexturedModalRect(35, 9, 0, 20, per, 12);
     this.drawTexturedModalRect(35, 9, 0, 0, 106, 12);
+    // Extractor Text
+    fontRenderer.drawString(StatCollector.translateToLocal(tile.getInvName()), 7, 3, 4210752);
     // Storage Text
     String text = QMC.formatter.format(tile.stored) + " " + QMC.name;
-    int pos = (176 - (text.length() * 5)) / 2;
+    int pos = 168 - (text.length() * 5);
     fontRenderer.drawString(text, pos, 3, 4210752);
     // Inventory Text
     fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);

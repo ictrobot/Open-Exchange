@@ -43,6 +43,7 @@ public class TileExtractor extends TileEntity implements OETileInterface, IInven
   @Override
   public void updateEntity() {
     if (Util.isServerSide()) {
+      onInventoryChanged();
       boolean tmpWorking = false;
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         // ITEMS
@@ -64,7 +65,6 @@ public class TileExtractor extends TileEntity implements OETileInterface, IInven
           double V = QMC.getQMC(itemstack);
           stored = stored + V;
           decrStackSize(slot, 1);
-          sendChangeToClients();
           tmpWorking = true;
         }
         
@@ -77,7 +77,6 @@ public class TileExtractor extends TileEntity implements OETileInterface, IInven
           }
         }
         stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
-        sendChangeToClients();
       }
       if (tmpWorking != working) {
         working = tmpWorking;
@@ -106,7 +105,7 @@ public class TileExtractor extends TileEntity implements OETileInterface, IInven
   
   @Override
   public String getInvName() {
-    return "container." + this.getClass().getSimpleName().substring(4);
+    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
   }
   
   @Override

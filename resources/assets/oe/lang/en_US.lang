@@ -19,3 +19,8 @@ tile.BlockPipe.name=QMC Pipe
 tile.BlockDrill.name=QMC Drill
 tile.BlockDrillRemote.name=QMC Remote Drill
 tile.BlockDrillRemoteReceiver.name=QMC Remote Drill Receiver
+
+#GUI
+container.Charging.name=Charging Bench
+container.Extractor.name=Extractor
+container.Condenser.name=Condenser

@@ -8,6 +8,7 @@ import oe.block.Blocks;
 import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
 import oe.core.CraftingRecipes;
+import oe.core.Debug;
 import oe.core.Log;
 import oe.core.OECommand;
 import oe.core.Reference;
@@ -67,7 +68,7 @@ public class OpenExchange {
   public void preInit(FMLPreInitializationEvent event) {
     configdir = event.getModConfigurationDirectory();
     ConfigUtil.load();
-    debug = ConfigUtil.other("DEBUG", "Debug enabled", false);
+    debug = ConfigUtil.other("DEBUG", "Debug enabled", Debug.rawCode);
     boolean fuelHandler = ConfigUtil.other("FuelHandler", "Allow any item to be burnt if it has a QMC value", false);
     ConfigUtil.save();
     if (debug) {

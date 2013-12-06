@@ -97,6 +97,18 @@ public class ItemStackUtil {
     return true;
   }
   
+  public static boolean equalsSize(ItemStack itemstack1, ItemStack itemstack2) {
+    if (itemstack1 == null || itemstack2 == null) {
+      return false;
+    }
+    boolean main = equals(itemstack1, itemstack2);
+    boolean size = itemstack1.stackSize == itemstack2.stackSize;
+    if (main && size) {
+      return true;
+    }
+    return false;
+  }
+  
   public static boolean equals(ItemStack itemstack1, ItemStack itemstack2) {
     if (itemstack1 == null || itemstack2 == null) {
       return false;

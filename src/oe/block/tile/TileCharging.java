@@ -37,6 +37,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   @Override
   public void updateEntity() {
     if (Util.isServerSide()) {
+      onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int slot = 0; slot <= 8; slot++) {
           if (getStackInSlot(slot) != null) {
@@ -54,7 +55,6 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
                   if (stored > amount) {
                     oe.increaseQMC(amount, itemstack);
                     stored = stored - amount;
-                    onInventoryChanged();
                   }
                 } else {
                   moveOutput(slot);
@@ -63,12 +63,12 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
             }
           }
         }
+      } else {
+        double per = stored / getMaxQMC();
+        per = 100 * per;
+        this.percent = (int) per;
+        return;
       }
-    } else {
-      double per = stored / getMaxQMC();
-      per = 100 * per;
-      this.percent = (int) per;
-      return;
     }
   }
   
@@ -99,7 +99,7 @@ public class TileCharging extends TileEntity implements IInventory, ISidedInvent
   
   @Override
   public String getInvName() {
-    return "container." + this.getClass().getSimpleName().substring(4);
+    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
   }
   
   @Override

@@ -73,6 +73,6 @@ public class ContainerCharging extends Container {
   
   @Override
   public void onContainerClosed(EntityPlayer entityplayer) {
-    tileEntity.sendChangeToClients();
+    tileEntity.onInventoryChanged();
   }
 }

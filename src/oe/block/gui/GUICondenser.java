@@ -1,6 +1,5 @@
 package oe.block.gui;
 
-import java.text.DecimalFormat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -13,8 +12,6 @@ public class GUICondenser extends GuiContainer {
   
   TileCondenser tile;
   
-  DecimalFormat df = new DecimalFormat("0.00");
-  
   public GUICondenser(InventoryPlayer inventoryPlayer, TileCondenser tileEntity) {
     super(new ContainerCondenser(inventoryPlayer, tileEntity));
     tile = tileEntity;
@@ -22,7 +19,6 @@ public class GUICondenser extends GuiContainer {
   
   @Override
   protected void drawGuiContainerForegroundLayer(int param1, int param2) {
-    // fontRenderer.drawString("Condenser", 8, 6, 4210752);
     // Progress Bar
     ResourceLocation bar_texture = new ResourceLocation("oe:textures/gui/condenser_progress_bar.png");
     this.mc.renderEngine.bindTexture(bar_texture);
@@ -36,10 +32,14 @@ public class GUICondenser extends GuiContainer {
       per = 100;
     }
     per = per + 3;
-    this.drawTexturedModalRect(23, 9, 0, 20, per, 12);
-    this.drawTexturedModalRect(23, 9, 0, 0, 106, 12);
+    this.drawTexturedModalRect(35, 9, 0, 20, per, 12);
+    this.drawTexturedModalRect(35, 9, 0, 0, 106, 12);
+    // Charging Bench Text
+    fontRenderer.drawString(StatCollector.translateToLocal(tile.getInvName()), 26, 3, 4210752);
     // Storage Text
-    fontRenderer.drawString(df.format(tile.stored) + " " + QMC.name, 25, 3, 4210752);
+    String text = QMC.formatter.format(tile.stored) + " " + QMC.name;
+    int pos = 168 - (text.length() * 5);
+    fontRenderer.drawString(text, pos, 3, 4210752);
     // Inventory Text
     fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);
   }

@@ -20,6 +20,7 @@ import oe.api.lib.OEType;
 import oe.core.Debug;
 import oe.core.util.ConfigUtil;
 import oe.core.util.FluidUtil;
+import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -28,8 +29,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   public ItemStack[] chestContents;
   public final int size = 28;
   public double stored;
-  private double prevStored;
-  private int ticks;
   public boolean hasTarget;
   public int percent = 0; // CLIENT SIDE
   public boolean[] isDifferent = new boolean[size];
@@ -74,14 +73,6 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     if (Util.isServerSide()) {
       onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
-        if (prevStored != stored) {
-          onInventoryChanged();
-        }
-        ticks++;
-        if (ticks > 5) {
-          ticks = 1;
-          prevStored = stored;
-        }
         for (int i = 1; i <= 4; i++) {
           fluidTarget = FluidUtil.getFluidStack(getStackInSlot(0));
           if (fluidTarget != null && fluidBehaviour) {
@@ -96,27 +87,23 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
                     fluidStored.amount += toAdd.amount;
                   }
                   stored = stored - V;
-                  onInventoryChanged();
                 }
               }
             }
           } else {
             if (getStackInSlot(0) != null) {
-              ItemStack target = getStackInSlot(0).copy();
+              ItemStack target = getStackInSlot(0);
               target.stackSize = 1;
-              if (QMC.hasQMC(target)) {
+              double V = QMC.getQMC(target);
+              if (V > 0) {
                 hasTarget = true;
-                onInventoryChanged();
-                double V = QMC.getQMC(target);
                 if (stored >= V) {
                   if (incrTarget()) {
                     stored = stored - V;
-                    onInventoryChanged();
                   }
                 }
               } else {
                 hasTarget = false;
-                onInventoryChanged();
               }
             }
           }
@@ -134,25 +121,27 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
             double V = QMC.getQMC(itemstack);
             stored = stored + V;
             decrStackSize(slot, 1);
-            sendChangeToClients();
           }
         }
       }
     } else {
       fluidTarget = FluidUtil.getFluidStack(getStackInSlot(0));
       if (fluidTarget != null && fluidBehaviour) {
-        this.percent = 0;
+        this.percent = -1;
       } else {
         if (getStackInSlot(0) != null) {
-          ItemStack target = getStackInSlot(0).copy();
-          target.stackSize = 1;
-          if (QMC.hasQMC(target)) {
-            double V = QMC.getQMC(target);
+          double V = QMC.getQMC(getStackInSlot(0));
+          if (V > 0) {
             double per = stored / V;
             per = 100 * per;
             this.percent = (int) per;
             return;
           }
+        } else {
+          double per = stored / getMaxQMC();
+          per = 100 * per;
+          this.percent = (int) per;
+          return;
         }
       }
     }
@@ -162,12 +151,8 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     boolean state;
     for (int i = 1; i < size; i++) {
       state = true;
-      if (chestContents[i] != null && chestContents[0] != null) {
-        if (chestContents[i].itemID == chestContents[0].itemID) {
-          if (chestContents[i].getItemDamage() == chestContents[0].getItemDamage()) {
-            state = false;
-          }
-        }
+      if (ItemStackUtil.equals(chestContents[i], chestContents[0])) {
+        state = false;
       }
       isDifferent[i] = state;
     }
@@ -184,7 +169,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   
   @Override
   public String getInvName() {
-    return "container." + this.getClass().getSimpleName().substring(4);
+    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
   }
   
   @Override
@@ -227,9 +212,10 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
       int slot = -1;
       for (int i = 1; i < size; i++) {
         if (chestContents[i] != null) {
-          ItemStack tmp = getStackInSlot(i).copy();
+          ItemStack tmp = getStackInSlot(i);
           if (!isDifferent[i] && slot == -1 && tmp.getMaxStackSize() > tmp.stackSize && QMC.getQMC(getStackInSlot(i)) + stored <= getMaxQMC()) {
             slot = i;
+            break;
           }
         }
       }
@@ -243,6 +229,7 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
         ItemStack tmp = chestContents[0].copy();
         tmp.stackSize = 0;
         setInventorySlotContents(free, tmp);
+        return true;
       }
     }
     return false;
@@ -384,8 +371,8 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
     if (side == 1) {
       int[] tmp = { 0 };
       return tmp;
-      // } else if (side == 0) {
-      // return targetCopyExtract();
+    } else if (side == 0) {
+      return targetCopyExtract();
     } else {
       int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
       return tmp;
@@ -429,28 +416,16 @@ public class TileCondenser extends TileEntity implements IInventory, ISidedInven
   }
   
   public int[] targetCopyExtract() {
-    int[] tmp = new int[numTargetCopies()];
-    if (tmp.length == 0) {
-      return new int[] {};
-    }
-    int l = 0;
+    int[] toReturn = new int[0];
     for (int i = 1; i < size; i++) {
       if (!isDifferent[i]) {
-        tmp[l] = i;
-        l++;
+        int[] tmp = new int[toReturn.length + 1];
+        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
+        toReturn = tmp;
+        toReturn[toReturn.length - 1] = i;
       }
     }
-    return tmp;
-  }
-  
-  public int numTargetCopies() {
-    int tmp = 0;
-    for (int i = 1; i < size; i++) {
-      if (!isDifferent[i]) {
-        tmp++;
-      }
-    }
-    return tmp;
+    return toReturn;
   }
   
   @Override
