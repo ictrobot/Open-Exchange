@@ -205,6 +205,7 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
         ItemStack tmp = chestContents[0].copy();
         tmp.stackSize = 0;
         setInventorySlotContents(free, tmp);
+        isDifferent[free] = false; // Instead of doing a full check ( updateDifferent() )
         return true;
       }
     }
