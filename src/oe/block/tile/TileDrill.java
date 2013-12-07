@@ -8,10 +8,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.ConfigUtil;
 import oe.core.util.Util;
 
-public class TileDrill extends TileEntity implements TileNetwork, OETileInterface {
+public class TileDrill extends TileEntity implements ServerNetworkedTile, OETileInterface {
   public double stored;
   int facing;
   double mineCost = 256;
@@ -86,14 +87,14 @@ public class TileDrill extends TileEntity implements TileNetwork, OETileInterfac
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     return nbt;
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
   }
   

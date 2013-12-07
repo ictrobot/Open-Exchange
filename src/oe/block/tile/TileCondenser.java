@@ -14,12 +14,13 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.FluidUtil;
 import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
 import oe.qmc.QMC;
 
-public class TileCondenser extends TileEntity implements TileNetwork, IInventory, ISidedInventory, OETileInterface, IFluidHandler {
+public class TileCondenser extends TileEntity implements ServerNetworkedTile, IInventory, ISidedInventory, OETileInterface, IFluidHandler {
   public ItemStack[] chestContents;
   public final int size = 28;
   public double stored;
@@ -305,7 +306,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     nbt.setBoolean("hasTarget", hasTarget);
@@ -314,7 +315,7 @@ public class TileCondenser extends TileEntity implements TileNetwork, IInventory
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
     hasTarget = nbt.getBoolean("hasTarget");
     fluidBehaviour = nbt.getBoolean("fluidBehaviour");

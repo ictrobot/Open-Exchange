@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +12,11 @@ import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import oe.block.tile.TileNetwork;
 import oe.core.Debug;
 import oe.core.Log;
+import oe.core.util.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,18 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 
 public class TileSync {
-  
-  public static class Data {
-    TileEntity tile;
-    List<EntityPlayer> players;
-    NBTTagCompound snapshot;
-    
-    public Data(TileEntity tile, List<EntityPlayer> players, NBTTagCompound snapshot) {
-      this.tile = tile;
-      this.players = players;
-      this.snapshot = snapshot;
-    }
-  }
   
   public static class OETileSync implements ITickHandler {
     private final EnumSet<TickType> ticksToGet = EnumSet.of(TickType.WORLD);
@@ -62,56 +51,82 @@ public class TileSync {
     }
   }
   
+  /**
+   * Server --> Client
+   */
+  public interface ServerNetworkedTile {
+    
+    public NBTTagCompound snapshotServer();
+    
+    public void restoreClient(NBTTagCompound nbt);
+  }
+  
+  /**
+   * Client --> Server
+   */
+  public interface ClientNetworkedTile {
+    
+    public NBTTagCompound snapshotClient();
+    
+    public void restoreServer(NBTTagCompound nbt);
+  }
+  
   private static final double range = 64;
   
   public static void sync() {
-    WorldServer[] worlds = MinecraftServer.getServer().worldServers;
-    for (WorldServer world : worlds) {
-      sync(world);
+    try {
+      if (Util.isServerSide()) {
+        WorldServer[] worlds = MinecraftServer.getServer().worldServers;
+        for (WorldServer world : worlds) {
+          sync(world);
+        }
+      } else {
+        sync(Minecraft.getMinecraft().theWorld);
+      }
+    } catch (Exception e) {
+      Debug.handleException(e);
     }
   }
   
-  public static void sync(WorldServer world) {
+  private static void sync(WorldServer world) {
+    if (!Util.isServerSide()) {
+      return;
+    }
+    HashMap<TileEntity, NBTTagCompound> data = new HashMap<TileEntity, NBTTagCompound>();
     // Get Data
-    Data[] data = new Data[0];
     Object[] loaded = (world.loadedTileEntityList).toArray();
-    List<?> players = world.playerEntities;
     for (Object o : loaded) {
-      if (o instanceof TileEntity && o instanceof TileNetwork) {
+      if (o instanceof TileEntity && o instanceof ServerNetworkedTile) {
         TileEntity tile = (TileEntity) o;
-        List<EntityPlayer> p = new ArrayList<EntityPlayer>();
-        NBTTagCompound snapshot = ((TileNetwork) o).networkSnapshot();
-        for (Object player : players) {
-          if (((EntityPlayer) player).getDistance(tile.xCoord, tile.yCoord, tile.zCoord) <= range) {
-            p.add(((EntityPlayer) player));
-          }
+        NBTTagCompound snapshot = ((ServerNetworkedTile) o).snapshotServer();
+        if (!snapshot.hasNoTags()) {
+          data.put(tile, snapshot);
         }
-        Data[] tmp = new Data[data.length + 1];
-        System.arraycopy(data, 0, tmp, 0, data.length);
-        data = tmp;
-        data[data.length - 1] = new Data(tile, p, snapshot);
       }
     }
-    // Distribute
+    // Distribute to Players
     HashMap<EntityPlayer, NBTTagCompound> packets = new HashMap<EntityPlayer, NBTTagCompound>();
+    List<?> players = world.playerEntities;
     for (Object p : players) {
       EntityPlayer player = (EntityPlayer) p;
       NBTTagCompound nbt = new NBTTagCompound();
       nbt.setInteger("size", -1);
       packets.put(player, nbt);
     }
-    for (Data d : data) {
+    for (TileEntity tile : data.keySet()) {
       NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setInteger("x", d.tile.xCoord);
-      nbt.setInteger("y", d.tile.yCoord);
-      nbt.setInteger("z", d.tile.zCoord);
-      nbt.setString("type", d.tile.getClass().getSimpleName());
-      nbt.setCompoundTag("data", d.snapshot);
-      for (Object p : players) {
-        NBTTagCompound n = packets.get((EntityPlayer) p);
-        n.setInteger("size", n.getInteger("size") + 1);
-        int num = n.getInteger("size");
-        n.setCompoundTag("" + num, nbt);
+      nbt.setInteger("x", tile.xCoord);
+      nbt.setInteger("y", tile.yCoord);
+      nbt.setInteger("z", tile.zCoord);
+      nbt.setString("type", tile.getClass().getSimpleName());
+      nbt.setCompoundTag("data", data.get(tile));
+      for (Object player : players) {
+        if (((EntityPlayer) player).getDistance(tile.xCoord, tile.yCoord, tile.zCoord) <= range) {
+          NBTTagCompound n = packets.get((EntityPlayer) player);
+          n.setInteger("size", n.getInteger("size") + 1);
+          int num = n.getInteger("size");
+          n.setCompoundTag("" + num, nbt);
+        }
       }
     }
     for (Object p : players) {
@@ -130,6 +145,51 @@ public class TileSync {
     }
   }
   
+  private static void sync(WorldClient world) {
+    if (!Util.isClientSide()) {
+      return;
+    }
+    HashMap<TileEntity, NBTTagCompound> data = new HashMap<TileEntity, NBTTagCompound>();
+    // Get Data
+    Object[] loaded = (world.loadedTileEntityList).toArray();
+    for (Object o : loaded) {
+      if (o instanceof TileEntity && o instanceof ClientNetworkedTile) {
+        TileEntity tile = (TileEntity) o;
+        NBTTagCompound snapshot = ((ClientNetworkedTile) o).snapshotClient();
+        if (!snapshot.hasNoTags()) {
+          data.put(tile, snapshot);
+        }
+      }
+    }
+    // Distribute to Server
+    NBTTagCompound packetNBT = new NBTTagCompound();
+    packetNBT.setInteger("size", -1);
+    
+    for (TileEntity tile : data.keySet()) {
+      NBTTagCompound nbt = new NBTTagCompound();
+      nbt.setInteger("x", tile.xCoord);
+      nbt.setInteger("y", tile.yCoord);
+      nbt.setInteger("z", tile.zCoord);
+      nbt.setString("type", tile.getClass().getSimpleName());
+      nbt.setCompoundTag("data", data.get(tile));
+      packetNBT.setInteger("size", packetNBT.getInteger("size") + 1);
+      int num = packetNBT.getInteger("size");
+      packetNBT.setCompoundTag("" + num, nbt);
+    }
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+    DataOutputStream outputStream = new DataOutputStream(bos);
+    try {
+      CompressedStreamTools.writeCompressed(packetNBT, outputStream);
+    } catch (IOException e) {
+      Debug.handleException(e);
+    }
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+    packet.channel = "oeTileSync";
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+    Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(packet);
+  }
+  
   public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player playerentity) {
     EntityPlayer player = ((EntityPlayer) playerentity);
     DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
@@ -145,8 +205,14 @@ public class TileSync {
     for (int i = 0; i <= nbt.getInteger("size"); i++) {
       NBTTagCompound data = nbt.getCompoundTag("" + i);
       TileEntity tile = player.worldObj.getBlockTileEntity(data.getInteger("x"), data.getInteger("y"), data.getInteger("z"));
-      if (tile != null && tile instanceof TileNetwork && data.getString("type").contentEquals(tile.getClass().getSimpleName())) {
-        ((TileNetwork) tile).restoreSnapshot(data.getCompoundTag("data"));
+      if (Util.isClientSide()) {
+        if (tile != null && tile instanceof ServerNetworkedTile && data.getString("type").contentEquals(tile.getClass().getSimpleName())) {
+          ((ServerNetworkedTile) tile).restoreClient(data.getCompoundTag("data"));
+        }
+      } else {
+        if (tile != null && tile instanceof ClientNetworkedTile && data.getString("type").contentEquals(tile.getClass().getSimpleName())) {
+          ((ClientNetworkedTile) tile).restoreServer(data.getCompoundTag("data"));
+        }
       }
     }
   }

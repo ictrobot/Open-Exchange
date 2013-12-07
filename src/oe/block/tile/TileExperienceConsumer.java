@@ -9,10 +9,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.ConfigUtil;
 import oe.qmc.InWorldQMC;
 
-public class TileExperienceConsumer extends TileEntity implements TileNetwork, OETileInterface {
+public class TileExperienceConsumer extends TileEntity implements ServerNetworkedTile, OETileInterface {
   public double stored;
   public int factor;
   
@@ -56,14 +57,14 @@ public class TileExperienceConsumer extends TileEntity implements TileNetwork, O
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     return nbt;
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
   }
   

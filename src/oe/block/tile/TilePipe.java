@@ -4,8 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import oe.api.OEPipeInterface;
+import oe.core.data.TileSync.ServerNetworkedTile;
 
-public class TilePipe extends TileEntity implements TileNetwork, OEPipeInterface {
+public class TilePipe extends TileEntity implements ServerNetworkedTile, OEPipeInterface {
   public double passThrough;
   
   public TilePipe() {
@@ -29,14 +30,14 @@ public class TilePipe extends TileEntity implements TileNetwork, OEPipeInterface
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("passThrough", passThrough);
     return nbt;
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     passThrough = nbt.getDouble("passThrough");
   }
   

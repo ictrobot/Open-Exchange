@@ -13,11 +13,12 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.Util;
 import oe.qmc.InWorldQMC;
 import oe.qmc.QMC;
 
-public class TileExtractor extends TileEntity implements TileNetwork, OETileInterface, IInventory, IFluidHandler {
+public class TileExtractor extends TileEntity implements ServerNetworkedTile, OETileInterface, IInventory, IFluidHandler {
   public ItemStack[] chestContents;
   public final int size = 27;
   public double stored;
@@ -219,14 +220,14 @@ public class TileExtractor extends TileEntity implements TileNetwork, OETileInte
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     return nbt;
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
   }
   

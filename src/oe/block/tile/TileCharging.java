@@ -11,9 +11,10 @@ import oe.api.OE;
 import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.Util;
 
-public class TileCharging extends TileEntity implements TileNetwork, IInventory, ISidedInventory, OETileInterface {
+public class TileCharging extends TileEntity implements ServerNetworkedTile, IInventory, ISidedInventory, OETileInterface {
   public ItemStack[] chestContents;
   public final int size = 18; // 9 Input, 9 Output
   public double stored;
@@ -204,14 +205,14 @@ public class TileCharging extends TileEntity implements TileNetwork, IInventory,
   }
   
   @Override
-  public NBTTagCompound networkSnapshot() {
+  public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
     return nbt;
   }
   
   @Override
-  public void restoreSnapshot(NBTTagCompound nbt) {
+  public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
   }
   
