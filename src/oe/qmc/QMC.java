@@ -1,6 +1,9 @@
 package oe.qmc;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,21 +17,15 @@ import oe.qmc.file.CustomQMCValuesReader;
 
 public class QMC {
   
-  public static class Data {
-    public QMCHandler handler;
-    public Class<?>[] canHandle;
-    
-    public Data(QMCHandler Handler, Class<?>[] CanHandle) {
-      this.handler = Handler;
-      this.canHandle = CanHandle;
-    }
-  }
-  
+  // Name
   public static final String name = "QMC";
   public static final String nameFull = "Quantum Matter Currency";
+  // Formatter
   public static DecimalFormat formatter = new DecimalFormat("0.00");
-  public static Data[] data = new Data[0];
-  
+  // Handlers
+  public static HashMap<Class<?>, QMCHandler> handlers = new HashMap<Class<?>, QMCHandler>();
+  public static List<QMCHandler> handlersList = new ArrayList<QMCHandler>();
+  // Built in handlers
   public static QMCItemStack itemstackHandler = new QMCItemStack();
   public static QMCFluid fluidHandler = new QMCFluid();
   
@@ -80,9 +77,8 @@ public class QMC {
   
   public static int length() {
     int l = 0;
-    for (int i = 0; i < data.length; i++) {
-      QMCHandler h = data[i].handler;
-      l += h.length();
+    for (QMCHandler handler : handlersList) {
+      l += handler.length();
     }
     return l;
   }
@@ -90,11 +86,10 @@ public class QMC {
   public static NBTTagCompound snapshot(String SnapShotName) {
     Log.info("Taking " + SnapShotName + " " + name + " Snapshot");
     NBTTagCompound nbt = new NBTTagCompound();
-    for (int i = 0; i < data.length; i++) {
-      QMCHandler h = data[i].handler;
-      NBTTagCompound snapshot = h.snapshot();
-      if (snapshot != null) {
-        nbt.setCompoundTag(h.getClass().getSimpleName(), snapshot);
+    for (QMCHandler handler : handlersList) {
+      NBTTagCompound snapshot = handler.snapshot();
+      if (snapshot != null && !snapshot.hasNoTags()) {
+        nbt.setCompoundTag(handler.getClass().getSimpleName(), snapshot);
       }
     }
     nbt.setString("Name", SnapShotName);
@@ -109,34 +104,43 @@ public class QMC {
     }
     Log.info("Restoring " + nbt.getString("Name") + " " + name + " Snapshot");
     Log.debug("Currently there are " + length() + " " + name + " values");
-    for (int i = 0; i < data.length; i++) {
-      QMCHandler h = data[i].handler;
-      h.restoreSnapshot(nbt.getCompoundTag(h.getClass().getSimpleName()));
+    for (QMCHandler handler : handlersList) {
+      handler.restoreSnapshot(nbt.getCompoundTag(handler.getClass().getSimpleName()));
     }
     Log.debug("After restoring there are " + length() + " " + name + " values");
-  }
-  
-  public static QMCHandler getHandler(Object o) {
-    for (Data d : data) {
-      for (Class<?> c : d.canHandle) {
-        if (c.isInstance(o)) {
-          return d.handler;
-        }
-      }
-    }
-    return null;
-  }
-  
-  public static void addHandler(QMCHandler handler, Class<?>[] classesCanHandle) {
-    Data[] tmp = new Data[data.length + 1];
-    System.arraycopy(data, 0, tmp, 0, data.length);
-    data = tmp;
-    data[data.length - 1] = new Data(handler, classesCanHandle);
   }
   
   public static NBTTagCompound postInitSnapshot = new NBTTagCompound();
   
   public static void takePostInitSnapshot() {
     postInitSnapshot = snapshot("Post-Init");
+  }
+  
+  public static QMCHandler getHandler(Object o) {
+    for (Class<?> c : handlers.keySet()) {
+      if (c.isInstance(o)) {
+        return handlers.get(c);
+      }
+    }
+    return null;
+  }
+  
+  public static void addHandler(QMCHandler handler, Class<?> canHandle) {
+    addHandler(handler, new Class<?>[] { canHandle });
+    return;
+  }
+  
+  public static void addHandler(QMCHandler handler, Class<?>[] canHandle) {
+    if (handler == null) {
+      return;
+    }
+    if (!handlersList.contains(handler)) {
+      handlersList.add(handler);
+    }
+    for (Class<?> c : canHandle) {
+      if (c != null) {
+        handlers.put(c, handler);
+      }
+    }
   }
 }
