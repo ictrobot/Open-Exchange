@@ -22,9 +22,9 @@ public class CraftingGuessHandler extends GuessHandler {
   public static class Data {
     ItemStack output;
     ItemStack[] input;
-    ItemStack[] returned;
+    List<ItemStack> returned;
     
-    public Data(ItemStack Output, ItemStack[] Inputs, ItemStack[] Returned) {
+    public Data(ItemStack Output, ItemStack[] Inputs, List<ItemStack> Returned) {
       this.output = Output;
       this.input = Inputs;
       this.returned = Returned;
@@ -44,7 +44,7 @@ public class CraftingGuessHandler extends GuessHandler {
           ItemStack output = recipe.getRecipeOutput();
           ItemStack[] input = getInputs(recipe);
           if (output != null && input != null) {
-            ItemStack[] returned = getReturned(recipe, input, output);
+            List<ItemStack> returned = getReturned(recipe, input, output);
             if (returned != null) {
               increaseData(output.itemID);
               crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
@@ -79,8 +79,7 @@ public class CraftingGuessHandler extends GuessHandler {
             }
           }
         }
-        for (int i = 0; i < d.returned.length; i++) {
-          ItemStack stack = d.returned[i];
+        for (ItemStack stack : d.returned) {
           if (stack != null) {
             double v = checkQMC(stack);
             if (v == -1) {
@@ -221,8 +220,8 @@ public class CraftingGuessHandler extends GuessHandler {
     crafting[id] = tmp;
   }
   
-  private ItemStack[] getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
-    ItemStack[] toReturn = new ItemStack[0];
+  private List<ItemStack> getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+    List<ItemStack> data = new ArrayList<ItemStack>();
     try {
       FakeContainer fake = new FakeContainer();
       InventoryCrafting ic = new InventoryCrafting(fake, 3, 3);
@@ -235,23 +234,22 @@ public class CraftingGuessHandler extends GuessHandler {
       GameRegistry.onItemCrafted(OpenExchange.fakePlayer, output, ic);
       for (int i = 0; i < inputs.length; i++) {
         if (inputs[i] != null) {
-          if (ic.getStackInSlot(i).getItem().hasContainerItem() && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
-            toReturn = ItemStackUtil.increaseAdd(toReturn, new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
-          }
           if (inputs[i] != ic.getStackInSlot(i)) {
-            toReturn = ItemStackUtil.increaseAdd(toReturn, ic.getStackInSlot(i));
+            data.add(ic.getStackInSlot(i));
+          } else if (ic.getStackInSlot(i).getItem().hasContainerItem() && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
+            data.add(new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
           }
         }
       }
       for (ItemStack itemstack : OpenExchange.fakePlayer.inventory.mainInventory) {
         if (itemstack != null) {
-          toReturn = ItemStackUtil.increaseAdd(toReturn, itemstack);
+          data.add(itemstack);
         }
       }
     } catch (Exception e) {
       Log.debug("Get Returned Failed for " + output.toString() + " IRecipe Type: " + recipe.getClass());
       Debug.handleException(e);
     }
-    return toReturn;
+    return data;
   }
 }
