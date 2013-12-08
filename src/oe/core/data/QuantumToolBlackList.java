@@ -1,11 +1,13 @@
 package oe.core.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import oe.block.Blocks;
 
 public class QuantumToolBlackList {
   
-  private static int[] blockIDs = new int[0];
+  private static List<Integer> blockIDs = new ArrayList<Integer>();
   
   public static void init() {
     add(Block.bedrock);
@@ -18,10 +20,9 @@ public class QuantumToolBlackList {
   }
   
   public static void add(int blockID) {
-    int[] tmp = new int[blockIDs.length + 1];
-    System.arraycopy(blockIDs, 0, tmp, 0, blockIDs.length);
-    blockIDs = tmp;
-    blockIDs[blockIDs.length - 1] = blockID;
+    if (blockID > 0) {
+      blockIDs.add(blockID);
+    }
   }
   
   public static boolean isBlackListed(Block block) {
@@ -29,11 +30,6 @@ public class QuantumToolBlackList {
   }
   
   public static boolean isBlackListed(int blockID) {
-    for (int id : blockIDs) {
-      if (id == blockID) {
-        return true;
-      }
-    }
-    return false;
+    return blockIDs.contains(blockID);
   }
 }

@@ -122,6 +122,18 @@ public class ItemStackUtil {
     return false;
   }
   
+  public static boolean equalsIgnoreNBT(ItemStack itemstack1, ItemStack itemstack2) {
+    if (itemstack1 == null || itemstack2 == null) {
+      return false;
+    }
+    boolean id = itemstack1.itemID == itemstack2.itemID;
+    boolean meta = itemstack1.getItemDamage() == itemstack2.getItemDamage();
+    if (id && meta) {
+      return true;
+    }
+    return false;
+  }
+  
   public static boolean equalsNBT(ItemStack itemstack1, ItemStack itemstack2) {
     boolean noNBT1 = itemstack1.stackTagCompound == null;
     boolean noNBT2 = itemstack2.stackTagCompound == null;

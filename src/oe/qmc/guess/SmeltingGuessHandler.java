@@ -1,38 +1,29 @@
 package oe.qmc.guess;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import oe.api.GuessHandler;
 import oe.core.Log;
+import oe.core.util.ItemStackUtil;
 
 public class SmeltingGuessHandler extends GuessHandler {
-  public static class Data {
-    ItemStack output;
-    ItemStack input;
-    
-    public Data(ItemStack Output, ItemStack Input) {
-      this.output = Output;
-      this.input = Input;
-    }
-  }
   
-  private Data[] smelting = new Data[0];
+  // Output, Input
+  private HashMap<ItemStack, ItemStack> recipes = new HashMap<ItemStack, ItemStack>();
   
   @Override
   @SuppressWarnings("unchecked")
   public void init() {
     Log.debug("Loading Smelting Guesser");
-    int recipes = 0;
     Map<Integer, ItemStack> normal = FurnaceRecipes.smelting().getSmeltingList();
     for (Integer i : normal.keySet()) {
-      increaseSmelting();
       ItemStack input = new ItemStack(i, 1, 0);
       ItemStack output = normal.get(i);
       if (input != null & output != null) {
-        smelting[smelting.length - 1] = new Data(output, input);
-        recipes++;
+        recipes.put(output, input);
       }
     }
     Map<List<Integer>, ItemStack> meta = FurnaceRecipes.smelting().getMetaSmeltingList();
@@ -44,13 +35,11 @@ public class SmeltingGuessHandler extends GuessHandler {
       }
       ItemStack input = new ItemStack(ID, 1, Meta);
       ItemStack output = meta.get(idPair);
-      increaseSmelting();
       if (input != null & output != null) {
-        smelting[smelting.length - 1] = new Data(output, input);
-        recipes++;
+        recipes.put(output, input);
       }
     }
-    Log.debug("Found " + recipes + " Smelting Recipes");
+    Log.debug("Found " + recipes.size() + " Smelting Recipes");
   }
   
   @Override
@@ -58,16 +47,11 @@ public class SmeltingGuessHandler extends GuessHandler {
     if (itemstack == null) {
       return null;
     }
-    for (Data gd : smelting) {
-      if (gd.output.itemID == itemstack.itemID && gd.output.getItemDamage() == itemstack.getItemDamage()) {
-        double value = 0;
-        ItemStack stack = gd.input;
-        if (stack != null) {
-          double v = Guess.check(stack);
-          value = v;
-        }
+    for (ItemStack output : recipes.keySet()) {
+      if (ItemStackUtil.equalsIgnoreNBT(output, itemstack)) {
+        double value = Guess.check(recipes.get(output));
         if (value > 0) {
-          Guess.Data toReturn = new Guess.Data(gd.input, value, 1);
+          Guess.Data toReturn = new Guess.Data(recipes.get(output), value, 1);
           return toReturn;
         }
       }
@@ -77,22 +61,15 @@ public class SmeltingGuessHandler extends GuessHandler {
   
   @Override
   public int[] meta(int ID) {
-    ItemStack itemstack = new ItemStack(ID, 0, 0);
-    int[] data = new int[0];
-    for (Data gd : smelting) {
-      if (gd.output.itemID == itemstack.itemID) {
-        int[] tmp = new int[data.length + 1];
-        System.arraycopy(data, 0, tmp, 0, data.length);
-        data = tmp;
-        data[data.length - 1] = gd.output.getItemDamage();
+    int[] meta = new int[0];
+    for (ItemStack output : recipes.keySet()) {
+      if (output.itemID == ID) {
+        int[] tmp = new int[meta.length + 1];
+        System.arraycopy(meta, 0, tmp, 0, meta.length);
+        meta = tmp;
+        meta[meta.length - 1] = output.getItemDamage();
       }
     }
-    return data;
-  }
-  
-  private void increaseSmelting() {
-    Data[] tmp = new Data[smelting.length + 1];
-    System.arraycopy(smelting, 0, tmp, 0, smelting.length);
-    smelting = tmp;
+    return meta;
   }
 }
