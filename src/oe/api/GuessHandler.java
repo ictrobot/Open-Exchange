@@ -1,7 +1,8 @@
 package oe.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
-import oe.qmc.guess.Guess;
 
 public class GuessHandler {
   
@@ -18,14 +19,14 @@ public class GuessHandler {
    * @param ID
    * @return int[] of meta data;
    */
-  public int[] meta(int ID) {
-    return new int[] {};
+  public List<Integer> meta(int ID) {
+    return new ArrayList<Integer>();
   }
   
   /**
    * Check a ItemStack
    */
-  public Guess.Data check(ItemStack itemstack) {
-    return null;
+  public double check(ItemStack itemstack) {
+    return -1;
   }
 }

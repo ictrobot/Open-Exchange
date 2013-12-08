@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackUtil {
   
@@ -135,6 +136,9 @@ public class ItemStackUtil {
   }
   
   public static boolean equalsNBT(ItemStack itemstack1, ItemStack itemstack2) {
+    if (itemstack1 == null || itemstack2 == null) {
+      return false;
+    }
     boolean noNBT1 = itemstack1.stackTagCompound == null;
     boolean noNBT2 = itemstack2.stackTagCompound == null;
     if (noNBT1 && noNBT2) {
@@ -144,5 +148,15 @@ public class ItemStackUtil {
     } else {
       return itemstack1.stackTagCompound.equals(itemstack2.stackTagCompound);
     }
+  }
+  
+  public static boolean oreDictionary(ItemStack itemstack1, ItemStack itemstack2) {
+    if (itemstack1 == null || itemstack2 == null) {
+      return false;
+    }
+    if ((OreDictionary.getOreID(itemstack1) == OreDictionary.getOreID(itemstack2)) && OreDictionary.getOreID(itemstack1) != -1) {
+      return true;
+    }
+    return false;
   }
 }

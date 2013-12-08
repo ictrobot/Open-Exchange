@@ -1,5 +1,7 @@
 package oe.qmc.guess;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -16,23 +18,23 @@ public class FluidGuessHandler extends GuessHandler {
   }
   
   @Override
-  public Guess.Data check(ItemStack itemstack) {
+  public double check(ItemStack itemstack) {
     if (FluidUtil.storesFluid(itemstack)) {
       Guess.check(FluidUtil.getEmpty(itemstack));
     }
-    return null;
+    return -1;
   }
   
   @Override
-  public int[] meta(int ID) {
-    int[] meta = new int[0];
+  public List<Integer> meta(int ID) {
+    List<Integer> meta = new ArrayList<Integer>();
     FluidContainerData[] data = FluidContainerRegistry.getRegisteredFluidContainerData();
     for (FluidContainerData f : data) {
       if (f.filledContainer.itemID == ID) {
-        int[] tmp = new int[meta.length + 1];
-        System.arraycopy(meta, 0, tmp, 0, meta.length);
-        meta = tmp;
-        meta[meta.length - 1] = f.filledContainer.getItemDamage();
+        meta.add(f.filledContainer.getItemDamage());
+      }
+      if (f.emptyContainer.itemID == ID) {
+        meta.add(f.filledContainer.getItemDamage());
       }
     }
     return meta;

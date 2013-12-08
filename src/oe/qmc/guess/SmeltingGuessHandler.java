@@ -1,5 +1,6 @@
 package oe.qmc.guess;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,31 +44,27 @@ public class SmeltingGuessHandler extends GuessHandler {
   }
   
   @Override
-  public Guess.Data check(ItemStack itemstack) {
+  public double check(ItemStack itemstack) {
     if (itemstack == null) {
-      return null;
+      return -1;
     }
     for (ItemStack output : recipes.keySet()) {
       if (ItemStackUtil.equalsIgnoreNBT(output, itemstack)) {
         double value = Guess.check(recipes.get(output));
         if (value > 0) {
-          Guess.Data toReturn = new Guess.Data(recipes.get(output), value, 1);
-          return toReturn;
+          return value;
         }
       }
     }
-    return null;
+    return -1;
   }
   
   @Override
-  public int[] meta(int ID) {
-    int[] meta = new int[0];
+  public List<Integer> meta(int ID) {
+    List<Integer> meta = new ArrayList<Integer>();
     for (ItemStack output : recipes.keySet()) {
       if (output.itemID == ID) {
-        int[] tmp = new int[meta.length + 1];
-        System.arraycopy(meta, 0, tmp, 0, meta.length);
-        meta = tmp;
-        meta[meta.length - 1] = output.getItemDamage();
+        meta.add(output.getItemDamage());
       }
     }
     return meta;

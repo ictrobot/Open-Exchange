@@ -127,7 +127,6 @@ public class QMC {
   
   public static void addHandler(QMCHandler handler, Class<?> canHandle) {
     addHandler(handler, new Class<?>[] { canHandle });
-    return;
   }
   
   public static void addHandler(QMCHandler handler, Class<?>[] canHandle) {

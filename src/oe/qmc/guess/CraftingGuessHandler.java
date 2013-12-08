@@ -2,6 +2,7 @@ package oe.qmc.guess;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -41,15 +42,13 @@ public class CraftingGuessHandler extends GuessHandler {
         if (recipeObject instanceof IRecipe) {
           IRecipe recipe = (IRecipe) recipeObject;
           ItemStack output = recipe.getRecipeOutput();
-          if (output != null) {
-            ItemStack[] input = getInputs(recipe);
-            if (input != null) {
-              ItemStack[] returned = getReturned(recipe, input, output);
-              if (returned != null) {
-                increaseData(output.itemID);
-                crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
-                recipes++;
-              }
+          ItemStack[] input = getInputs(recipe);
+          if (output != null && input != null) {
+            ItemStack[] returned = getReturned(recipe, input, output);
+            if (returned != null) {
+              increaseData(output.itemID);
+              crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
+              recipes++;
             }
           }
         }
@@ -61,9 +60,9 @@ public class CraftingGuessHandler extends GuessHandler {
   }
   
   @Override
-  public Guess.Data check(ItemStack itemstack) {
+  public double check(ItemStack itemstack) {
     if (itemstack == null) {
-      return null;
+      return -1;
     }
     int id = itemstack.itemID;
     for (Data d : crafting[id]) {
@@ -74,7 +73,7 @@ public class CraftingGuessHandler extends GuessHandler {
           if (stack != null) {
             double v = checkQMC(stack);
             if (v == -1) {
-              return null;
+              return -1;
             } else {
               value = value + v;
             }
@@ -85,7 +84,7 @@ public class CraftingGuessHandler extends GuessHandler {
           if (stack != null) {
             double v = checkQMC(stack);
             if (v == -1) {
-              return null;
+              return -1;
             } else {
               value = value - v;
             }
@@ -93,12 +92,11 @@ public class CraftingGuessHandler extends GuessHandler {
         }
         if (value > 0) {
           value = value / d.output.stackSize;
-          Guess.Data toReturn = new Guess.Data(d.input, value, d.output.stackSize);
-          return toReturn;
+          return value;
         }
       }
     }
-    return null;
+    return -1;
   }
   
   private double checkQMC(ItemStack stack) {
@@ -117,15 +115,12 @@ public class CraftingGuessHandler extends GuessHandler {
   }
   
   @Override
-  public int[] meta(int ID) {
-    int[] data = new int[0];
+  public List<Integer> meta(int ID) {
+    List<Integer> meta = new ArrayList<Integer>();
     for (Data d : crafting[ID]) {
-      int[] tmp = new int[data.length + 1];
-      System.arraycopy(data, 0, tmp, 0, data.length);
-      data = tmp;
-      data[data.length - 1] = d.output.getItemDamage();
+      meta.add(d.output.getItemDamage());
     }
-    return data;
+    return meta;
   }
   
   private static ItemStack[] getInputs(IRecipe recipe) {
