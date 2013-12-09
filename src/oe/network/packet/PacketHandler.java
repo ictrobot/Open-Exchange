@@ -24,6 +24,8 @@ public class PacketHandler implements IPacketHandler {
       QMCResetPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeTileInfo")) {
       TileInfoPacket.packet(manager, packet, playerEntity);
+    } else if (packet.channel.contentEquals("oeIM")) {
+      ItemModePacket.packet(manager, packet, playerEntity);
     }
   }
 }

@@ -20,6 +20,7 @@ import oe.core.handler.PlayerInteractHandler;
 import oe.core.handler.PlayerTracker;
 import oe.core.handler.QMCFuelHandler;
 import oe.core.handler.ToolTipHandler;
+import oe.core.handler.keybind.OEKeyBindHandler;
 import oe.core.util.ConfigUtil;
 import oe.core.util.OreDictionaryUtil;
 import oe.item.ItemIDs;
@@ -32,6 +33,7 @@ import oe.qmc.guess.CraftingGuessHandler;
 import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.SmeltingGuessHandler;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -49,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeQD", "oeBM", "oeQMC", "oeQMCReset", "oeTileInfo" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeIM", "oeQD", "oeBM", "oeQMC", "oeQMCReset", "oeTileInfo" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -80,6 +82,8 @@ public class OpenExchange {
     GameRegistry.registerPlayerTracker(new PlayerTracker());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
+    Log.debug("Adding KeyBind Handler");
+    KeyBindingRegistry.registerKeyBinding(new OEKeyBindHandler());
     Log.debug("Loading Block IDs");
     BlockIDs.Load();
     Log.debug("Loading Blocks");
