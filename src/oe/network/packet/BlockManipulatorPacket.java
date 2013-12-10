@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -15,7 +16,8 @@ import oe.core.Debug;
 import oe.core.Log;
 import oe.core.data.QuantumToolBlackList;
 import oe.core.util.ConfigUtil;
-import oe.item.ItemIDs;
+import oe.item.ItemBlockManipulator;
+import oe.qmc.QMC;
 import cpw.mods.fml.common.network.Player;
 
 public class BlockManipulatorPacket {
@@ -39,7 +41,7 @@ public class BlockManipulatorPacket {
       if (Player instanceof EntityPlayer) {
         EntityPlayer player = (EntityPlayer) Player;
         World world = player.worldObj;
-        if (player.getHeldItem() == null || player.getHeldItem().itemID != ItemIDs.blockMover + 256 || player.getHeldItem().stackTagCompound == null) {
+        if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemBlockManipulator) || player.getHeldItem().stackTagCompound == null) {
           return;
         }
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
@@ -54,8 +56,7 @@ public class BlockManipulatorPacket {
             if (!player.capabilities.isCreativeMode) {
               oe.decreaseQMC(cost, player.getHeldItem());
             }
-            Block block = Block.blocksList[world.getBlockId(x, y, z)];
-            if (QuantumToolBlackList.isBlackListed(block)) {
+            if (QuantumToolBlackList.isBlackListed(world.getBlockId(x, y, z))) {
               return;
             }
             NBTTagCompound nbt = new NBTTagCompound();
@@ -77,23 +78,29 @@ public class BlockManipulatorPacket {
             }
             world.setBlockToAir(x, y, z);
           } else {
+            int id = world.getBlockId(x, y, z);
+            int meta = world.getBlockMetadata(x, y, z);
             OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
             ConfigUtil.load();
-            double cost = ConfigUtil.other("item", "blockManipulatorCopyCost", 128.00);
+            double cost = ConfigUtil.other("item", "blockManipulatorCopyCost", 0);
             ConfigUtil.save();
+            double blockCost = QMC.getQMC(new ItemStack(id, 1, meta));
+            if (blockCost < 0) {
+              return;
+            }
+            cost += blockCost;
             if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
               return;
             }
             if (!player.capabilities.isCreativeMode) {
               oe.decreaseQMC(cost, player.getHeldItem());
             }
-            Block block = Block.blocksList[world.getBlockId(x, y, z)];
-            if (QuantumToolBlackList.isBlackListed(block)) {
+            if (QuantumToolBlackList.isBlackListed(id)) {
               return;
             }
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("BlockID", world.getBlockId(x, y, z));
-            nbt.setInteger("BlockMeta", world.getBlockMetadata(x, y, z));
+            nbt.setInteger("BlockID", id);
+            nbt.setInteger("BlockMeta", meta);
             player.getHeldItem().stackTagCompound.setTag("block", nbt);
             player.getHeldItem().stackTagCompound.setBoolean("hasBlock", true);
             player.getHeldItem().setItemDamage(1);
@@ -113,7 +120,13 @@ public class BlockManipulatorPacket {
             x++;
           }
           NBTTagCompound nbt = player.getHeldItem().stackTagCompound.getCompoundTag("block");
-          world.setBlock(x, y, z, nbt.getInteger("BlockID"), nbt.getInteger("BlockMeta"), 3);
+          
+          int id = nbt.getInteger("BlockID");
+          int meta = nbt.getInteger("BlockMeta");
+          if (!Block.blocksList[id].canPlaceBlockAt(world, x, y, z) || !world.isAirBlock(x, y, z)) {
+            return; // Not valid pos
+          }
+          world.setBlock(x, y, z, id, meta, 3);
           if (nbt.hasKey("tile")) {
             NBTTagCompound tile = nbt.getCompoundTag("tile");
             tile.setInteger("x", x);
