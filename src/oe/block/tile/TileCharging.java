@@ -11,10 +11,12 @@ import oe.api.OE;
 import oe.api.OEItemInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
+import oe.core.data.TileSync.ClientNetworkedTile;
 import oe.core.data.TileSync.ServerNetworkedTile;
 import oe.core.util.Util;
+import oe.qmc.InWorldQMC;
 
-public class TileCharging extends TileEntity implements ServerNetworkedTile, IInventory, ISidedInventory, OETileInterface {
+public class TileCharging extends TileEntity implements ServerNetworkedTile, ClientNetworkedTile, IInventory, ISidedInventory, OETileInterface {
   public ItemStack[] chestContents;
   public final int size = 18; // 9 Input, 9 Output
   public double stored;
@@ -34,24 +36,44 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, IIn
             if (OE.isOE(getStackInSlot(slot).getItem().getClass())) {
               ItemStack itemstack = getStackInSlot(slot);
               OEItemInterface oe = (OEItemInterface) getStackInSlot(slot).getItem();
-              for (int i = 1; i < 6; i++) {
+              if (mode) {
                 if (oe.getQMC(itemstack) < oe.getMaxQMC()) {
                   double amount;
-                  if (oe.getQMC(itemstack) + 1 < oe.getMaxQMC()) {
-                    amount = 1;
+                  if (oe.getQMC(itemstack) + (InWorldQMC.factor * oe.getTier()) < oe.getMaxQMC()) {
+                    amount = InWorldQMC.factor * oe.getTier();
                   } else {
                     amount = oe.getMaxQMC() - oe.getQMC(itemstack);
                   }
-                  if (stored > amount) {
-                    oe.increaseQMC(amount, itemstack);
-                    stored = stored - amount;
+                  if (stored < amount) {
+                    amount = stored;
                   }
+                  oe.increaseQMC(amount, itemstack);
+                  stored = stored - amount;
+                } else {
+                  moveOutput(slot);
+                }
+              } else {
+                if (oe.getQMC(itemstack) > 0) {
+                  double amount;
+                  if (oe.getQMC(itemstack) - (InWorldQMC.factor * oe.getTier()) > 0) {
+                    amount = InWorldQMC.factor * oe.getTier();
+                  } else {
+                    amount = oe.getQMC(itemstack);
+                  }
+                  if (stored + amount > getMaxQMC()) {
+                    amount = getMaxQMC() - stored;
+                  }
+                  oe.decreaseQMC(amount, itemstack);
+                  stored = stored + amount;
                 } else {
                   moveOutput(slot);
                 }
               }
             }
           }
+        }
+        if (!mode) {
+          stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
         }
       }
     } else {
@@ -208,12 +230,19 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, IIn
   public NBTTagCompound snapshotServer() {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setDouble("stored", stored);
+    if (modeToClients) {
+      nbt.setBoolean("mode", mode);
+      modeToClients = false;
+    }
     return nbt;
   }
   
   @Override
   public void restoreClient(NBTTagCompound nbt) {
     stored = nbt.getDouble("stored");
+    if (nbt.hasKey("mode")) {
+      mode = nbt.getBoolean("mode");
+    }
   }
   
   @Override
@@ -299,6 +328,46 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, IIn
   
   @Override
   public OEType getType() {
-    return OEType.Consumer;
+    if (mode) {
+      return OEType.Consumer;
+    }
+    return OEType.Producer;
+  }
+  
+  boolean mode = true; // True==Charging, False==Draining
+  boolean modeToServer = false;
+  boolean modeToClients = false;
+  
+  public String getMode() {
+    if (mode) {
+      return "Charging";
+    }
+    return "Draining";
+  }
+  
+  public String toggleMode() {
+    modeToServer = true;
+    if (mode) {
+      mode = false;
+    } else {
+      mode = true;
+    }
+    return getMode();
+  }
+  
+  @Override
+  public NBTTagCompound snapshotClient() {
+    NBTTagCompound nbt = new NBTTagCompound();
+    if (modeToServer) {
+      nbt.setBoolean("mode", mode);
+      modeToServer = false;
+    }
+    return nbt;
+  }
+  
+  @Override
+  public void restoreServer(NBTTagCompound nbt) {
+    mode = nbt.getBoolean("mode");
+    modeToClients = true;
   }
 }

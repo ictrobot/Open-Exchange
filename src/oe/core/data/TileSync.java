@@ -29,7 +29,7 @@ import net.minecraft.world.WorldServer;
 public class TileSync {
   
   public static class OETileSync implements ITickHandler {
-    private final EnumSet<TickType> ticksToGet = EnumSet.of(TickType.WORLD);
+    private final EnumSet<TickType> ticksToGet = EnumSet.of(TickType.CLIENT, TickType.SERVER);
     
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -77,11 +77,20 @@ public class TileSync {
     try {
       if (Util.isServerSide()) {
         WorldServer[] worlds = MinecraftServer.getServer().worldServers;
+        if (worlds == null) {
+          return;
+        }
         for (WorldServer world : worlds) {
-          sync(world);
+          if (world != null) {
+            sync(world);
+          }
         }
       } else {
-        sync(Minecraft.getMinecraft().theWorld);
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        if (world == null) {
+          return;
+        }
+        sync(world);
       }
     } catch (Exception e) {
       Debug.handleException(e);

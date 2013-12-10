@@ -1,5 +1,6 @@
 package oe.block.gui;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -40,4 +41,18 @@ public class GUICharging extends GuiContainer {
     this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
   }
   
+  private GuiButton mode;
+  
+  @SuppressWarnings("unchecked")
+  public void initGui() {
+    super.initGui();
+    mode = new GuiButton(1, guiLeft + 62, guiTop + 59, 53, 18, tile.getMode());
+    this.buttonList.add(mode);
+  }
+  
+  protected void actionPerformed(GuiButton guibutton) {
+    if (guibutton.id == mode.id) {
+      mode.displayString = tile.toggleMode();
+    }
+  }
 }

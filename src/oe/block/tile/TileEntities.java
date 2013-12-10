@@ -17,6 +17,7 @@ public class TileEntities {
     GameRegistry.registerTileEntity(TileDrillRemoteReceiver.class, "OEDrillRemoteReceiver");
     GameRegistry.registerTileEntity(TileExperienceConsumer.class, "OEExperienceConsumer");
     
+    TickRegistry.registerTickHandler(new OETileSync(), Side.CLIENT);
     TickRegistry.registerTickHandler(new OETileSync(), Side.SERVER);
   }
 }
