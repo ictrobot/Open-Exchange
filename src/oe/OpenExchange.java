@@ -23,6 +23,7 @@ import oe.core.handler.ToolTipHandler;
 import oe.core.handler.keybind.OEKeyBindHandler;
 import oe.core.util.ConfigUtil;
 import oe.core.util.OreDictionaryUtil;
+import oe.core.util.Util;
 import oe.item.ItemIDs;
 import oe.item.Items;
 import oe.network.packet.PacketHandler;
@@ -82,8 +83,10 @@ public class OpenExchange {
     GameRegistry.registerPlayerTracker(new PlayerTracker());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
-    Log.debug("Adding KeyBind Handler");
-    KeyBindingRegistry.registerKeyBinding(new OEKeyBindHandler());
+    if (Util.isClient()) {
+      Log.debug("Adding KeyBind Handler");
+      KeyBindingRegistry.registerKeyBinding(new OEKeyBindHandler());
+    }
     Log.debug("Loading Block IDs");
     BlockIDs.Load();
     Log.debug("Loading Blocks");
