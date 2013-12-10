@@ -87,7 +87,7 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
   
   @Override
   public double getMaxQMC() {
-    return 1000000000;
+    return 100000000; // 100 * Condenser or Extractor
   }
   
   @Override

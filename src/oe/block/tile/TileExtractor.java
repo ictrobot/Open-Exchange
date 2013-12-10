@@ -270,7 +270,7 @@ public class TileExtractor extends TileEntity implements ServerNetworkedTile, OE
   
   @Override
   public double getMaxQMC() {
-    return 10000000;
+    return 1000000;
   }
   
   @Override

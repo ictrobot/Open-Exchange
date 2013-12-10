@@ -115,7 +115,7 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   
   @Override
   public double getMaxQMC(ItemStack itemstack) {
-    return 10000;
+    return 50000;
   }
   
   @Override

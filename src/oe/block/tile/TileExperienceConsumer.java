@@ -107,7 +107,7 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
   
   @Override
   public double getMaxQMC() {
-    return 1000000000;
+    return 10000;
   }
   
   @Override

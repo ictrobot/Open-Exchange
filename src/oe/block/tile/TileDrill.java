@@ -137,7 +137,7 @@ public class TileDrill extends TileEntity implements ServerNetworkedTile, OETile
   
   @Override
   public double getMaxQMC() {
-    return 5000;
+    return 10000;
   }
   
   @Override

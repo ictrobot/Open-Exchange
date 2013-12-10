@@ -145,7 +145,7 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   
   @Override
   public double getMaxQMC(ItemStack itemstack) {
-    return 100000;
+    return 50000;
   }
   
   @Override

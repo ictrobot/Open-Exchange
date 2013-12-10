@@ -100,7 +100,7 @@ public class ItemBlockManipulator extends Item implements OEItemInterface, ItemM
   
   @Override
   public double getMaxQMC(ItemStack itemstack) {
-    return 10000;
+    return 50000;
   }
   
   @Override

@@ -423,7 +423,7 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
   
   @Override
   public double getMaxQMC() {
-    return 10000000;
+    return 1000000; // 10,000 (Diamond rounded up) * 100
   }
   
   @Override

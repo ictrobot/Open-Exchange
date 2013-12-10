@@ -171,6 +171,7 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
       }
     }
     stored = TagCompound.getDouble("OE_Stored_Value");
+    mode = TagCompound.getBoolean("Mode");
   }
   
   @Override
@@ -187,6 +188,7 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     }
     TagCompound.setTag("Items", TagList);
     TagCompound.setDouble("OE_Stored_Value", stored);
+    TagCompound.setBoolean("Mode", mode);
   }
   
   @Override
