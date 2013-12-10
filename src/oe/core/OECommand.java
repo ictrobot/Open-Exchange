@@ -179,7 +179,7 @@ public class OECommand implements ICommand {
         }
         if (held.getItem() instanceof OEItemInterface) {
           OEItemInterface oe = (OEItemInterface) held.getItem();
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Stored " + oe.getQMC(held) + " " + QMC.name + ", Max " + oe.getMaxQMC() + " " + QMC.name));
+          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Stored " + oe.getQMC(held) + " " + QMC.name + ", Max " + oe.getMaxQMC(held) + " " + QMC.name));
         }
         int oreID = OreDictionary.getOreID(held);
         if (oreID != -1) {

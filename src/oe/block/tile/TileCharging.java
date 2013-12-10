@@ -37,12 +37,12 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
               ItemStack itemstack = getStackInSlot(slot);
               OEItemInterface oe = (OEItemInterface) getStackInSlot(slot).getItem();
               if (mode) {
-                if (oe.getQMC(itemstack) < oe.getMaxQMC()) {
+                if (oe.getQMC(itemstack) < oe.getMaxQMC(itemstack)) {
                   double amount;
-                  if (oe.getQMC(itemstack) + (InWorldQMC.factor * oe.getTier()) < oe.getMaxQMC()) {
-                    amount = InWorldQMC.factor * oe.getTier();
+                  if (oe.getQMC(itemstack) + (InWorldQMC.factor * oe.getTier(itemstack)) < oe.getMaxQMC(itemstack)) {
+                    amount = InWorldQMC.factor * oe.getTier(itemstack);
                   } else {
-                    amount = oe.getMaxQMC() - oe.getQMC(itemstack);
+                    amount = oe.getMaxQMC(itemstack) - oe.getQMC(itemstack);
                   }
                   if (stored < amount) {
                     amount = stored;
@@ -55,8 +55,8 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
               } else {
                 if (oe.getQMC(itemstack) > 0) {
                   double amount;
-                  if (oe.getQMC(itemstack) - (InWorldQMC.factor * oe.getTier()) > 0) {
-                    amount = InWorldQMC.factor * oe.getTier();
+                  if (oe.getQMC(itemstack) - (InWorldQMC.factor * oe.getTier(itemstack)) > 0) {
+                    amount = InWorldQMC.factor * oe.getTier(itemstack);
                   } else {
                     amount = oe.getQMC(itemstack);
                   }

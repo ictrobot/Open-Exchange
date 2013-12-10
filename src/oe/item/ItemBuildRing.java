@@ -91,8 +91,8 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   public void increaseQMC(double value, ItemStack stack) {
     if (stack.getTagCompound() != null) {
       double current = stack.getTagCompound().getDouble("Value");
-      if (current + value > getMaxQMC()) {
-        current = getMaxQMC();
+      if (current + value > getMaxQMC(stack)) {
+        current = getMaxQMC(stack);
       } else {
         current = current + value;
       }
@@ -114,17 +114,17 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   }
   
   @Override
-  public double getMaxQMC() {
+  public double getMaxQMC(ItemStack itemstack) {
     return 10000;
   }
   
   @Override
-  public int getTier() {
+  public int getTier(ItemStack itemstack) {
     return 2;
   }
   
   @Override
-  public OEType getType() {
+  public OEType getType(ItemStack itemstack) {
     return OEType.Consumer;
   }
 }

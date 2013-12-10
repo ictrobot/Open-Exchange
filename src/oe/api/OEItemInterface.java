@@ -1,8 +1,9 @@
 package oe.api;
 
+import oe.api.lib.OEType;
 import net.minecraft.item.ItemStack;
 
-public interface OEItemInterface extends OEInterface {
+public interface OEItemInterface {
   /**
    * Returns QMC stored
    */
@@ -22,4 +23,19 @@ public interface OEItemInterface extends OEInterface {
    * Decreases stored QMC by vlue
    */
   public void decreaseQMC(double value, ItemStack itemstack);
+  
+  /**
+   * Returns max QMC Storable
+   */
+  public double getMaxQMC(ItemStack itemstack);
+  
+  /**
+   * Return Tier (Devices are only meant to interact with devices at the same tier or less)
+   */
+  public int getTier(ItemStack itemstack);
+  
+  /**
+   * Returns device OEType
+   */
+  public OEType getType(ItemStack itemstack);
 }
