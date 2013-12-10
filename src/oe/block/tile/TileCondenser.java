@@ -203,7 +203,7 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
       int free = freeSlot();
       if (free != -1) {
         ItemStack tmp = chestContents[0].copy();
-        tmp.stackSize = 0;
+        tmp.stackSize = 1;
         setInventorySlotContents(free, tmp);
         isDifferent[free] = false; // Instead of doing a full check ( updateDifferent() )
         return true;
