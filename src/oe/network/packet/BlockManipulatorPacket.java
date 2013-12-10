@@ -43,37 +43,61 @@ public class BlockManipulatorPacket {
           return;
         }
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
-          OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
-          ConfigUtil.load();
-          double cost = ConfigUtil.other("item", "blockManipulatorCost", 128.00);
-          ConfigUtil.save();
-          if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
-            return;
+          if (player.getHeldItem().stackTagCompound.getCompoundTag("mode").getBoolean("move")) {
+            OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
+            ConfigUtil.load();
+            double cost = ConfigUtil.other("item", "blockManipulatorMoveCost", 0);
+            ConfigUtil.save();
+            if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
+              return;
+            }
+            if (!player.capabilities.isCreativeMode) {
+              oe.decreaseQMC(cost, player.getHeldItem());
+            }
+            Block block = Block.blocksList[world.getBlockId(x, y, z)];
+            if (QuantumToolBlackList.isBlackListed(block)) {
+              return;
+            }
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger("BlockID", world.getBlockId(x, y, z));
+            nbt.setInteger("BlockMeta", world.getBlockMetadata(x, y, z));
+            TileEntity te = world.getBlockTileEntity(x, y, z);
+            if (te != null) {
+              NBTTagCompound nbtTE = new NBTTagCompound();
+              te.writeToNBT(nbtTE);
+              nbt.setTag("tile", nbtTE);
+            }
+            player.getHeldItem().stackTagCompound.setTag("block", nbt);
+            player.getHeldItem().stackTagCompound.setBoolean("hasBlock", true);
+            player.getHeldItem().setItemDamage(1); // To stop them having values while storing a
+                                                   // block
+            if (te != null) {
+              TileEntity toSet = Block.blocksList[world.getBlockId(x, y, z)].createTileEntity(world, world.getBlockMetadata(x, y, z));
+              world.setBlockTileEntity(x, y, z, toSet);
+            }
+            world.setBlockToAir(x, y, z);
+          } else {
+            OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
+            ConfigUtil.load();
+            double cost = ConfigUtil.other("item", "blockManipulatorCopyCost", 128.00);
+            ConfigUtil.save();
+            if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
+              return;
+            }
+            if (!player.capabilities.isCreativeMode) {
+              oe.decreaseQMC(cost, player.getHeldItem());
+            }
+            Block block = Block.blocksList[world.getBlockId(x, y, z)];
+            if (QuantumToolBlackList.isBlackListed(block)) {
+              return;
+            }
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger("BlockID", world.getBlockId(x, y, z));
+            nbt.setInteger("BlockMeta", world.getBlockMetadata(x, y, z));
+            player.getHeldItem().stackTagCompound.setTag("block", nbt);
+            player.getHeldItem().stackTagCompound.setBoolean("hasBlock", true);
+            player.getHeldItem().setItemDamage(1);
           }
-          if (!player.capabilities.isCreativeMode) {
-            oe.decreaseQMC(cost, player.getHeldItem());
-          }
-          Block block = Block.blocksList[world.getBlockId(x, y, z)];
-          if (QuantumToolBlackList.isBlackListed(block)) {
-            return;
-          }
-          NBTTagCompound nbt = new NBTTagCompound();
-          nbt.setInteger("BlockID", world.getBlockId(x, y, z));
-          nbt.setInteger("BlockMeta", world.getBlockMetadata(x, y, z));
-          TileEntity te = world.getBlockTileEntity(x, y, z);
-          if (te != null) {
-            NBTTagCompound nbtTE = new NBTTagCompound();
-            te.writeToNBT(nbtTE);
-            nbt.setTag("tile", nbtTE);
-          }
-          player.getHeldItem().stackTagCompound.setTag("block", nbt);
-          player.getHeldItem().stackTagCompound.setBoolean("hasBlock", true);
-          player.getHeldItem().setItemDamage(1); // To stop them having values while storing a block
-          if (te != null) {
-            TileEntity toSet = Block.blocksList[world.getBlockId(x, y, z)].createTileEntity(world, world.getBlockMetadata(x, y, z));
-            world.setBlockTileEntity(x, y, z, toSet);
-          }
-          world.setBlockToAir(x, y, z);
         } else {
           if (blockFace == 0) {
             y--;

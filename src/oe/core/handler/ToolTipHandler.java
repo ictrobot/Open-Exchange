@@ -3,17 +3,25 @@ package oe.core.handler;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import oe.api.OEItemInterface;
+import oe.item.ItemMode;
 import oe.qmc.QMC;
 
 public class ToolTipHandler {
   
   @ForgeSubscribe
   public void handleItemTooltipEvent(ItemTooltipEvent event) {
+    if (event.itemStack.getItem() instanceof ItemMode) {
+      ItemMode im = (ItemMode) event.itemStack.getItem();
+      String mode = im.getMode(event.itemStack);
+      if (mode != null && !mode.isEmpty()) {
+        event.toolTip.add("Mode: " + mode);
+      }
+    }
     if (event.itemStack.getItem() instanceof OEItemInterface) {
       OEItemInterface oe = (OEItemInterface) event.itemStack.getItem();
       double stored = oe.getQMC(event.itemStack);
       if (oe != null && stored >= 0) {
-        event.toolTip.add("Stored " + QMC.formatter.format(oe.getQMC(event.itemStack)) + " " + QMC.name);
+        event.toolTip.add("Stored: " + QMC.formatter.format(oe.getQMC(event.itemStack)) + " " + QMC.name);
       }
     }
     if (QMC.hasQMC(event.itemStack)) {

@@ -33,6 +33,7 @@ public class PlayerInteractHandler {
       int z = event.z;
       int blockFace = event.face; // Bottom = 0, Top = 1, Sides = 2-5
       packet(x, y, z, blockFace, player);
+      event.setCanceled(true);
     }
   }
   

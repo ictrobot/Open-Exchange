@@ -20,8 +20,10 @@ public class OEKeyBindHandler extends KeyHandler {
   
   @Override
   public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {
-    if (kb instanceof OEKeyBinding) {
-      ((OEKeyBinding) kb).keyDown();
+    if (tickEnd) {
+      if (kb instanceof OEKeyBinding) {
+        ((OEKeyBinding) kb).keyDown();
+      }
     }
   }
   

@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
 
-public class ItemBlockManipulator extends Item implements OEItemInterface {
+public class ItemBlockManipulator extends Item implements OEItemInterface, ItemMode {
   
   public ItemBlockManipulator(int id) {
     super(id);
@@ -35,6 +35,8 @@ public class ItemBlockManipulator extends Item implements OEItemInterface {
   private void checkNBT(ItemStack itemstack) {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
+      itemstack.stackTagCompound.setCompoundTag("mode", new NBTTagCompound());
+      itemstack.stackTagCompound.getCompoundTag("mode").setBoolean("copy", true);
     }
   }
   
@@ -109,5 +111,28 @@ public class ItemBlockManipulator extends Item implements OEItemInterface {
   @Override
   public OEType getType() {
     return OEType.Consumer;
+  }
+  
+  @Override
+  public String getMode(ItemStack itemstack) {
+    checkNBT(itemstack);
+    if (itemstack.stackTagCompound.getCompoundTag("mode").getBoolean("copy")) {
+      return "Copy";
+    } else {
+      return "Move";
+    }
+  }
+  
+  @Override
+  public String switchMode(ItemStack itemstack) {
+    checkNBT(itemstack);
+    if (itemstack.stackTagCompound.getCompoundTag("mode").getBoolean("copy")) {
+      itemstack.stackTagCompound.getCompoundTag("mode").removeTag("copy");
+      itemstack.stackTagCompound.getCompoundTag("mode").setBoolean("move", true);
+    } else {
+      itemstack.stackTagCompound.getCompoundTag("mode").removeTag("move");
+      itemstack.stackTagCompound.getCompoundTag("mode").setBoolean("copy", true);
+    }
+    return getMode(itemstack);
   }
 }
