@@ -139,18 +139,21 @@ public class TileSync {
       }
     }
     for (Object p : players) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-      DataOutputStream outputStream = new DataOutputStream(bos);
-      try {
-        CompressedStreamTools.writeCompressed(packets.get((EntityPlayer) p), outputStream);
-      } catch (IOException e) {
-        Debug.handleException(e);
+      NBTTagCompound nbt = packets.get((EntityPlayer) p);
+      if (nbt != null && !nbt.hasNoTags()) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+        DataOutputStream outputStream = new DataOutputStream(bos);
+        try {
+          CompressedStreamTools.writeCompressed(nbt, outputStream);
+        } catch (IOException e) {
+          Debug.handleException(e);
+        }
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "oeTileSync";
+        packet.data = bos.toByteArray();
+        packet.length = bos.size();
+        PacketDispatcher.sendPacketToPlayer(packet, (Player) p);
       }
-      Packet250CustomPayload packet = new Packet250CustomPayload();
-      packet.channel = "oeTileSync";
-      packet.data = bos.toByteArray();
-      packet.length = bos.size();
-      PacketDispatcher.sendPacketToPlayer(packet, (Player) p);
     }
   }
   
@@ -184,6 +187,9 @@ public class TileSync {
       packetNBT.setInteger("size", packetNBT.getInteger("size") + 1);
       int num = packetNBT.getInteger("size");
       packetNBT.setCompoundTag("" + num, nbt);
+    }
+    if (packetNBT.getTags().size() == 1) {
+      return;
     }
     ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
     DataOutputStream outputStream = new DataOutputStream(bos);

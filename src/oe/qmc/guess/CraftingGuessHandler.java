@@ -35,7 +35,6 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public void init() {
-    Log.debug("Loading Crafting Guesser");
     int recipes = 0;
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
       try {

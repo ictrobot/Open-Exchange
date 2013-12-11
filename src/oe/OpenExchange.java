@@ -116,7 +116,7 @@ public class OpenExchange {
     OreDictionaryUtil.minecraftInit();
     Log.debug("Loading QMC Values");
     QMC.load();
-    Log.debug("Adding QMC Guessers");
+    Log.debug("Adding QMC Guess Handlers");
     Guess.addHandler(new FluidGuessHandler());
     Guess.addHandler(new CraftingGuessHandler());
     Guess.addHandler(new SmeltingGuessHandler());

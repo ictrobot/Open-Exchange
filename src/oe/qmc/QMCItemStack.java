@@ -54,7 +54,7 @@ public class QMCItemStack extends QMCHandler {
       // Fluid Storing Itemstacks
       if (FluidUtil.storesFluid((ItemStack) o)) {
         ItemStack container = FluidUtil.getEmpty((ItemStack) o);
-        if (container != null) {
+        if (container != null && !ItemStackUtil.equals(container, (ItemStack) o)) {
           double containerQMC = getQMC(container);
           if (containerQMC > 0 && FluidUtil.getFluidStack((ItemStack) o) != null) {
             FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));

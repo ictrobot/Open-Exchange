@@ -18,7 +18,6 @@ public class SmeltingGuessHandler extends GuessHandler {
   @Override
   @SuppressWarnings("unchecked")
   public void init() {
-    Log.debug("Loading Smelting Guesser");
     Map<Integer, ItemStack> normal = FurnaceRecipes.smelting().getSmeltingList();
     for (Integer i : normal.keySet()) {
       ItemStack input = new ItemStack(i, 1, 0);
