@@ -15,7 +15,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEItemInterface;
 import oe.core.util.FluidUtil;
 import oe.core.util.ItemStackUtil;
-import oe.core.util.OreDictionaryUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -60,16 +59,8 @@ public class OECommand implements ICommand {
       commandHelp(sender, arguments);
       return;
     }
-    if (arguments[0].toLowerCase().matches(QMC.name.toLowerCase())) {
-      commandValue(sender, arguments);
-      return;
-    }
     if (arguments[0].toLowerCase().matches("data")) {
       commandData(sender, arguments);
-      return;
-    }
-    if (arguments[0].toLowerCase().matches("ore")) {
-      commandOre(sender, arguments);
       return;
     }
     if (arguments[0].toLowerCase().matches("fluid")) {
@@ -81,6 +72,14 @@ public class OECommand implements ICommand {
       return;
     }
     throw new WrongUsageException("Type '" + this.getCommandUsage(sender) + "' for help.");
+  }
+  
+  private void commandHelp(ICommandSender sender, String[] arguments) {
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("Usage"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe version - Returns Open Exchange version"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe data - Returns info about the item in your hand"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe fluid - Returns info about the fluid container in your hand"));
+    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe mod - Returns what mod the item in your hand is from"));
   }
   
   private void commandFluid(ICommandSender sender, String[] arguments) {
@@ -140,29 +139,6 @@ public class OECommand implements ICommand {
     }
   }
   
-  private void commandOre(ICommandSender sender, String[] arguments) {
-    EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
-    if (player != null) {
-      ItemStack held = player.getHeldItem();
-      if (held != null) {
-        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Ore Data ---"));
-        int oreID = OreDictionary.getOreID(held);
-        if (oreID != -1) {
-          String ore = OreDictionary.getOreName(oreID);
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + ore));
-          ItemStack[] oreStacks = OreDictionaryUtil.getItemStacks(ore);
-          if (oreStacks != null) {
-            for (ItemStack stack : oreStacks) {
-              sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + stack.getUnlocalizedName() + " (ID:" + stack.itemID + " Meta:" + stack.getItemDamage() + ")"));
-            }
-          }
-        } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held itemstack is not registered in the Ore Dictionary"));
-        }
-      }
-    }
-  }
-  
   private void commandData(ICommandSender sender, String[] arguments) {
     EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
     if (player != null) {
@@ -187,30 +163,6 @@ public class OECommand implements ICommand {
         }
       }
     }
-  }
-  
-  private void commandValue(ICommandSender sender, String[] arguments) {
-    EntityPlayerMP player = getPlayerForName(sender.getCommandSenderName());
-    if (player != null) {
-      ItemStack held = player.getHeldItem();
-      if (held != null) {
-        double v = QMC.getQMC(held);
-        if (v != -1) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText(QMC.name + " value of ItemStack in your hand is " + v));
-        } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The ItemStack in your hand does not have a " + QMC.name + " value"));
-        }
-      } else {
-        sender.sendChatToPlayer(ChatMessageComponent.createFromText("You have nothing in your hand"));
-      }
-    }
-  }
-  
-  private void commandHelp(ICommandSender sender, String[] arguments) {
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("Usage"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe version - Returns Open Exchange version"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe data - Returns info about the item in your hand"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe length - Returns the length of the QMC database"));
   }
   
   private void commandVersion(ICommandSender sender, String[] arguments) {

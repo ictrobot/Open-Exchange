@@ -3,6 +3,8 @@ package oe.qmc.file;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import oe.OpenExchange;
 import oe.core.Debug;
@@ -11,15 +13,12 @@ import org.apache.commons.io.FileUtils;
 
 public class CustomQMCValuesReader {
   
-  public static void read() {
-    read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true);
+  public static List<QMCCustomAction> actions() {
+    return read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true, false);
   }
   
-  public static void read(File file) {
-    read(file, false);
-  }
-  
-  private static void read(File file, boolean shouldCreate) {
+  private static List<QMCCustomAction> read(File file, boolean shouldCreate, boolean read) {
+    List<QMCCustomAction> data = new ArrayList<QMCCustomAction>();
     try {
       if (!file.exists()) {
         if (shouldCreate) {
@@ -43,91 +42,67 @@ public class CustomQMCValuesReader {
           bw.newLine();
           bw.write("# To add a value");
           bw.newLine();
-          bw.write("# a [ID] [Meta] [Value]");
+          bw.write("# add [Value] [ID] [Meta]");
           bw.newLine();
-          bw.write("# a [OreDictionary] [Value]");
+          bw.write("# add [Value] [OreDictionary]");
           bw.newLine();
           bw.newLine();
           bw.write("# To blacklist");
           bw.newLine();
-          bw.write("# b [ID] [Meta]");
+          bw.write("# blacklist [ID] [Meta]");
           bw.newLine();
-          bw.write("# b [OreDictionary]");
+          bw.write("# blacklist [OreDictionary]");
           bw.newLine();
           bw.newLine();
           bw.close();
-        } else {
-          return;
         }
       }
       for (String line : FileUtils.readLines(file)) {
         if (!line.startsWith("#")) {
-          String[] result = line.split("\\s");
-          String command = result[0];
-          if (result.length == 2) {
-            if (command.startsWith("b")) {
-              blacklistOre(result);
-            }
-          } else if (result.length == 3) {
-            if (command.startsWith("a")) {
-              addOre(result);
-            }
-            if (command.startsWith("b")) {
-              blacklist(result);
-            }
-          } else if (result.length == 4) {
-            if (command.startsWith("a")) {
-              add(result);
-            }
+          QMCCustomAction action = read(line);
+          if (action != null && action.isValid()) {
+            data.add(action);
           }
         }
       }
     } catch (Exception e) {
       Debug.handleException(e);
     }
+    return data;
   }
   
-  private static void add(String[] result) {
-    Double value;
-    int id;
-    int meta;
-    try {
-      value = Double.parseDouble(result[3]);
-      id = Integer.parseInt(result[1]);
-      meta = Integer.parseInt(result[2]);
-    } catch (NumberFormatException e) {
-      return;
+  public static QMCCustomAction read(String str) {
+    String[] result = str.split("\\s");
+    String command = result[0];
+    if (command.startsWith("a")) {
+      return add(result);
+    } else if (command.startsWith("b")) {
+      return blacklist(result);
     }
-    ItemStack stack = new ItemStack(id, 1, meta);
-    QMC.add(stack, value);
+    return null;
   }
   
-  private static void addOre(String[] result) {
+  private static QMCCustomAction add(String[] result) {
     Double value;
     try {
-      value = Double.parseDouble(result[2]);
+      value = Double.parseDouble(result[1]);
     } catch (NumberFormatException e) {
-      return;
+      return null;
     }
-    String ore = result[1];
-    QMC.add(ore, value);
+    Object o = read(result, 2);
+    return new QMCCustomAction(o, value);
   }
   
-  private static void blacklist(String[] result) {
-    int id;
-    int meta;
+  private static QMCCustomAction blacklist(String[] result) {
+    Object o = read(result, 1);
+    return new QMCCustomAction(o);
+  }
+  
+  private static Object read(String[] str, int starting) { // String or ItemStack
     try {
-      id = Integer.parseInt(result[1]);
-      meta = Integer.parseInt(result[2]);
-    } catch (NumberFormatException e) {
-      return;
+      return new ItemStack(Integer.parseInt(str[starting]), 1, Integer.parseInt(str[starting + 1]));
+    } catch (Exception e) {
+      return str[starting];
     }
-    ItemStack stack = new ItemStack(id, 1, meta);
-    QMC.blacklist(stack);
-  }
-  
-  private static void blacklistOre(String[] result) {
-    String ore = result[1];
-    QMC.blacklist(ore);
   }
 }

@@ -16,6 +16,7 @@ import oe.api.QMCHandler;
 import oe.core.Log;
 import oe.core.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
+import oe.qmc.file.QMCCustomAction;
 import oe.qmc.guess.Guess;
 
 public class QMC {
@@ -31,30 +32,43 @@ public class QMC {
   // Built in handlers
   public static final QMCItemStack itemstackHandler = new QMCItemStack();
   public static final QMCFluid fluidHandler = new QMCFluid();
+  // Custom Actions
+  public static List<QMCCustomAction> actions = new ArrayList<QMCCustomAction>();
   // QMCSave
   private static final File saveFile = new File(OpenExchange.configdir.toString() + "\\..\\QMCSave.dat");
   private static QMCSave save;
   private static NBTTagCompound loadedSnapshot = new NBTTagCompound();
   
   public static void load() {
+    actions = CustomQMCValuesReader.actions();
     QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
-    if (saveFromFile != null && saveFromFile.isValid()) {
+    if (saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions()) {
       save = saveFromFile;
       Log.info("Using QMCSave from " + save.getTimeStamp());
     } else {
-      String reason = "UNKNOWN";
       if (saveFromFile == null) {
-        reason = "No QMCSave file";
-      } else if (!saveFromFile.isValid()) {
-        reason = "Mods have changed";
+        regenerateSave("No QMCSave file");
+      } else if (!saveFromFile.checkMods()) {
+        regenerateSave("Mods have changed");
+      } else if (!saveFromFile.checkActions()) {
+        regenerateSave("Custom Actions have changed");
+      } else {
+        regenerateSave("UNKNOWN");
       }
-      Log.info("Building QMC database - " + reason);
-      for (QMCHandler h : handlersList) {
-        h.restoreSnapshot(new NBTTagCompound()); // Try to wipe
-      }
-      CustomQMCValuesReader.read();
-      QMCValues.load();
     }
+  }
+  
+  public static void regenerateSave(String reason) {
+    Log.info("Building QMC database - " + reason);
+    Log.info("Scheduled Guessing");
+    for (QMCHandler h : handlersList) {
+      h.restoreSnapshot(new NBTTagCompound()); // Try to wipe
+    }
+    for (QMCCustomAction action : actions) {
+      Log.debug("Executing Custom Action - " + action);
+      action.execute();
+    }
+    QMCValues.load();
   }
   
   public static void serverStarted() {
