@@ -1,5 +1,6 @@
 package oe.qmc;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import oe.OpenExchange;
 import oe.api.QMCHandler;
 import oe.core.Log;
 import oe.core.util.Util;
 import oe.qmc.file.CustomQMCValuesReader;
+import oe.qmc.guess.Guess;
 
 public class QMC {
   
@@ -21,17 +24,48 @@ public class QMC {
   public static final String name = "QMC";
   public static final String nameFull = "Quantum Matter Currency";
   // Formatter
-  public static DecimalFormat formatter = new DecimalFormat("0.00");
+  public static final DecimalFormat formatter = new DecimalFormat("0.00");
   // Handlers
   public static HashMap<Class<?>, QMCHandler> handlers = new HashMap<Class<?>, QMCHandler>();
   public static List<QMCHandler> handlersList = new ArrayList<QMCHandler>();
   // Built in handlers
-  public static QMCItemStack itemstackHandler = new QMCItemStack();
-  public static QMCFluid fluidHandler = new QMCFluid();
+  public static final QMCItemStack itemstackHandler = new QMCItemStack();
+  public static final QMCFluid fluidHandler = new QMCFluid();
+  // QMCSave
+  private static final File saveFile = new File(OpenExchange.configdir.toString() + "\\..\\QMCSave.dat");
+  private static QMCSave save;
+  private static NBTTagCompound loadedSnapshot = new NBTTagCompound();
   
   public static void load() {
-    CustomQMCValuesReader.read();
-    QMCValues.load();
+    QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
+    if (saveFromFile != null && saveFromFile.isValid()) {
+      save = saveFromFile;
+      Log.info("Using QMCSave from " + save.getTimeStamp());
+    } else {
+      String reason = "UNKNOWN";
+      if (saveFromFile == null) {
+        reason = "No QMCSave file";
+      } else if (!saveFromFile.isValid()) {
+        reason = "Mods have changed";
+      }
+      Log.info("Building QMC database - " + reason);
+      for (QMCHandler h : handlersList) {
+        h.restoreSnapshot(new NBTTagCompound()); // Try to wipe
+      }
+      CustomQMCValuesReader.read();
+      QMCValues.load();
+    }
+  }
+  
+  public static void serverStarted() {
+    if (save == null) {
+      Log.debug("Guessing QMC Values");
+      Guess.load();
+      save = new QMCSave();
+    } else if (!loadedSnapshot.equals(save.QMCSnapshot)) {
+      restoreSnapshot(save.QMCSnapshot);
+    }
+    save.writeToFile(saveFile);
   }
   
   public static void loadHandlers() {
@@ -108,12 +142,7 @@ public class QMC {
       handler.restoreSnapshot(nbt.getCompoundTag(handler.getClass().getSimpleName()));
     }
     Log.debug("After restoring there are " + length() + " " + name + " values");
-  }
-  
-  public static NBTTagCompound postInitSnapshot = new NBTTagCompound();
-  
-  public static void takePostInitSnapshot() {
-    postInitSnapshot = snapshot("Post-Init");
+    loadedSnapshot = nbt;
   }
   
   public static QMCHandler getHandler(Object o) {

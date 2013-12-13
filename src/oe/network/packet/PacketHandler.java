@@ -20,8 +20,6 @@ public class PacketHandler implements IPacketHandler {
       BlockManipulatorPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeQMC")) {
       QMCSynchronizationPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeQMCReset")) {
-      QMCResetPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeTileInfo")) {
       TileInfoPacket.packet(manager, packet, playerEntity);
     } else if (packet.channel.contentEquals("oeIM")) {

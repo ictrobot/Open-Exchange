@@ -24,7 +24,6 @@ public class PlayerTracker implements IPlayerTracker {
         return;
       }
       try {
-        sendReset(player);
         NBTTagCompound nbt = QMC.snapshot("Server --> Client");
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
         DataOutputStream outputStream = new DataOutputStream(bos);
@@ -42,24 +41,9 @@ public class PlayerTracker implements IPlayerTracker {
     }
   }
   
-  public void sendReset(EntityPlayer Player) {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      outputStream.writeInt(0);
-    } catch (Exception e) {
-      Debug.handleException(e);
-    }
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oeQMCReset";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    PacketDispatcher.sendPacketToPlayer(packet, (Player) Player);
-    Log.debug("Sent QMCReset packet to " + Player.username);
-  }
-  
   @Override
   public void onPlayerLogout(EntityPlayer player) {
+    
   }
   
   @Override

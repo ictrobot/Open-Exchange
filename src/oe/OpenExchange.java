@@ -45,14 +45,13 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeIM", "oeQD", "oeBM", "oeQMC", "oeQMCReset", "oeTileInfo" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeIM", "oeQD", "oeBM", "oeQMC", "oeTileInfo" }, packetHandler = PacketHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -83,6 +82,8 @@ public class OpenExchange {
     GameRegistry.registerPlayerTracker(new PlayerTracker());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
+    Log.debug("Loading QMC");
+    QMC.load();
     if (Util.isClient()) {
       Log.debug("Adding KeyBind Handler");
       KeyBindingRegistry.registerKeyBinding(new OEKeyBindHandler());
@@ -114,8 +115,6 @@ public class OpenExchange {
   @EventHandler
   public void load(FMLInitializationEvent event) {
     OreDictionaryUtil.minecraftInit();
-    Log.debug("Loading QMC Values");
-    QMC.load();
     Log.debug("Adding QMC Guess Handlers");
     Guess.addHandler(new FluidGuessHandler());
     Guess.addHandler(new CraftingGuessHandler());
@@ -130,7 +129,6 @@ public class OpenExchange {
     ModIntegration.init();
     Log.debug("Updating Database Ore Dictionary Values");
     QMC.itemstackHandler.updateOreDictionary();
-    QMC.takePostInitSnapshot();
   }
   
   @EventHandler
@@ -148,11 +146,9 @@ public class OpenExchange {
   
   @EventHandler
   public void serverStarted(FMLServerStartedEvent event) {
-    QMC.restoreSnapshot(QMC.postInitSnapshot);
     Log.debug("Loading Fake Player");
     fakePlayer = new FakePlayer.OEFakePlayer();
-    Log.debug("Guessing QMC Values");
-    Guess.load();
+    QMC.serverStarted();
   }
   
   @EventHandler
@@ -161,12 +157,5 @@ public class OpenExchange {
       RemoteDrillData.saveNBT();
     }
     fakePlayer = null;
-  }
-  
-  @EventHandler
-  public void serverStopped(FMLServerStoppedEvent event) {
-    if (proxy.isClient()) {
-      QMC.restoreSnapshot(QMC.postInitSnapshot);
-    }
   }
 }

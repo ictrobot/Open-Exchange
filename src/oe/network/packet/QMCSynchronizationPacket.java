@@ -41,7 +41,7 @@ public class QMCSynchronizationPacket {
         CompressedStreamTools.write(nbt, new File(path));
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      Debug.handleException(e);
     }
   }
 }
