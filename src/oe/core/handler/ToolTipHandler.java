@@ -4,15 +4,15 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import oe.api.OEItemInterface;
-import oe.item.ItemMode;
+import oe.api.OEItemMode;
 import oe.qmc.QMC;
 
 public class ToolTipHandler {
   
   @ForgeSubscribe
   public void handleItemTooltipEvent(ItemTooltipEvent event) {
-    if (event.itemStack.getItem() instanceof ItemMode) {
-      ItemMode im = (ItemMode) event.itemStack.getItem();
+    if (event.itemStack.getItem() instanceof OEItemMode) {
+      OEItemMode im = (OEItemMode) event.itemStack.getItem();
       String mode = im.getMode(event.itemStack);
       if (mode != null && !mode.isEmpty()) {
         event.toolTip.add("Mode: " + mode);

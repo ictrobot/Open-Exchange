@@ -5,8 +5,8 @@ import java.io.DataOutputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import oe.api.OEItemMode;
 import oe.core.Debug;
-import oe.item.ItemMode;
 import org.lwjgl.input.Keyboard;
 
 public class OEKeyItemMode extends OEKeyBinding {
@@ -20,7 +20,7 @@ public class OEKeyItemMode extends OEKeyBinding {
     if (player == null) {
       return; // Not in game
     }
-    if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemMode) {
+    if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof OEItemMode) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
       DataOutputStream outputStream = new DataOutputStream(bos);
       try {

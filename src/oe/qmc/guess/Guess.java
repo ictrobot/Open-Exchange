@@ -80,7 +80,7 @@ public class Guess {
       }
     }
     for (ItemStack checking : currentlyChecking) {
-      if (ItemStackUtil.equalsIgnoreNBT(itemstack, checking)) {
+      if (ItemStackUtil.equals(itemstack, checking)) {
         return -1;
       }
     }

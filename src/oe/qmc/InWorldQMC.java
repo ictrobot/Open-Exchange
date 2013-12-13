@@ -1,7 +1,11 @@
 package oe.qmc;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
+import oe.api.OE;
 import oe.api.OEPipeInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
@@ -103,6 +107,29 @@ public class InWorldQMC {
       }
     }
     return qmcLeftOver;
+  }
+  
+  public static void info(EntityPlayer player, int x, int y, int z) {
+    TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
+    if (te != null) {
+      if (OE.isOE(te.getClass())) {
+        OETileInterface oe = (OETileInterface) te;
+        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + oe.getQMC() + ", Max " + QMC.name + ": " + oe.getMaxQMC() + ", Tier: " + oe.getTier() + ", Type: " + oe.getType()));
+      } else if (InWorldQMC.isOEPipe(te.getClass())) {
+        OEPipeInterface oe = (OEPipeInterface) te;
+        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + (oe.getMaxQMC() - oe.passThroughLeft()) + ", Max " + QMC.name + ": " + oe.getMaxQMC()));
+      } else {
+        ItemStack stack = new ItemStack(player.worldObj.getBlockId(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
+        if (QMC.hasQMC(stack)) {
+          player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack)));
+        }
+      }
+    } else {
+      ItemStack stack = new ItemStack(player.worldObj.getBlockId(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
+      if (QMC.hasQMC(stack)) {
+        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack)));
+      }
+    }
   }
   
   public static Path[] getPaths(int x, int y, int z, World world) {

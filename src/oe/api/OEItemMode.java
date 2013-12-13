@@ -1,8 +1,8 @@
-package oe.item;
+package oe.api;
 
 import net.minecraft.item.ItemStack;
 
-public interface ItemMode {
+public interface OEItemMode {
   
   public String getMode(ItemStack itemstack);
   

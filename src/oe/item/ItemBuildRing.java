@@ -8,12 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
+import oe.api.OEItemMode;
 import oe.api.lib.OEType;
 import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
 import oe.qmc.QMC;
 
-public class ItemBuildRing extends Item implements OEItemInterface {
+public class ItemBuildRing extends Item implements OEItemInterface, OEItemMode {
   
   public ItemBuildRing(int id) {
     super(id);
@@ -54,21 +55,6 @@ public class ItemBuildRing extends Item implements OEItemInterface {
       itemstack.setTagCompound(new NBTTagCompound());
       itemstack.getTagCompound().setDouble("Value", 0);
     }
-  }
-  
-  @Override
-  public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    NBTTagCompound tag = itemStack.getTagCompound();
-    if (Util.isServerSide()) {
-      if (tag.getBoolean("Enabled")) {
-        tag.setBoolean("Enabled", false);
-        player.addChatMessage("\u00A73\u00A7lBuilder's Ring:\u00A7r\u00A77 Disabled");
-      } else {
-        tag.setBoolean("Enabled", true);
-        player.addChatMessage("\u00A73\u00A7lBuilder's Ring:\u00A7r\u00A77 Enabled");
-      }
-    }
-    return itemStack;
   }
   
   @Override
@@ -126,5 +112,28 @@ public class ItemBuildRing extends Item implements OEItemInterface {
   @Override
   public OEType getType(ItemStack itemstack) {
     return OEType.Consumer;
+  }
+  
+  @Override
+  public String getMode(ItemStack itemstack) {
+    checkNBT(itemstack);
+    NBTTagCompound tag = itemstack.getTagCompound();
+    if (tag.getBoolean("Enabled")) {
+      return "Enabled";
+    } else {
+      return "Disabled";
+    }
+  }
+  
+  @Override
+  public String switchMode(ItemStack itemstack) {
+    checkNBT(itemstack);
+    NBTTagCompound tag = itemstack.getTagCompound();
+    if (tag.getBoolean("Enabled")) {
+      tag.setBoolean("Enabled", false);
+    } else {
+      tag.setBoolean("Enabled", true);
+    }
+    return getMode(itemstack);
   }
 }

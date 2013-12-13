@@ -10,9 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
+import oe.api.OEItemMode;
 import oe.api.lib.OEType;
 
-public class ItemBlockManipulator extends Item implements OEItemInterface, ItemMode {
+public class ItemBlockManipulator extends Item implements OEItemInterface, OEItemMode {
   
   public ItemBlockManipulator(int id) {
     super(id);
@@ -27,16 +28,12 @@ public class ItemBlockManipulator extends Item implements OEItemInterface, ItemM
     checkNBT(itemstack);
   }
   
-  @Override
-  public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    return itemStack;
-  }
-  
   private void checkNBT(ItemStack itemstack) {
     if (itemstack.getTagCompound() == null) {
       itemstack.setTagCompound(new NBTTagCompound());
       itemstack.stackTagCompound.setCompoundTag("mode", new NBTTagCompound());
       itemstack.stackTagCompound.getCompoundTag("mode").setBoolean("copy", true);
+      itemstack.stackTagCompound.setBoolean("Enabled", false);
     }
   }
   
