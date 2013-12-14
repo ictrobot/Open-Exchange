@@ -1,19 +1,16 @@
 package oe.core.data;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import oe.core.Debug;
 import oe.core.Log;
+import oe.core.util.NetworkUtil;
 import oe.core.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -139,21 +136,7 @@ public class TileSync {
       }
     }
     for (Object p : players) {
-      NBTTagCompound nbt = packets.get((EntityPlayer) p);
-      if (nbt != null && !nbt.hasNoTags()) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-        DataOutputStream outputStream = new DataOutputStream(bos);
-        try {
-          CompressedStreamTools.writeCompressed(nbt, outputStream);
-        } catch (IOException e) {
-          Debug.handleException(e);
-        }
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "OpenExchangeTS";
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
-        PacketDispatcher.sendPacketToPlayer(packet, (Player) p);
-      }
+      NetworkUtil.sendToClient((Player) p, "TS", packets.get((EntityPlayer) p));
     }
   }
   
@@ -191,18 +174,7 @@ public class TileSync {
     if (packetNBT.getTags().size() == 1) {
       return;
     }
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      CompressedStreamTools.writeCompressed(packetNBT, outputStream);
-    } catch (IOException e) {
-      Debug.handleException(e);
-    }
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "OpenExchangeTS";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(packet);
+    NetworkUtil.sendToServer(Minecraft.getMinecraft().thePlayer, "TS", packetNBT);
   }
   
   public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player playerentity) {
