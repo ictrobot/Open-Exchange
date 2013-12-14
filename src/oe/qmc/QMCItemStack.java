@@ -60,7 +60,7 @@ public class QMCItemStack extends QMCHandler {
             FluidItemStack f = new FluidItemStack(container, containerQMC, FluidUtil.getFluidStack((ItemStack) o));
             double qmc = QMC.getQMC(f);
             if (qmc > 0) {
-              return new Double(qmc);
+              return qmc;
             }
           }
         }
@@ -77,7 +77,7 @@ public class QMCItemStack extends QMCHandler {
               } else if (ItemStackUtil.isValidTool((ItemStack) o) && check.itemstack.getItemDamage() == 0) {
                 double q = check.QMC - (check.QMC / (check.itemstack.getMaxDamage() + 1) * ((ItemStack) o).getItemDamage());
                 if (q > 0) {
-                  return new Double(q);
+                  return q;
                 }
               }
             }
@@ -87,7 +87,7 @@ public class QMCItemStack extends QMCHandler {
           int oreID = OreDictionary.getOreID(itemstack);
           if (oreID != -1) {
             if (OreDictionary.getOreID(check.oreDictionary) == oreID) {
-              return new Double(check.QMC);
+              return check.QMC;
             }
           }
         }
@@ -97,12 +97,9 @@ public class QMCItemStack extends QMCHandler {
     } else if (o instanceof Item) {
       return getQMC(new ItemStack((Item) o));
     } else if (o instanceof String) {
-      ItemStack[] stacks = OreDictionaryUtil.getItemStacks((String) o);
-      if (stacks != null) {
-        return getQMC(stacks[0]);
-      }
+      return getQMC(OreDictionaryUtil.getItemStack((String) o));
     }
-    return new Double(-1);
+    return -1.0;
   }
   
   @Override
@@ -157,9 +154,9 @@ public class QMCItemStack extends QMCHandler {
           d.type = Type.Itemstack;
         }
       } else {
-        ItemStack[] stacks = OreDictionaryUtil.getItemStacks(d.oreDictionary);
-        if (stacks != null) {
-          d.itemstack = stacks[0];
+        ItemStack stack = OreDictionaryUtil.getItemStack(d.oreDictionary);
+        if (stack != null) {
+          d.itemstack = stack;
           d.type = Type.OreDictionary_Itemstack;
         }
       }
@@ -242,10 +239,7 @@ public class QMCItemStack extends QMCHandler {
     } else if (o instanceof Item) {
       return getReference(new ItemStack((Item) o));
     } else if (o instanceof String) {
-      ItemStack[] stacks = OreDictionaryUtil.getItemStacks((String) o);
-      if (stacks != null) {
-        return getReference(stacks[0]);
-      }
+      return getReference(OreDictionaryUtil.getItemStack((String) o));
     }
     return -1;
   }

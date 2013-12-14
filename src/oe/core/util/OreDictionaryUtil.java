@@ -1,6 +1,7 @@
 package oe.core.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,41 +20,49 @@ public class OreDictionaryUtil {
     RegisterUtil.Ore("materialNetherQuartz", Item.netherQuartz);
   }
   
-  public static ItemStack[] getItemStacks(String ore) {
-    ArrayList<ItemStack> stacks = OreDictionary.getOres(ore);
-    ItemStack[] toReturn = new ItemStack[0];
-    for (Object o : stacks) {
-      if (o instanceof ItemStack) {
-        ItemStack[] tmp = new ItemStack[toReturn.length + 1];
-        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
-        toReturn = tmp;
-        toReturn[toReturn.length - 1] = (ItemStack) o;
-      }
-    }
-    if (toReturn.length == 0) {
-      return null;
-    }
-    return toReturn;
+  public static List<ItemStack> getItemStacks(String ore) {
+    return OreDictionary.getOres(ore);
   }
   
-  public static String[] getOreDictionaryStartingWith(String str, boolean trim) {
+  public static ItemStack getItemStack(String ore) {
+    return ItemStackUtil.first(getItemStacks(ore));
+  }
+  
+  public static String ore(ItemStack stack) {
+    return ore(oreID(stack));
+  }
+  
+  public static String ore(int id) {
+    return OreDictionary.getOreName(id);
+  }
+  
+  public static int oreID(ItemStack stack) {
+    return OreDictionary.getOreID(stack);
+  }
+  
+  public static int oreID(String ore) {
+    return OreDictionary.getOreID(ore);
+  }
+  
+  public static boolean isOre(ItemStack stack) {
+    return oreID(stack) != -1;
+  }
+  
+  public static List<String> getOreDictionaryStartingWith(String str, boolean trim) {
     String[] ores = OreDictionary.getOreNames();
-    String[] toReturn = new String[0];
+    List<String> data = new ArrayList<String>();
     for (String ore : ores) {
       if (ore.startsWith(str)) {
         String toAdd = ore;
         if (trim) {
           toAdd = toAdd.substring(str.length());
         }
-        String[] tmp = new String[toReturn.length + 1];
-        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
-        toReturn = tmp;
-        toReturn[toReturn.length - 1] = toAdd;
+        data.add(toAdd);
       }
     }
-    if (toReturn.length == 0) {
+    if (data.size() == 0) {
       return null;
     }
-    return toReturn;
+    return data;
   }
 }

@@ -30,7 +30,7 @@ public class Guess {
       Log.debug("Initiating " + h.getClass() + " Guess Handler");
       h.init();
     }
-    for (int i = 0; i < 32000; i++) { // Length of ItemList Array
+    for (int i = 1; i < 32000; i++) { // Length of ItemList Array
       if (ItemStackUtil.isBlock(i) || ItemStackUtil.isItem(i)) {
         for (int m : meta(i)) {
           ItemStack check = new ItemStack(i, 1, m);
@@ -44,6 +44,14 @@ public class Guess {
               break;
             }
           }
+        }
+      }
+      if (i % 320 == 0) {
+        int percent = i / 320;
+        if (percent % 5 == 0) { // Every 5% info
+          Log.info("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
+        } else { // Every other % debug
+          Log.debug("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
         }
       }
     }

@@ -1,6 +1,7 @@
 package oe.core.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,11 +19,7 @@ public class ItemStackUtil {
         ItemStack[] fStacks = FluidUtil.getStoringItemStacks(FluidUtil.getFluidID(fluid));
         return getSingleItemStack(fStacks, "bucket"); // Prefer buckets
       }
-      String ore = (String) o;
-      ItemStack[] stacks = OreDictionaryUtil.getItemStacks(ore);
-      if (stacks != null) {
-        return stacks[0];
-      }
+      return OreDictionaryUtil.getItemStack((String) o);
     } else if (o instanceof ArrayList) {
       return getItemStackFromObject(((ArrayList<?>) o).toArray()[0]);
     } else if (o.getClass().isArray()) {
@@ -31,6 +28,15 @@ public class ItemStackUtil {
         if (stack != null) {
           return stack;
         }
+      }
+    }
+    return null;
+  }
+  
+  public static ItemStack first(List<?> list) {
+    for (Object o : list) {
+      if (o != null && o instanceof ItemStack) {
+        return (ItemStack) o;
       }
     }
     return null;

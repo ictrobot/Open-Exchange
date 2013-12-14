@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import oe.api.GuessHandler;
 import oe.core.Debug;
+import oe.core.Log;
 import oe.core.util.Util;
 import oe.qmc.file.QMCCustomAction;
+import oe.qmc.guess.Guess;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
@@ -16,26 +19,38 @@ public class QMCSave {
   
   public final HashMap<String, String> mods;
   public final List<QMCCustomAction> actions;
+  public final List<String> guessHandlers;
   public final NBTTagCompound QMCSnapshot;
   private final NBTTagCompound save;
-  public static final HashMap<String, String> loadedMods = getLoadedModData();
+  public boolean saved; // If the QMCSave has been written to a file
   
+  /**
+   * QMCSave from NBT
+   */
   public QMCSave(NBTTagCompound save) {
     this.save = save;
     this.mods = restoreModData(save.getCompoundTag("mods"));
     this.actions = restoreActions(save.getCompoundTag("actions"));
+    this.guessHandlers = restoreGuessHandlers(save.getCompoundTag("guess"));
     this.QMCSnapshot = save.getCompoundTag("snapshot");
+    this.saved = true;
   }
   
+  /**
+   * Get The Current QMCSave
+   */
   public QMCSave() {
     this.mods = getLoadedModData();
     this.actions = QMC.actions;
+    this.guessHandlers = getGuessHandlers();
     this.QMCSnapshot = QMC.snapshot("QMCSave");
     this.save = new NBTTagCompound();
     save.setCompoundTag("mods", getNBTModData(mods));
     save.setCompoundTag("actions", getNBTActions());
+    save.setCompoundTag("guess", getNBTGuessHandlers(guessHandlers));
     save.setCompoundTag("snapshot", QMCSnapshot);
     save.setString("time", Util.getTime() + " " + Util.getDate());
+    this.saved = false;
   }
   
   public static HashMap<String, String> getLoadedModData() { // ModID, Version
@@ -92,12 +107,47 @@ public class QMCSave {
     return data;
   }
   
+  public static List<String> getGuessHandlers() {
+    List<String> data = new ArrayList<String>();
+    for (GuessHandler h : Guess.handlers) {
+      data.add(h.getClass().getSimpleName());
+    }
+    return data;
+  }
+  
+  public static NBTTagCompound getNBTGuessHandlers() {
+    return getNBTGuessHandlers(getGuessHandlers());
+  }
+  
+  public static NBTTagCompound getNBTGuessHandlers(List<String> handlers) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    int i = 0;
+    for (String h : handlers) {
+      i++;
+      nbt.setString(i + "", h);
+    }
+    nbt.setInteger("number", i);
+    return nbt;
+  }
+  
+  public List<String> restoreGuessHandlers(NBTTagCompound nbt) {
+    List<String> data = new ArrayList<String>();
+    for (int i = 1; i <= nbt.getInteger("number"); i++) {
+      data.add(nbt.getString(i + ""));
+    }
+    return data;
+  }
+  
   public boolean checkMods() {
-    return mods.equals(loadedMods);
+    return mods.equals(getLoadedModData());
   }
   
   public boolean checkActions() {
     return actions.equals(QMC.actions);
+  }
+  
+  public boolean checkGuessHandlers() {
+    return guessHandlers.equals(getGuessHandlers());
   }
   
   public String getTimeStamp() {
@@ -105,8 +155,10 @@ public class QMCSave {
   }
   
   public boolean writeToFile(File file) {
+    Log.info("Writing QMCSave");
     try {
       CompressedStreamTools.write(save, file);
+      this.saved = true;
       return true;
     } catch (Exception e) {
       Debug.handleException(e);

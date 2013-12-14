@@ -42,7 +42,7 @@ public class QMC {
   public static void load() {
     actions = CustomActionReader.actions();
     QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
-    if (saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions()) {
+    if (saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions() && saveFromFile.checkGuessHandlers()) {
       save = saveFromFile;
       Log.info("Using QMCSave from " + save.getTimeStamp());
     } else {
@@ -52,6 +52,8 @@ public class QMC {
         regenerateSave("Mods have changed");
       } else if (!saveFromFile.checkActions()) {
         regenerateSave("Custom Actions have changed");
+      } else if (!saveFromFile.checkGuessHandlers()) {
+        regenerateSave("Guess Handlers have changed");
       } else {
         regenerateSave("UNKNOWN");
       }
@@ -79,13 +81,15 @@ public class QMC {
   
   public static void serverStarted() {
     if (save == null) {
-      Log.debug("Guessing QMC Values");
+      Log.info("Guessing QMC Values");
       Guess.load();
       save = new QMCSave();
     } else if (!loadedSnapshot.equals(save.QMCSnapshot)) {
       restoreSnapshot(save.QMCSnapshot);
     }
-    save.writeToFile(saveFile);
+    if (!save.saved) {
+      save.writeToFile(saveFile);
+    }
   }
   
   public static void loadHandlers() {

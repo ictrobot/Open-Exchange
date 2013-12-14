@@ -43,18 +43,18 @@ public class QMCFluid extends QMCHandler {
           return f.containerQMC + fluidQMC;
         }
       }
-      return new Double(-1);
+      return -1.0;
     }
     int r = getReference(o);
     if (r >= 0) {
       if (o instanceof FluidStack) {
         FluidStack f = (FluidStack) o;
-        return new Double(data[r].QMC / 1000 * f.amount);
+        return data[r].QMC / 1000 * f.amount;
       } else {
-        return new Double(data[r].QMC);
+        return data[r].QMC;
       }
     }
-    return new Double(-1);
+    return -1.0;
   }
   
   @Override

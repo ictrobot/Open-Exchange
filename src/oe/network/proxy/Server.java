@@ -1,5 +1,6 @@
 package oe.network.proxy;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -22,6 +23,14 @@ public class Server {
   
   public boolean isSinglePlayer() {
     return false;
+  }
+  
+  public boolean isDedicatedServer() {
+    try {
+      return FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer();
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public boolean isClient() {

@@ -34,6 +34,7 @@ import oe.qmc.QMC;
 import oe.qmc.guess.CraftingGuessHandler;
 import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
+import oe.qmc.guess.OreGuessHandler;
 import oe.qmc.guess.SmeltingGuessHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -82,6 +83,11 @@ public class OpenExchange {
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
+    Log.debug("Adding QMC Guess Handlers");
+    Guess.addHandler(new FluidGuessHandler());
+    Guess.addHandler(new CraftingGuessHandler());
+    Guess.addHandler(new SmeltingGuessHandler());
+    Guess.addHandler(new OreGuessHandler());
     Log.debug("Loading QMC");
     QMC.load();
     if (Util.isClient()) {
@@ -115,10 +121,6 @@ public class OpenExchange {
   @EventHandler
   public void load(FMLInitializationEvent event) {
     OreDictionaryUtil.minecraftInit();
-    Log.debug("Adding QMC Guess Handlers");
-    Guess.addHandler(new FluidGuessHandler());
-    Guess.addHandler(new CraftingGuessHandler());
-    Guess.addHandler(new SmeltingGuessHandler());
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
   }
