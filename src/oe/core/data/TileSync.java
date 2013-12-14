@@ -149,7 +149,7 @@ public class TileSync {
           Debug.handleException(e);
         }
         Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "oeTileSync";
+        packet.channel = "OpenExchangeTS";
         packet.data = bos.toByteArray();
         packet.length = bos.size();
         PacketDispatcher.sendPacketToPlayer(packet, (Player) p);
@@ -199,7 +199,7 @@ public class TileSync {
       Debug.handleException(e);
     }
     Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oeTileSync";
+    packet.channel = "OpenExchangeTS";
     packet.data = bos.toByteArray();
     packet.length = bos.size();
     Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(packet);

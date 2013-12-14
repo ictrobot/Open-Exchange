@@ -2,6 +2,7 @@ package oe.qmc.guess;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,8 @@ public class CraftingGuessHandler extends GuessHandler {
     }
   }
   
-  private Data[][] crafting = new Data[32000][0];
+  // ItemID, List of Data
+  private HashMap<Integer, List<Data>> crafting = new HashMap<Integer, List<Data>>();
   
   @Override
   public void init() {
@@ -45,8 +47,15 @@ public class CraftingGuessHandler extends GuessHandler {
           if (output != null && input != null) {
             List<ItemStack> returned = getReturned(recipe, input, output);
             if (returned != null) {
-              increaseData(output.itemID);
-              crafting[output.itemID][crafting[output.itemID].length - 1] = new Data(output, input, returned);
+              List<Data> data;
+              if (crafting.get(output.itemID) != null) {
+                data = crafting.get(output.itemID);
+                crafting.remove(output.itemID);
+              } else {
+                data = new ArrayList<Data>();
+              }
+              data.add(new Data(output, input, returned));
+              crafting.put(output.itemID, data);
               recipes++;
             }
           }
@@ -60,11 +69,11 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null) {
+    if (itemstack == null || crafting.get(itemstack.itemID) == null) {
       return -1;
     }
     int id = itemstack.itemID;
-    for (Data d : crafting[id]) {
+    for (Data d : crafting.get(id)) {
       if (itemstack.getItemDamage() == d.output.getItemDamage()) {
         double value = 0;
         for (int i = 0; i < d.input.length; i++) {
@@ -114,8 +123,11 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public List<Integer> meta(int ID) {
+    if (crafting.get(ID) == null) {
+      return new ArrayList<Integer>();
+    }
     List<Integer> meta = new ArrayList<Integer>();
-    for (Data d : crafting[ID]) {
+    for (Data d : crafting.get(ID)) {
       meta.add(d.output.getItemDamage());
     }
     return meta;
@@ -211,12 +223,6 @@ public class CraftingGuessHandler extends GuessHandler {
       return null;
     }
     return inputs;
-  }
-  
-  private void increaseData(int id) {
-    Data[] tmp = new Data[crafting[id].length + 1];
-    System.arraycopy(crafting[id], 0, tmp, 0, crafting[id].length);
-    crafting[id] = tmp;
   }
   
   private List<ItemStack> getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {

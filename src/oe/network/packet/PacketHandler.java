@@ -10,19 +10,19 @@ public class PacketHandler implements IPacketHandler {
   
   @Override
   public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerEntity) {
-    if (packet.channel.contentEquals("oe")) {
+    if (packet.channel.contentEquals("OpenExchange")) {
       InternalPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeTileSync")) {
+    } else if (packet.channel.contentEquals("OpenExchangeTS")) {
       TileSync.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeQD")) {
+    } else if (packet.channel.contentEquals("OpenExchangeQD")) {
       QuantumDestructionPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeBM")) {
+    } else if (packet.channel.contentEquals("OpenExchangeBM")) {
       BlockManipulatorPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeQMC")) {
+    } else if (packet.channel.contentEquals("OpenExchangeQMC")) {
       QMCSynchronizationPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeTileInfo")) {
+    } else if (packet.channel.contentEquals("OpenExchangeT")) {
       TileInfoPacket.packet(manager, packet, playerEntity);
-    } else if (packet.channel.contentEquals("oeIM")) {
+    } else if (packet.channel.contentEquals("OpenExchangeIM")) {
       ItemModePacket.packet(manager, packet, playerEntity);
     }
   }

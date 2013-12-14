@@ -11,7 +11,7 @@ import oe.core.Debug;
 import oe.qmc.QMC;
 import org.apache.commons.io.FileUtils;
 
-public class CustomQMCValuesReader {
+public class CustomActionReader {
   
   public static List<QMCCustomAction> actions() {
     return read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true, false);

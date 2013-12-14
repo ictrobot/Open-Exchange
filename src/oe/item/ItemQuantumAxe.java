@@ -86,7 +86,7 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
     }
     
     Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oeQD";
+    packet.channel = "OpenExchangeQD";
     packet.data = bos.toByteArray();
     packet.length = bos.size();
     EntityClientPlayerMP player = (EntityClientPlayerMP) tmpplayer;

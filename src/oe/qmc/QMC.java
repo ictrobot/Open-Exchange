@@ -15,7 +15,7 @@ import oe.OpenExchange;
 import oe.api.QMCHandler;
 import oe.core.Log;
 import oe.core.util.Util;
-import oe.qmc.file.CustomQMCValuesReader;
+import oe.qmc.file.CustomActionReader;
 import oe.qmc.file.QMCCustomAction;
 import oe.qmc.guess.Guess;
 
@@ -40,7 +40,7 @@ public class QMC {
   private static NBTTagCompound loadedSnapshot = new NBTTagCompound();
   
   public static void load() {
-    actions = CustomQMCValuesReader.actions();
+    actions = CustomActionReader.actions();
     QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
     if (saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions()) {
       save = saveFromFile;

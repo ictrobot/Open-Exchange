@@ -16,7 +16,6 @@ public class TileInfoPacket {
     int x;
     int y;
     int z;
-    
     try {
       x = inputStream.readInt();
       y = inputStream.readInt();
@@ -24,7 +23,6 @@ public class TileInfoPacket {
     } catch (IOException e) {
       return;
     }
-    
     InWorldQMC.info((EntityPlayer) Player, x, y, z);
   }
 }

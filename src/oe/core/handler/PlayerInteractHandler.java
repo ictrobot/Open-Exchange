@@ -50,7 +50,7 @@ public class PlayerInteractHandler {
     }
     
     Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "oeBM";
+    packet.channel = "OpenExchangeBM";
     packet.data = bos.toByteArray();
     packet.length = bos.size();
     EntityClientPlayerMP player = (EntityClientPlayerMP) tmpplayer;

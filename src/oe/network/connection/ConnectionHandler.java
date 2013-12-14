@@ -1,23 +1,17 @@
 package oe.network.connection;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet1Login;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import oe.OpenExchange;
-import oe.core.Debug;
 import oe.core.Log;
+import oe.core.util.NetworkUtil;
 import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.network.IConnectionHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 public class ConnectionHandler implements IConnectionHandler {
@@ -26,19 +20,9 @@ public class ConnectionHandler implements IConnectionHandler {
     if (OpenExchange.proxy.isSinglePlayer()) {
       return;
     }
-    try {
-      NBTTagCompound nbt = QMC.snapshot("Server --> Client");
-      ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-      DataOutputStream outputStream = new DataOutputStream(bos);
-      CompressedStreamTools.writeCompressed(nbt, outputStream);
-      Packet250CustomPayload packet = new Packet250CustomPayload();
-      packet.channel = "oeQMC";
-      packet.data = bos.toByteArray();
-      packet.length = bos.size();
-      PacketDispatcher.sendPacketToPlayer(packet, player);
+    if (NetworkUtil.sendToClient(player, "QMC", QMC.snapshot("Server --> Client"))) {
       Log.debug("Sent QMC packet to " + ((EntityPlayer) player).username);
-    } catch (Exception e) {
-      Debug.handleException(e);
+    } else {
       Log.severe("Failed to send QMC packet to " + ((EntityPlayer) player).username);
     }
   }
