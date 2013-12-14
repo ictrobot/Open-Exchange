@@ -58,6 +58,10 @@ public class QMC {
     }
   }
   
+  public static QMCSave getSave() {
+    return save;
+  }
+  
   public static void regenerateSave(String reason) {
     Log.info("Building QMC database - " + reason);
     Log.info("Scheduled Guessing");

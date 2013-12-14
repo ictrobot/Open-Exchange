@@ -17,7 +17,6 @@ import oe.core.data.QuantumToolBlackList;
 import oe.core.data.RemoteDrillData;
 import oe.core.handler.IMCHandler;
 import oe.core.handler.PlayerInteractHandler;
-import oe.core.handler.PlayerTracker;
 import oe.core.handler.QMCFuelHandler;
 import oe.core.handler.ToolTipHandler;
 import oe.core.handler.keybind.OEKeyBindHandler;
@@ -26,6 +25,7 @@ import oe.core.util.OreDictionaryUtil;
 import oe.core.util.Util;
 import oe.item.ItemIDs;
 import oe.item.Items;
+import oe.network.connection.ConnectionHandler;
 import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
@@ -51,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeIM", "oeQD", "oeBM", "oeQMC", "oeTileInfo" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "oe", "oeTileSync", "oeIM", "oeQD", "oeBM", "oeQMC", "oeTileInfo" }, packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class OpenExchange {
   
   public static File configdir;
@@ -79,7 +79,6 @@ public class OpenExchange {
     Log.debug("Registering Handlers");
     MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
-    GameRegistry.registerPlayerTracker(new PlayerTracker());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
     Log.debug("Loading QMC");
