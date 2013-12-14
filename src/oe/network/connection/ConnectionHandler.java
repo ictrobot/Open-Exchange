@@ -44,7 +44,7 @@ public class ConnectionHandler implements IConnectionHandler {
   
   @Override
   public void connectionClosed(INetworkManager manager) {
-    if (Util.isClient() && Util.isClientSide()) {
+    if (Util.isClient() && Util.isClientSide() && QMC.getSave() != null && !OpenExchange.proxy.isSinglePlayer()) {
       QMC.restoreSnapshot(QMC.getSave().QMCSnapshot);
     }
   }

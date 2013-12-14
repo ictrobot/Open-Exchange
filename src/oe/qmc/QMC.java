@@ -65,6 +65,8 @@ public class QMC {
   public static void regenerateSave(String reason) {
     Log.info("Building QMC database - " + reason);
     Log.info("Scheduled Guessing");
+    save = null;
+    saveFile.delete();
     for (QMCHandler h : handlersList) {
       h.restoreSnapshot(new NBTTagCompound()); // Try to wipe
     }

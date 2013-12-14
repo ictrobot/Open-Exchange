@@ -11,6 +11,7 @@ import oe.core.CraftingRecipes;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.OECommand;
+import oe.core.QMCCommand;
 import oe.core.Reference;
 import oe.core.data.FakePlayer;
 import oe.core.data.QuantumToolBlackList;
@@ -138,9 +139,10 @@ public class OpenExchange {
   @EventHandler
   public void serverStarting(FMLServerStartingEvent event) {
     if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
-      event.registerServerCommand(new OECommand());
+      RemoteDrillData.loadNBT();
     }
-    RemoteDrillData.loadNBT();
+    event.registerServerCommand(new OECommand());
+    event.registerServerCommand(new QMCCommand());
   }
   
   @EventHandler
