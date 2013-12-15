@@ -77,9 +77,4 @@ public class ConfigUtil {
     boolean num = config.get(Subname, Name, normal).getBoolean(false);
     return num;
   }
-  
-  public static boolean module(String Name, boolean normal) {
-    boolean enabled = config.get("Module", Name, normal).getBoolean(normal);
-    return enabled;
-  }
 }
