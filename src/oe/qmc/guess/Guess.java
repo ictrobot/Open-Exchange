@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import oe.api.GuessHandler;
 import oe.core.Log;
-import oe.core.util.ConfigUtil;
 import oe.core.util.ItemStackUtil;
-import oe.core.util.Util;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -33,14 +30,6 @@ public class Guess {
       Log.debug("Initiating " + h.getClass() + " Guess Handler");
       h.init();
     }
-    boolean displayMsg;
-    if (Util.isClient()) {
-      ConfigUtil.load();
-      displayMsg = ConfigUtil.other("QMC", "Show QMC Guessing Loading Messages", true);
-      ConfigUtil.save();
-    } else {
-      displayMsg = false;
-    }
     for (int i = 1; i < 32000; i++) { // Length of ItemList Array
       if (ItemStackUtil.isBlock(i) || ItemStackUtil.isItem(i)) {
         for (int m : meta(i)) {
@@ -61,13 +50,6 @@ public class Guess {
         int percent = i / 320;
         if (percent % 5 == 0) { // Every 5% info
           Log.info("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
-          if (displayMsg) {
-            try {
-              MinecraftServer.class.getField("userMessage").set(MinecraftServer.getServer(), "Open Exchange - Guessing " + percent + "%");
-            } catch (Exception e) {
-              
-            }
-          }
         } else { // Every other % debug
           Log.debug("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
         }
