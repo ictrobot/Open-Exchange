@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
 import oe.core.Log;
 import oe.core.util.ItemStackUtil;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -24,6 +25,7 @@ public class Guess {
   }
   
   public static void load() {
+    Util.setMaxPriority();
     Stopwatch timer = new Stopwatch();
     timer.start();
     for (GuessHandler h : handlers) {
@@ -58,6 +60,8 @@ public class Guess {
     timer.stop();
     Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
     guessFailed = new HashMap<Integer, List<Integer>>();
+    Util.restorePriority();
+    System.gc();
   }
   
   public static List<Integer> meta(int ID) {
