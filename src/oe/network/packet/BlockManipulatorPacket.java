@@ -47,9 +47,7 @@ public class BlockManipulatorPacket {
         if (!player.getHeldItem().stackTagCompound.getBoolean("hasBlock")) {
           if (player.getHeldItem().stackTagCompound.getCompoundTag("mode").getBoolean("move")) {
             OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
-            ConfigUtil.load();
             double cost = ConfigUtil.other("item", "blockManipulatorMoveCost", 0);
-            ConfigUtil.save();
             if (oe.getQMC(player.getHeldItem()) < cost && !player.capabilities.isCreativeMode) {
               return;
             }
@@ -81,9 +79,7 @@ public class BlockManipulatorPacket {
             int id = world.getBlockId(x, y, z);
             int meta = world.getBlockMetadata(x, y, z);
             OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
-            ConfigUtil.load();
             double cost = ConfigUtil.other("item", "blockManipulatorCopyCost", 0);
-            ConfigUtil.save();
             double blockCost = QMC.getQMC(new ItemStack(id, 1, meta));
             if (blockCost < 0) {
               return;

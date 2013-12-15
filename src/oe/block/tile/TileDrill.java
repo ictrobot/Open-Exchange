@@ -22,11 +22,9 @@ public class TileDrill extends TileEntity implements ServerNetworkedTile, OETile
   
   public TileDrill() {
     super();
-    ConfigUtil.load();
     mineCost = ConfigUtil.other("block", "Drill Mine Block Cost", 256.0);
     delayTicks = ConfigUtil.other("block", "Drill Tick Delay", 100);
     range = ConfigUtil.other("block", "Drill Range", 8);
-    ConfigUtil.save();
   }
   
   @Override

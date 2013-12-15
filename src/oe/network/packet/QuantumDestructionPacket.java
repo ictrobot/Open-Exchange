@@ -36,9 +36,7 @@ public class QuantumDestructionPacket {
     }
     if (Player instanceof EntityPlayer) {
       EntityPlayer player = (EntityPlayer) Player;
-      ConfigUtil.load();
       QMCNeeded = ConfigUtil.other("Item", "Quantum tools right click cost per block", 5);
-      ConfigUtil.save();
       blockBreak(x, y, z, player);
     }
   }

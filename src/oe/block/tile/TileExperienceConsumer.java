@@ -19,9 +19,7 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
   
   public TileExperienceConsumer() {
     super();
-    ConfigUtil.load();
     factor = ConfigUtil.other("QMC", "XP to QMC Factor", 10);
-    ConfigUtil.save();
   }
   
   @SuppressWarnings("unchecked")

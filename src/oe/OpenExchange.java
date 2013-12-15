@@ -71,16 +71,15 @@ public class OpenExchange {
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     configdir = event.getModConfigurationDirectory();
-    ConfigUtil.load();
     debug = ConfigUtil.other("DEBUG", "Debug enabled", Debug.rawCode);
-    boolean fuelHandler = ConfigUtil.other("FuelHandler", "Allow any item to be burnt if it has a QMC value", false);
-    ConfigUtil.save();
     if (debug) {
       Log.info("Debugging Enabled");
     }
     Log.debug("Registering Handlers");
     MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
     MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
+    Log.debug("Loading Fuel Handler");
+    GameRegistry.registerFuelHandler(new QMCFuelHandler());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
     Log.debug("Adding QMC Guess Handlers");
@@ -110,10 +109,6 @@ public class OpenExchange {
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
     NetworkRegistry.instance().registerGuiHandler(OpenExchange.instance, new GUIHandler());
-    if (fuelHandler) {
-      Log.debug("Loading Fuel Handler");
-      GameRegistry.registerFuelHandler(new QMCFuelHandler());
-    }
     Log.debug("Loading Quantum Tool Blacklist");
     QuantumToolBlackList.init();
   }

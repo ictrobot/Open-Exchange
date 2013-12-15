@@ -15,8 +15,6 @@ public class BlockIDs {
   public static int drillRemoteReceiver;
   
   public static void Load() {
-    ConfigUtil.load();
-    
     condenser = ConfigUtil.block("condenser");
     charging = ConfigUtil.block("charging");
     extractor = ConfigUtil.block("extractor");
@@ -26,7 +24,5 @@ public class BlockIDs {
     drill = ConfigUtil.block("drill");
     drillRemote = ConfigUtil.block("drillRemote");
     drillRemoteReceiver = ConfigUtil.block("drillRemoteReceiver");
-    
-    ConfigUtil.save();
   }
 }

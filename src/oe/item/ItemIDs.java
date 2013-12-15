@@ -13,8 +13,6 @@ public class ItemIDs {
   public static int blockMover;
   
   public static void Load() {
-    ConfigUtil.load();
-    
     buildRing = ConfigUtil.item("buildRing");
     reader = ConfigUtil.item("reader");
     pickaxe = ConfigUtil.item("pickaxe");
@@ -22,7 +20,5 @@ public class ItemIDs {
     shovel = ConfigUtil.item("shovel");
     repair = ConfigUtil.item("repair");
     blockMover = ConfigUtil.item("blockMover");
-    
-    ConfigUtil.save();
   }
 }

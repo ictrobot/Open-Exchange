@@ -19,7 +19,6 @@ public class Items {
   public static EnumToolMaterial quantum = EnumHelper.addToolMaterial("quantum", 3, 0, 8.0F, 3.0F, 10);
   
   public static void Load() {
-    ConfigUtil.load();
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
       buildRing = new ItemBuildRing(ItemIDs.buildRing);
     }
@@ -37,11 +36,9 @@ public class Items {
     if (ConfigUtil.other("item", "blockManipulatorEnabled", true)) {
       blockManipulator = new ItemBlockManipulator(ItemIDs.blockMover);
     }
-    ConfigUtil.save();
   }
   
   public static void Register() {
-    ConfigUtil.load();
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
       RegisterUtil.Item(buildRing);
     }

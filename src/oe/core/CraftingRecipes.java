@@ -10,7 +10,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingRecipes {
   public static void load() {
-    ConfigUtil.load();
     // Items
     if (ConfigUtil.other("item", "buildRingEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Items.buildRing), "o o", " e ", "o o", 'o', new ItemStack(Block.obsidian), 'e', new ItemStack(Item.ingotIron));
@@ -54,7 +53,6 @@ public class CraftingRecipes {
     if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
       GameRegistry.addRecipe(new ItemStack(Blocks.drillRemote), "bdb", "dbd", "bdb", 'b', new ItemStack(Block.blockDiamond), 'd', new ItemStack(Blocks.drill));
     }
-    ConfigUtil.save();
     
   }
 }

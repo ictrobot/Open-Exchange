@@ -18,7 +18,6 @@ public class Blocks {
   public static Block drillRemoteReceiver;
   
   public static void Load() {
-    ConfigUtil.load();
     if (ConfigUtil.other("block", "condenserEnabled", true)) {
       condenser = new BlockCondenser(BlockIDs.condenser);
     }
@@ -45,11 +44,9 @@ public class Blocks {
       drillRemote = new BlockDrillRemote(BlockIDs.drillRemote);
       drillRemoteReceiver = new BlockDrillRemoteReceiver(BlockIDs.drillRemoteReceiver);
     }
-    ConfigUtil.save();
   }
   
   public static void Register() {
-    ConfigUtil.load();
     if (ConfigUtil.other("block", "condenserEnabled", true)) {
       RegisterUtil.Block(condenser, "pickaxe", 2);
     }
@@ -75,7 +72,6 @@ public class Blocks {
       RegisterUtil.Block(drillRemote, "pickaxe", 2);
       RegisterUtil.Block(drillRemoteReceiver, "pickaxe", 2);
     }
-    ConfigUtil.save();
   }
   
   public static String Texture(String str) {

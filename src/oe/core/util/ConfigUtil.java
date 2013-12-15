@@ -6,75 +6,93 @@ import oe.OpenExchange;
 
 public class ConfigUtil {
   // Starting BLock + Item IDs
-  static int BlockID = 500;
-  static int ItemID = 10000 - 256;
+  private static int BlockID = 500;
+  private static int ItemID = 10000 - 256;
   
-  static int ItemsRegistered = 0;
-  static int BlocksRegistered = 0;
+  private static int ItemsRegistered = 0;
+  private static int BlocksRegistered = 0;
+  private static Configuration config;
   
-  static String Module;
-  static Configuration config;
+  private static boolean loaded = false;
   
-  public static void load() {
-    File configfile = new File(OpenExchange.configdir, "/OpenExchange/OpenExchange.cfg");
-    
-    config = new Configuration(configfile);
-    config.load();
-    
-    ItemsRegistered = 0;
-    BlocksRegistered = 0;
+  private static void load() {
+    if (!loaded || config == null) {
+      loaded = true;
+      File configfile = new File(OpenExchange.configdir, "/OpenExchange/OpenExchange.cfg");
+      
+      config = new Configuration(configfile);
+      config.load();
+    }
   }
   
-  public static void save() {
+  private static void save() {
     if (config.hasChanged()) {
       config.save();
     }
   }
   
   public static int item(String Name) {
-    int id = config.get("Item", Name, ItemID + ItemsRegistered).getInt();
+    load();
+    int data = config.get("Item", Name, ItemID + ItemsRegistered).getInt();
     ItemsRegistered = ItemsRegistered + 1;
-    return id;
+    save();
+    return data;
   }
   
   public static int block(String Name) {
-    int id = config.get("Block", Name, BlockID + BlocksRegistered).getInt();
+    load();
+    int data = config.get("Block", Name, BlockID + BlocksRegistered).getInt();
     BlocksRegistered = BlocksRegistered + 1;
-    return id;
+    save();
+    return data;
   }
   
   public static String other(String Name, String normal) {
-    String str = config.get("Other", Name, normal).getString();
-    return str;
+    load();
+    String data = config.get("Other", Name, normal).getString();
+    save();
+    return data;
   }
   
   public static int other(String Name, int normal) {
-    int num = config.get("Other", Name, normal).getInt();
-    return num;
+    load();
+    int data = config.get("Other", Name, normal).getInt();
+    save();
+    return data;
   }
   
   public static boolean other(String Name, boolean normal) {
-    boolean num = config.get("Other", Name, normal).getBoolean(false);
-    return num;
+    load();
+    boolean data = config.get("Other", Name, normal).getBoolean(false);
+    save();
+    return data;
   }
   
   public static String other(String Subname, String Name, String normal) {
-    String str = config.get(Subname, Name, normal).getString();
-    return str;
+    load();
+    String data = config.get(Subname, Name, normal).getString();
+    save();
+    return data;
   }
   
   public static int other(String Subname, String Name, int normal) {
-    int num = config.get(Subname, Name, normal).getInt();
-    return num;
+    load();
+    int data = config.get(Subname, Name, normal).getInt();
+    save();
+    return data;
   }
   
   public static double other(String Subname, String Name, double normal) {
-    double num = config.get(Subname, Name, normal).getDouble(normal);
-    return num;
+    load();
+    double data = config.get(Subname, Name, normal).getDouble(normal);
+    save();
+    return data;
   }
   
   public static boolean other(String Subname, String Name, boolean normal) {
-    boolean num = config.get(Subname, Name, normal).getBoolean(false);
-    return num;
+    load();
+    boolean data = config.get(Subname, Name, normal).getBoolean(false);
+    save();
+    return data;
   }
 }
