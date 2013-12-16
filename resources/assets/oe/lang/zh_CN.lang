@@ -1,0 +1,26 @@
+#OE zh_CN lang file
+
+#Items
+item.ItemBuildRing.name=建筑之戒
+item.ItemInfo.name=QMC信息
+item.ItemQuantumPickaxe.name=量子镐
+item.ItemQuantumAxe.name=量子斧
+item.ItemQuantumShovel.name=量子铲
+item.ItemRepair.name=QMC修理器
+item.ItemBlockManipulator.name=方块操纵器
+
+#Blocks
+tile.BlockCondenser.name=QMC聚能器
+tile.BlockCharging.name=QMC充能台
+tile.BlockExtractor.name=QMC提取机
+tile.BlockStorage.name=QMC存储方块
+tile.BlockExperienceConsumer.name=QMC经验消费机
+tile.BlockPipe.name=QMC管道
+tile.BlockDrill.name=QMC钻子
+tile.BlockDrillRemote.name=QMC远程钻子
+tile.BlockDrillRemoteReceiver.name=QMC远程钻子接收仪
+
+#GUI
+container.Charging.name=充能台
+container.Extractor.name=提取机
+container.Condenser.name=聚能器
