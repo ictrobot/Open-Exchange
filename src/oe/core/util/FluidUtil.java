@@ -1,5 +1,7 @@
 package oe.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -64,20 +66,14 @@ public class FluidUtil {
     return null;
   }
   
-  public static ItemStack[] getStoringItemStacks(int fluidID) {
-    ItemStack[] toReturn = new ItemStack[0];
+  public static List<ItemStack> getStoringItemStacks(int fluidID) {
+    List<ItemStack> data = new ArrayList<ItemStack>();
     for (FluidContainerData f : getFluidData()) {
       if (f.fluid.fluidID == fluidID) {
-        ItemStack[] tmp = new ItemStack[toReturn.length + 1];
-        System.arraycopy(toReturn, 0, tmp, 0, toReturn.length);
-        toReturn = tmp;
-        toReturn[toReturn.length - 1] = f.filledContainer;
+        data.add(f.filledContainer);
       }
     }
-    if (toReturn.length == 0) {
-      return null;
-    }
-    return toReturn;
+    return data;
   }
   
   public static net.minecraftforge.fluids.Fluid getFluid(String name) {

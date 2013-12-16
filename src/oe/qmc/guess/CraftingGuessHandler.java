@@ -3,6 +3,7 @@ package oe.qmc.guess;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -11,29 +12,85 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import oe.OpenExchange;
-import oe.api.GuessHandler;
+import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.data.FakeContainer;
 import oe.core.util.ItemStackUtil;
+import oe.core.util.Pair;
 import oe.core.util.PlayerUtil;
+import oe.core.util.Util;
+import oe.qmc.QMC;
+import scala.collection.mutable.StringBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CraftingGuessHandler extends GuessHandler {
-  public static class Data {
-    ItemStack output;
-    ItemStack[] input;
-    List<ItemStack> returned;
+public class CraftingGuessHandler extends ActiveGuessHandler {
+  public static class Input {
     
-    public Data(ItemStack Output, ItemStack[] Inputs, List<ItemStack> Returned) {
-      this.output = Output;
-      this.input = Inputs;
-      this.returned = Returned;
+    private HashMap<Integer, List<ItemStack>> data = new HashMap<Integer, List<ItemStack>>();
+    
+    public Input() {
+      for (int i = 0; i < 9; i++) {
+        data.put(i, new ArrayList<ItemStack>());
+      }
+    }
+    
+    public void addInput(int slot, ItemStack itemstack) {
+      if (itemstack.getItemDamage() == Short.MAX_VALUE) {
+        itemstack.setItemDamage(0);
+      }
+      List<ItemStack> list = data.get(slot);
+      data.remove(slot);
+      list.add(itemstack);
+      data.put(slot, list);
+    }
+    
+    public void addInput(int slot, List<ItemStack> itemstacks) {
+      if (!Util.notEmpty(itemstacks)) {
+        return;
+      }
+      for (ItemStack itemstack : itemstacks) {
+        addInput(slot, itemstack);
+      }
+    }
+    
+    public List<ItemStack> getInputs(int slot) {
+      return data.get(slot);
+    }
+    
+    public boolean isBlank() {
+      int blank = 0;
+      for (int i = 0; i < 9; i++) {
+        if (data.get(i).size() == 0) {
+          blank++;
+        }
+      }
+      if (blank == 9) {
+        return true;
+      }
+      return false;
+    }
+    
+    public String toString() {
+      StringBuilder s = new StringBuilder().append("[");
+      for (int i = 0; i < 9; i++) {
+        s.append(i + " - ");
+        if (Util.notEmpty(getInputs(i))) {
+          s.append(getInputs(i).toString());
+        } else {
+          s.append("BLANK");
+        }
+        if (i != 8) {
+          s.append(", ");
+        }
+      }
+      s.append("]");
+      return s.toString();
     }
   }
   
-  // ItemID, List of Data
-  private HashMap<Integer, List<Data>> crafting = new HashMap<Integer, List<Data>>();
+  // ItemID, Pair of Output ItemStack and Input (See above)
+  private HashMap<Integer, List<Pair<ItemStack, Input>>> crafting = new HashMap<Integer, List<Pair<ItemStack, Input>>>();
   
   @Override
   public void init() {
@@ -43,25 +100,24 @@ public class CraftingGuessHandler extends GuessHandler {
         if (recipeObject instanceof IRecipe) {
           IRecipe recipe = (IRecipe) recipeObject;
           ItemStack output = recipe.getRecipeOutput();
-          ItemStack[] input = getInputs(recipe);
-          if (output != null && input != null) {
-            List<ItemStack> returned = getReturned(recipe, input, output);
-            if (returned != null) {
-              List<Data> data;
+          if (output != null) {
+            Input input = getInputs(recipe);
+            if (input != null) {
+              List<Pair<ItemStack, Input>> data;
               if (crafting.get(output.itemID) != null) {
                 data = crafting.get(output.itemID);
                 crafting.remove(output.itemID);
               } else {
-                data = new ArrayList<Data>();
+                data = new ArrayList<Pair<ItemStack, Input>>();
               }
-              data.add(new Data(output, input, returned));
+              data.add(new Pair<ItemStack, Input>(output, input));
               crafting.put(output.itemID, data);
               recipes++;
             }
           }
         }
       } catch (Exception e) {
-        
+        Debug.handleException(e);
       }
     }
     Log.debug("Found " + recipes + " Crafting Recipes");
@@ -69,36 +125,14 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null || crafting.get(itemstack.itemID) == null) {
+    if (itemstack == null || !Util.notEmpty(crafting.get(itemstack.itemID))) {
       return -1;
     }
     int id = itemstack.itemID;
-    for (Data d : crafting.get(id)) {
-      if (itemstack.getItemDamage() == d.output.getItemDamage()) {
-        double value = 0;
-        for (int i = 0; i < d.input.length; i++) {
-          ItemStack stack = d.input[i];
-          if (stack != null) {
-            double v = checkQMC(stack);
-            if (v == -1) {
-              return -1;
-            } else {
-              value = value + v;
-            }
-          }
-        }
-        for (ItemStack stack : d.returned) {
-          if (stack != null) {
-            double v = checkQMC(stack);
-            if (v == -1) {
-              return -1;
-            } else {
-              value = value - v;
-            }
-          }
-        }
+    for (Pair<ItemStack, Input> pair : crafting.get(id)) {
+      if (pair.left.getItemDamage() == itemstack.getItemDamage()) {
+        double value = check(pair);
         if (value > 0) {
-          value = value / d.output.stackSize;
           return value;
         }
       }
@@ -106,54 +140,98 @@ public class CraftingGuessHandler extends GuessHandler {
     return -1;
   }
   
-  private double checkQMC(ItemStack stack) {
-    if (stack == null) {
-      return -1;
-    }
-    double v = Guess.check(stack);
-    if (v == -1) {
-      if (stack.getItemDamage() == 32768 || stack.getItemDamage() == 32767) {
-        ItemStack tmp = stack.copy();
-        tmp.setItemDamage(0);
-        return checkQMC(tmp);
+  private double check(Pair<ItemStack, Input> pair) {
+    int maxComb = 1;
+    for (int i = 0; i < 9; i++) {
+      if (Util.notEmpty(pair.right.getInputs(i))) {
+        maxComb = maxComb * pair.right.getInputs(i).size();
       }
     }
-    return v;
+    maxComb = Math.min(maxComb, 1024);
+    Guess.currentlyChecking.add(pair.left);
+    double d = check(pair, 1, maxComb);
+    Guess.currentlyChecking.remove(pair.left);
+    return d;
   }
   
-  @Override
-  public List<Integer> meta(int ID) {
-    if (crafting.get(ID) == null) {
-      return new ArrayList<Integer>();
+  private double check(Pair<ItemStack, Input> pair, int combCount, int maxComb) {
+    if (combCount > maxComb) {
+      return -1;
     }
-    List<Integer> meta = new ArrayList<Integer>();
-    for (Data d : crafting.get(ID)) {
-      meta.add(d.output.getItemDamage());
+    ItemStack output = pair.left;
+    Input input = pair.right;
+    double total = 0;
+    ItemStack[] data = new ItemStack[9];
+    int toSkip = combCount - 1;
+    for (int slot = 0; slot < 9; slot++) {
+      if (Util.notEmpty(input.getInputs(slot))) {
+        Iterator<ItemStack> iterator = input.getInputs(slot).iterator();
+        while (iterator.hasNext()) {
+          ItemStack check = iterator.next();
+          double value = Guess.check(check);
+          if (value > 0) {
+            if (toSkip == 0) {
+              data[slot] = check;
+              total = total += value;
+              break;
+            } else {
+              toSkip--;
+            }
+          }
+        }
+        if (data[slot] == null) {
+          return check(pair, combCount + 1, maxComb);
+        }
+      }
     }
-    return meta;
+    for (ItemStack stack : getReturned(data, output)) {
+      double value = Guess.check(stack);
+      if (value > 0) {
+        total = total -= value;
+      } else {
+        return check(pair, combCount + 1, maxComb);
+      }
+    }
+    if (total > 0) {
+      total = total / output.stackSize;
+      return total;
+    }
+    return -1;
   }
   
-  private static ItemStack[] getInputs(IRecipe recipe) {
-    ItemStack[] inputs = new ItemStack[9];
+  public void guess() {
+    for (Integer id : crafting.keySet()) {
+      for (Pair<ItemStack, Input> pair : crafting.get(id)) {
+        ItemStack output = pair.left;
+        if (Guess.shouldGuess(output)) {
+          double value = check(pair);
+          if (value > 0) {
+            QMC.add(output, value);
+          } else {
+            Guess.addToFailed(output);
+          }
+        }
+      }
+    }
+  }
+  
+  private static Input getInputs(IRecipe recipe) {
+    Input input = new Input();
+    boolean failed = false;
     if (recipe instanceof ShapedRecipes) {
       ShapedRecipes shaped = (ShapedRecipes) recipe;
       for (int i = 0; i < shaped.recipeItems.length; i++) {
         if (shaped.recipeItems[i] instanceof ItemStack) {
-          ItemStack stack = shaped.recipeItems[i].copy();
-          stack.stackSize = 1;
-          inputs[i] = stack;
+          input.addInput(i, shaped.recipeItems[i]);;
         }
       }
     } else if (recipe instanceof ShapelessRecipes) {
       ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
       int i = 0;
       for (Object object : shapeless.recipeItems) {
-        if (object instanceof ItemStack) {
-          ItemStack stack = ((ItemStack) object).copy();
-          if (stack.stackSize > 1) {
-            stack.stackSize = 1;
-          }
-          inputs[i] = stack;
+        ItemStack itemstack = ItemStackUtil.getItemStack(object);
+        if (itemstack != null) {
+          input.addInput(i, itemstack);
           i++;
         }
       }
@@ -192,14 +270,12 @@ public class CraftingGuessHandler extends GuessHandler {
             for (int i = 0; i < Math.min(os.length, 9); i++) {
               Object r = os[i];
               if (r != null) {
-                ItemStack fromObject = ItemStackUtil.getItemStackFromObject(r);
-                if (fromObject != null) {
-                  inputs[i] = fromObject;
+                List<ItemStack> stacks = ItemStackUtil.getItemStacksOneOre(r);
+                if (Util.notEmpty(stacks)) {
+                  input.addInput(i, stacks);
                 } else {
-                  Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().itemID + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
-                  Log.debug("IRecipe Type: " + recipe.getClass());
-                  Debug.printObject(recipe);
-                  return null;
+                  failed = true;
+                  break;
                 }
               }
             }
@@ -208,24 +284,16 @@ public class CraftingGuessHandler extends GuessHandler {
         }
       }
     }
-    int nullNum = 0;
-    for (ItemStack stack : inputs) {
-      if (stack == null) {
-        nullNum++;
-      } else if (stack.getItemDamage() == 32767 || stack.getItemDamage() == 32768) {
-        stack.setItemDamage(0);
-      }
-    }
-    if (nullNum >= inputs.length) {
+    if (failed || input.isBlank()) {
       Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().itemID + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       Debug.printObject(recipe);
       return null;
     }
-    return inputs;
+    return input;
   }
   
-  private List<ItemStack> getReturned(IRecipe recipe, ItemStack[] inputs, ItemStack output) {
+  private List<ItemStack> getReturned(ItemStack[] inputs, ItemStack output) {
     List<ItemStack> data = new ArrayList<ItemStack>();
     try {
       FakeContainer fake = new FakeContainer();
@@ -252,7 +320,7 @@ public class CraftingGuessHandler extends GuessHandler {
         }
       }
     } catch (Exception e) {
-      Log.debug("Get Returned Failed for " + output.toString() + " IRecipe Type: " + recipe.getClass());
+      Log.debug("Get Returned Failed for " + output.toString());
       Debug.handleException(e);
     }
     return data;

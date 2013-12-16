@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
+import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Log;
 import oe.core.util.ItemStackUtil;
 import oe.core.util.Util;
@@ -16,7 +17,7 @@ public class Guess {
   
   public static List<GuessHandler> handlers = new ArrayList<GuessHandler>();
   
-  private static List<ItemStack> currentlyChecking = new ArrayList<ItemStack>();
+  public static List<ItemStack> currentlyChecking = new ArrayList<ItemStack>();
   
   private static HashMap<Integer, List<Integer>> guessFailed = new HashMap<Integer, List<Integer>>();
   
@@ -29,32 +30,18 @@ public class Guess {
     Stopwatch timer = new Stopwatch();
     timer.start();
     for (GuessHandler h : handlers) {
-      Log.debug("Initiating " + h.getClass() + " Guess Handler");
+      String type = "Passive Guess Handler";
+      if (h instanceof ActiveGuessHandler) {
+        type = "Active Guess Handler";
+      }
+      Log.debug("Initiating " + h.getClass().getSimpleName() + " " + type);
       h.init();
     }
-    for (int i = 1; i < 32000; i++) { // Length of ItemList Array
-      if (ItemStackUtil.isBlock(i) || ItemStackUtil.isItem(i)) {
-        for (int m : meta(i)) {
-          ItemStack check = new ItemStack(i, 1, m);
-          if (check != null && !QMC.hasQMC(check)) {
-            currentlyChecking = new ArrayList<ItemStack>();
-            try {
-              check(check);
-            } catch (Exception e) {
-              Log.info("Error occured while guessing " + check.getDisplayName() + " (ID:" + check.itemID + " Meta:" + check.getItemDamage() + ")");
-              e.printStackTrace();
-              break;
-            }
-          }
-        }
-      }
-      if (i % 320 == 0) {
-        int percent = i / 320;
-        if (percent % 5 == 0) { // Every 5% info
-          Log.info("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
-        } else { // Every other % debug
-          Log.debug("Guessing " + percent + "% done, time elapsed: " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliSeconds");
-        }
+    for (GuessHandler h : handlers) {
+      if (h instanceof ActiveGuessHandler) {
+        ActiveGuessHandler a = (ActiveGuessHandler) h;
+        Log.debug("Guessing " + a.getClass().getSimpleName() + " Active Guess Handler");
+        a.guess();
       }
     }
     timer.stop();
@@ -64,37 +51,9 @@ public class Guess {
     System.gc();
   }
   
-  public static List<Integer> meta(int ID) {
-    List<Integer> data = new ArrayList<Integer>();
-    for (GuessHandler h : handlers) {
-      for (int i : h.meta(ID)) {
-        if (!data.contains(i)) {
-          data.add(i);
-        }
-      }
-    }
-    return data;
-  }
-  
   public static double check(ItemStack itemstack) {
-    if (itemstack == null) {
-      return -1;
-    }
-    if (QMC.hasQMC(itemstack)) {
+    if (!shouldGuess(itemstack)) {
       return QMC.getQMC(itemstack);
-    }
-    if (QMC.isBlacklisted(itemstack)) {
-      return -1;
-    }
-    if (guessFailed.get(itemstack.itemID) != null) {
-      if (guessFailed.get(itemstack.itemID).contains(itemstack.getItemDamage())) {
-        return -1;
-      }
-    }
-    for (ItemStack checking : currentlyChecking) {
-      if (ItemStackUtil.equals(itemstack, checking)) {
-        return -1;
-      }
     }
     currentlyChecking.add(itemstack);
     ItemStack toCheck = itemstack.copy();
@@ -110,16 +69,48 @@ public class Guess {
       QMC.add(itemstack, qmc);
       return qmc;
     } else {
-      List<Integer> list;
-      if (guessFailed.get(itemstack.itemID) != null) {
-        list = guessFailed.get(itemstack.itemID);
-        guessFailed.remove(itemstack.itemID);
-      } else {
-        list = new ArrayList<Integer>();
-      }
-      list.add(itemstack.getItemDamage());
-      guessFailed.put(itemstack.itemID, list);
+      addToFailed(itemstack);
       return -1;
     }
+  }
+  
+  public static boolean shouldGuess(ItemStack itemstack) {
+    if (itemstack == null) {
+      return false;
+    }
+    if (QMC.hasQMC(itemstack)) {
+      return false;
+    }
+    if (QMC.isBlacklisted(itemstack)) {
+      return false;
+    }
+    if (guessFailed.get(itemstack.itemID) != null) {
+      if (guessFailed.get(itemstack.itemID).contains(itemstack.getItemDamage())) {
+        return false;
+      }
+    }
+    for (ItemStack stack : currentlyChecking) {
+      if (ItemStackUtil.equals(stack, itemstack)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  public static void addToFailed(ItemStack itemstack) {
+    List<Integer> list;
+    if (guessFailed.get(itemstack.itemID) != null) {
+      list = guessFailed.get(itemstack.itemID);
+      guessFailed.remove(itemstack.itemID);
+    } else {
+      list = new ArrayList<Integer>();
+    }
+    for (int i : list) {
+      if (i == itemstack.getItemDamage()) {
+        return;
+      }
+    }
+    list.add(itemstack.getItemDamage());
+    guessFailed.put(itemstack.itemID, list);
   }
 }

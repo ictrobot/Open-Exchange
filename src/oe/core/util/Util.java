@@ -1,6 +1,7 @@
 package oe.core.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import oe.OpenExchange;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -51,5 +52,12 @@ public class Util {
     for (Thread t : threads) {
       t.setPriority(priority.get(t.getName()));
     }
+  }
+  
+  public static boolean notEmpty(List<?> list) {
+    if (list != null && list.size() > 0) {
+      return true;
+    }
+    return false;
   }
 }

@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import oe.OpenExchange;
 import oe.api.QMCHandler;
 import oe.core.Log;
+import oe.core.util.ConfigUtil;
 import oe.core.util.Util;
 import oe.qmc.file.CustomActionReader;
 import oe.qmc.file.QMCCustomAction;
@@ -38,15 +39,19 @@ public class QMC {
   private static final File saveFile = new File(OpenExchange.configdir.toString() + "\\..\\QMCSave.dat");
   private static QMCSave save;
   private static NBTTagCompound loadedSnapshot = new NBTTagCompound();
+  private static boolean QMCSaveEnabled = true;
   
   public static void load() {
     actions = CustomActionReader.actions();
     QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
-    if (saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions() && saveFromFile.checkGuessHandlers()) {
+    QMCSaveEnabled = ConfigUtil.other("QMC", "Enable QMCSave", true);
+    if (QMCSaveEnabled && saveFromFile != null && saveFromFile.checkMods() && saveFromFile.checkActions() && saveFromFile.checkGuessHandlers()) {
       save = saveFromFile;
       Log.info("Using QMCSave from " + save.getTimeStamp());
     } else {
-      if (saveFromFile == null) {
+      if (!QMCSaveEnabled) {
+        regenerateSave("QMCSave disabled");
+      } else if (saveFromFile == null) {
         regenerateSave("No QMCSave file");
       } else if (!saveFromFile.checkMods()) {
         regenerateSave("Mods have changed");
@@ -87,7 +92,7 @@ public class QMC {
     } else if (!loadedSnapshot.equals(save.QMCSnapshot)) {
       restoreSnapshot(save.QMCSnapshot);
     }
-    if (!save.saved) {
+    if (!save.saved && QMCSaveEnabled) {
       save.writeToFile(saveFile);
     }
   }

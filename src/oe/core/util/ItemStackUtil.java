@@ -9,28 +9,60 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackUtil {
   
-  public static ItemStack getItemStackFromObject(Object o) {
+  /**
+   * Get an Single ItemStack from a object
+   */
+  public static ItemStack getItemStack(Object o) {
+    List<ItemStack> data = getItemStacks(o);
+    if (Util.notEmpty(data)) {
+      return data.get(0);
+    }
+    return null;
+  }
+  
+  /**
+   * Get all the ItemStacks from a object
+   */
+  public static List<ItemStack> getItemStacks(Object o) {
+    List<ItemStack> data = new ArrayList<ItemStack>();
     if (o instanceof ItemStack) {
-      ItemStack stack = (ItemStack) o;
-      return stack;
+      data.add((ItemStack) o);
     } else if (o instanceof String) {
       if (((String) o).startsWith("liquid$")) {
         String fluid = ((String) o).substring(7);
-        ItemStack[] fStacks = FluidUtil.getStoringItemStacks(FluidUtil.getFluidID(fluid));
-        return getSingleItemStack(fStacks, "bucket"); // Prefer buckets
+        data.addAll(FluidUtil.getStoringItemStacks(FluidUtil.getFluidID(fluid)));
+      } else {
+        data.addAll(OreDictionaryUtil.getItemStacks((String) o));
       }
-      return OreDictionaryUtil.getItemStack((String) o);
-    } else if (o instanceof ArrayList) {
-      return getItemStackFromObject(((ArrayList<?>) o).toArray()[0]);
+    } else if (o instanceof List) {
+      for (Object object : (List<?>) o) {
+        data.addAll(getItemStacks(object));
+      }
     } else if (o.getClass().isArray()) {
-      for (Object c : (Object[]) o) {
-        ItemStack stack = getItemStackFromObject(c);
-        if (stack != null) {
-          return stack;
-        }
+      for (Object object : (Object[]) o) {
+        data.addAll(getItemStacks(object));
       }
     }
-    return null;
+    return data;
+  }
+  
+  /**
+   * The same as getItemStacks, but only return one ItemStack if it is an ore dictionary value
+   */
+  public static List<ItemStack> getItemStacksOneOre(Object o) {
+    List<ItemStack> data = new ArrayList<ItemStack>();
+    List<String> ore = new ArrayList<String>();
+    for (ItemStack itemstack : getItemStacks(o)) {
+      if (OreDictionaryUtil.isOre(itemstack)) {
+        if (!ore.contains(OreDictionaryUtil.ore(itemstack))) {
+          ore.add(OreDictionaryUtil.ore(itemstack));
+          data.add(itemstack);
+        }
+      } else {
+        data.add(itemstack);
+      }
+    }
+    return data;
   }
   
   public static ItemStack first(List<?> list) {

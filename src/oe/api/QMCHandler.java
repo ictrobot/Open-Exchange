@@ -7,7 +7,7 @@ public class QMCHandler {
    * Base QMC Database Class
    */
   public Double getQMC(Object o) {
-    return new Double(-1);
+    return -1.0;
   }
   
   public Boolean add(Object o, Double Value) {
