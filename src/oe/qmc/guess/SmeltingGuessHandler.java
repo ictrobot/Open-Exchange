@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Log;
-import oe.core.util.Pair;
+import oe.core.util.data.Pair;
 import oe.qmc.QMC;
 
 public class SmeltingGuessHandler extends ActiveGuessHandler {

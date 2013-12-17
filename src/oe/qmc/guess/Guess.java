@@ -38,6 +38,14 @@ public class Guess {
       h.init();
     }
     for (GuessHandler h : handlers) {
+      String type = "Passive Guess Handler";
+      if (h instanceof ActiveGuessHandler) {
+        type = "Active Guess Handler";
+      }
+      Log.debug("Initiating " + h.getClass().getSimpleName() + " " + type);
+      h.beforeGuess();
+    }
+    for (GuessHandler h : handlers) {
       if (h instanceof ActiveGuessHandler) {
         ActiveGuessHandler a = (ActiveGuessHandler) h;
         Log.debug("Guessing " + a.getClass().getSimpleName() + " Active Guess Handler");

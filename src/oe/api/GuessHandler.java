@@ -12,6 +12,13 @@ public class GuessHandler {
   }
   
   /**
+   * Anything before the main guess loop
+   */
+  public void beforeGuess() {
+    
+  }
+  
+  /**
    * Check an Itemstack
    */
   public double check(ItemStack itemstack) {

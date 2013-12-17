@@ -1,4 +1,4 @@
-package oe.core.util;
+package oe.core.util.data;
 
 public class Pair<A, B> {
   public final A left;
