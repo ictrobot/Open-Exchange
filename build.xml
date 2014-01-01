@@ -150,7 +150,7 @@ Environment:
     <antcall target="file" />
     
     <!-- Remove previous builds -->
-    <delete file="${basedir}\jars\*.jar" />
+    <delete dir="${basedir}\jars\" />
     
     <!-- Build the jar -->
     <mkdir dir="${basedir}\jars\" />
