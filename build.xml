@@ -8,29 +8,15 @@
   <property file="build.properties" prefix="build"/>
   <property name="mc.version" value="1.6.4"/>
   <property name="forge.version" value="9.11.1.916"/>
-  <property name="forge.name" value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
-  <property name="forge.latest" value="minecraftforge/minecraftforge-src-latest.zip"/>
+  <property name="forge.name" value="forge-${mc.version}-${forge.version}-src.zip"/>
+  <property name="forge.download" value="http://files.minecraftforge.net/maven/net/minecraftforge/forge/${mc.version}-${forge.version}/${forge.name}.zip"/>
   <property name="v" value="${build.build_type}-${build.build_number}"/>
   <property name="output.file" value="${basedir}\jars\Open-Exchange ${v}.jar"/>
   <property name="output.test" value="${basedir}\jars\Open-Exchange TEST.jar"/>
-  
   <target name="forge">
     <delete dir="${basedir}/temp/" />
     <mkdir dir="${basedir}/temp/"/>
-    <get src="http://files.minecraftforge.net/${forge.name}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
-    <unzip src="${basedir}/temp/forge.zip" dest="${basedir}/temp/" failOnEmptyArchive="true" />
-    <exec dir="${basedir}\temp\forge\" executable="cmd" osfamily="windows">
-      <arg line="/c install.cmd" />
-    </exec>
-    <exec dir="${basedir}\temp\forge\" executable="bash" osfamily="unix">
-      <arg line="install.sh" />
-    </exec>
-  </target>
-  
-  <target name="forgelatest">
-    <delete dir="${basedir}/temp/" />
-    <mkdir dir="${basedir}/temp/"/>
-    <get src="http://files.minecraftforge.net/${forge.latest}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
+    <get src="${forge.download}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
     <unzip src="${basedir}/temp/forge.zip" dest="${basedir}/temp/" failOnEmptyArchive="true" />
     <exec dir="${basedir}\temp\forge\" executable="cmd" osfamily="windows">
       <arg line="/c install.cmd" />
@@ -148,34 +134,6 @@ Environment:
     <antcall target="clean" />
     
   </target>
-  
-  <target name="Latest">
-    <echo message="Starting to build Open-Exchange"/>
-    <echo message="LATEST BUILD - Download + Install LATEST Forge/MCP"/>
-    
-    <!-- Prep for the build -->
-    <antcall target="increment_build_number" />	
-    <antcall target="clean" />
-    <antcall target="forgelatest" />
-    <antcall target="copy" />
-    <antcall target="replace_tokens" />
-		<antcall target="recompile" />		
-  	<antcall target="reobfuscate" />
-  	<antcall target="file" />
-    <!-- Build the jar -->
-		<mkdir dir="${basedir}\jars\" />
-		<jar destfile="${output.file}">
-			<fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
-			<fileset dir="${basedir}\resources"/>
-      <fileset dir="${basedir}" includes="LICENSE" />
-      <fileset dir="${basedir}" includes="CREDITS" />
-      <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
-      <fileset dir="${basedir}\temp\" includes="build.txt" />
-		</jar>
-
-		<!-- Clean up the Temp source now that we are done -->
-		<antcall target="clean" />
-	</target>
   
   <target name="Local">
     <!-- LOCAL BUILDS - MCP already installed -->
