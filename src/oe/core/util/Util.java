@@ -1,8 +1,6 @@
 package oe.core.util;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import oe.OpenExchange;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -33,31 +31,30 @@ public class Util {
     return new java.text.SimpleDateFormat("dd,MM,yyyy").format(java.util.Calendar.getInstance().getTime());
   }
   
-  private static HashMap<String, Integer> priority;
-  
-  public static void setMaxPriority() {
-    priority = new HashMap<String, Integer>();
-    Set<Thread> threads = Thread.getAllStackTraces().keySet();
-    for (Thread t : threads) {
-      priority.put(t.getName(), t.getPriority());
-      if (t.getPriority() < 6) { // Don't Change the High Importance Threads
-        t.setPriority(Thread.MIN_PRIORITY);
-      }
-    }
-    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-  }
-  
-  public static void restorePriority() {
-    Set<Thread> threads = Thread.getAllStackTraces().keySet();
-    for (Thread t : threads) {
-      t.setPriority(priority.get(t.getName()));
-    }
-  }
-  
   public static boolean notEmpty(List<?> list) {
     if (list != null && list.size() > 0) {
       return true;
     }
     return false;
+  }
+  
+  public static int minPos(int a, int b) {
+    if (a < 0) {
+      return b;
+    }
+    if (b < 0) {
+      return a;
+    }
+    return Math.min(a, b);
+  }
+  
+  public static double minPos(double a, double b) {
+    if (a < 0) {
+      return b;
+    }
+    if (b < 0) {
+      return a;
+    }
+    return Math.min(a, b);
   }
 }

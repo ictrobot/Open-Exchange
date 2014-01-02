@@ -3,7 +3,6 @@ package oe.qmc.guess;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -20,44 +19,18 @@ import oe.core.util.ItemStackUtil;
 import oe.core.util.PlayerUtil;
 import oe.core.util.Util;
 import oe.core.util.data.Pair;
-import oe.qmc.QMC;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingGuessHandler extends ActiveGuessHandler {
   
-  public static class ValuedItemStack {
-    
-    public final ItemStack itemstack;
-    public double value;
-    
-    public ValuedItemStack(ItemStack itemstack, double value) {
-      this.itemstack = itemstack;
-      this.value = value;
-    }
-    
-    public ValuedItemStack(ItemStack itemstack) {
-      this.itemstack = itemstack;
-      this.value = -1;
-    }
-    
-    public String toString() {
-      StringBuilder s = new StringBuilder().append("<");
-      s.append(itemstack.toString());
-      s.append(", ");
-      s.append(value);
-      s.append(">");
-      return s.toString();
-    }
-  }
-  
   public static class Input {
     
-    private HashMap<Integer, List<ValuedItemStack>> data = new HashMap<Integer, List<ValuedItemStack>>();
+    private HashMap<Integer, List<ItemStack>> data = new HashMap<Integer, List<ItemStack>>();
     public boolean isValid = true;
     
     public Input() {
       for (int i = 0; i < 9; i++) {
-        data.put(i, new ArrayList<ValuedItemStack>());
+        data.put(i, new ArrayList<ItemStack>());
       }
     }
     
@@ -65,9 +38,9 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
       if (itemstack.getItemDamage() == Short.MAX_VALUE) {
         itemstack.setItemDamage(0);
       }
-      List<ValuedItemStack> list = data.get(slot);
+      List<ItemStack> list = data.get(slot);
       data.remove(slot);
-      list.add(new ValuedItemStack(itemstack));
+      list.add(itemstack);
       data.put(slot, list);
     }
     
@@ -80,33 +53,8 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
       }
     }
     
-    public List<ValuedItemStack> getInputs(int slot) {
+    public List<ItemStack> getInputs(int slot) {
       return data.get(slot);
-    }
-    
-    public void update() {
-      HashMap<Integer, List<ValuedItemStack>> tmp = new HashMap<Integer, List<ValuedItemStack>>();
-      for (int i : data.keySet()) {
-        if (Util.notEmpty(data.get(i))) {
-          List<ValuedItemStack> vstacks = new ArrayList<ValuedItemStack>();
-          for (ValuedItemStack vstack : data.get(i)) {
-            if (vstack.value < 0) {
-              vstack.value = Guess.check(vstack.itemstack);
-            }
-            if (vstack.value > 0) {
-              vstacks.add(vstack);
-            }
-          }
-          if (vstacks.size() > 0) {
-            tmp.put(i, vstacks);
-          } else {
-            isValid = false;
-          }
-        } else {
-          tmp.put(i, new ArrayList<ValuedItemStack>());
-        }
-      }
-      data = tmp;
     }
     
     public boolean isBlank() {
@@ -142,6 +90,7 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
   
   // ItemID, Pair of Output ItemStack and Input (See above)
   private HashMap<Integer, List<Pair<ItemStack, Input>>> crafting = new HashMap<Integer, List<Pair<ItemStack, Input>>>();
+  private List<ItemStack> toGuess = new ArrayList<ItemStack>();
   
   @Override
   public void init() {
@@ -162,6 +111,7 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
                 data = new ArrayList<Pair<ItemStack, Input>>();
               }
               data.add(new Pair<ItemStack, Input>(output, input));
+              toGuess.add(output);
               crafting.put(output.itemID, data);
               recipes++;
             }
@@ -175,17 +125,8 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
   }
   
   @Override
-  public void beforeGuess() {
-    for (int id : crafting.keySet()) {
-      Iterator<Pair<ItemStack, Input>> iterator = crafting.get(id).iterator();
-      while (iterator.hasNext()) {
-        Pair<ItemStack, Input> pair = iterator.next();
-        pair.right.update();
-        if (!pair.right.isValid) {
-          iterator.remove();
-        }
-      }
-    }
+  public List<ItemStack> getItemStacks() {
+    return toGuess;
   }
   
   @Override
@@ -206,114 +147,86 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
   }
   
   private double check(Pair<ItemStack, Input> pair) {
-    int maxComb = 1;
-    int[] comb = new int[9];
-    for (int i = 0; i < 9; i++) {
-      if (Util.notEmpty(pair.right.getInputs(i))) {
-        maxComb = maxComb * pair.right.getInputs(i).size();
-      }
-      comb[i] = pair.right.getInputs(i).size();
-    }
-    maxComb--;
     Guess.currentlyChecking.add(pair.left);
-    double d = -1;
-    for (int i = 0; i <= maxComb; i++) {
-      double value = check(pair, i, comb);
-      if (value > 0) {
-        if (d > 0) {
-          d = Math.min(d, value);
+    double total = -1;
+    List<Pair<ItemStack[], Double>> data = getValuedInputs(pair);
+    for (Pair<ItemStack[], Double> p : data) {
+      double t = p.right;
+      for (ItemStack itemstack : getReturned(p.left, pair.left)) {
+        double value = Guess.check(itemstack);
+        if (value > 0) {
+          t = -value;
         } else {
-          d = value;
+          t = -1;
+          break;
         }
+      }
+      if (t > 0) {
+        total = Util.minPos(total, t);
       }
     }
     Guess.currentlyChecking.remove(pair.left);
-    return d;
+    return total;
   }
   
-  private double check(Pair<ItemStack, Input> pair, int combCount, int[] comb) {
+  private List<Pair<ItemStack[], Double>> getValuedInputs(Pair<ItemStack, Input> pair) {
     ItemStack output = pair.left;
     Input input = pair.right;
-    double total = 0;
-    ItemStack[] data = new ItemStack[9];
-    int[] toSkip;
-    if (combCount > 0) {
-      toSkip = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-      List<Integer> slots = new ArrayList<Integer>();
-      for (int i = 0; i < 9; i++) {
-        if (comb[i] > 1) {
-          toSkip[i] = 0;
-          slots.add(i);
-        }
+    List<Pair<ItemStack[], Double>> data = new ArrayList<Pair<ItemStack[], Double>>();
+    ItemStack[] stacks;
+    int maxComb = 1;
+    int[] toSkip = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    List<Integer> multiple = new ArrayList<Integer>();
+    for (int i = 0; i < 9; i++) {
+      if (input.getInputs(i).size() > 1) {
+        multiple.add(i);
       }
-      int pos = 0;
-      while (combCount > 0) {
-        pos++;
-        if (pos >= slots.size()) {
-          pos = 0;
-        }
-        int slot = slots.get(pos);
-        int i = toSkip[slot];
-        if (i < comb[slot]) {
-          toSkip[slot]++;
-        }
+      if (input.getInputs(i).size() > 0) {
+        maxComb = maxComb * input.getInputs(i).size();
       }
-      for (int i = 0; i < 9; i++) {
-        if (toSkip[i] == -1) {
-          toSkip[i] = 0;
-        }
-      }
-    } else {
-      toSkip = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     }
-    for (int slot = 0; slot < 9; slot++) {
-      if (Util.notEmpty(input.getInputs(slot))) {
-        Iterator<ValuedItemStack> iterator = input.getInputs(slot).iterator();
-        while (iterator.hasNext()) {
-          ValuedItemStack vstack = iterator.next();
-          ItemStack check = vstack.itemstack;
-          double value = vstack.value;
-          if (value > 0) {
+    maxComb--;
+    for (int i = 0; i <= maxComb; i++) {
+      int comb = i;
+      int listPos = -1;
+      while (comb > 0) {
+        listPos++;
+        if (listPos >= multiple.size()) {
+          listPos = 0;
+        }
+        toSkip[multiple.get(listPos)]++;
+      }
+      double total = 0;
+      stacks = new ItemStack[9];
+      int notEmpty = 0;;
+      int foundValue = 0;
+      for (int slot = 0; slot < 9; slot++) {
+        if (Util.notEmpty(input.getInputs(slot))) {
+          notEmpty++;
+          for (ItemStack itemstack : input.getInputs(slot)) {
+            double value = Guess.check(itemstack);
             if (toSkip[slot] == 0) {
-              data[slot] = check;
-              total = total += value;
-              break;
+              if (value > 0) {
+                stacks[slot] = itemstack;
+                total = total += value;
+                foundValue++;
+                break;
+              }
             } else {
               toSkip[slot]--;
             }
           }
-        }
-      }
-    }
-    for (ItemStack stack : getReturned(data, output)) {
-      double value = Guess.check(stack);
-      if (value > 0) {
-        total = total -= value;
-      } else {
-        return -1;
-      }
-    }
-    if (total > 0) {
-      total = total / output.stackSize;
-      return total;
-    }
-    return -1;
-  }
-  
-  public void guess() {
-    for (Integer id : crafting.keySet()) {
-      for (Pair<ItemStack, Input> pair : crafting.get(id)) {
-        ItemStack output = pair.left;
-        if (Guess.shouldGuess(output)) {
-          double value = check(pair);
-          if (value > 0) {
-            QMC.add(output, value);
-          } else {
-            Guess.addToFailed(output);
+          if (foundValue < notEmpty) {
+            continue;
           }
         }
       }
+      if (total > 0) {
+        total = total / output.stackSize;
+        data.add(new Pair<ItemStack[], Double>(stacks, total));
+      }
     }
+    return data;
   }
   
   private static Input getInputs(IRecipe recipe) {

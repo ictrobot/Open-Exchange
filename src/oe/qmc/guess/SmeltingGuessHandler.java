@@ -9,12 +9,12 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Log;
 import oe.core.util.data.Pair;
-import oe.qmc.QMC;
 
 public class SmeltingGuessHandler extends ActiveGuessHandler {
   
   // Output, Input
   private HashMap<Integer, List<Pair<ItemStack, ItemStack>>> recipes = new HashMap<Integer, List<Pair<ItemStack, ItemStack>>>();
+  private List<ItemStack> toGuess = new ArrayList<ItemStack>();
   
   @Override
   @SuppressWarnings("unchecked")
@@ -43,6 +43,11 @@ public class SmeltingGuessHandler extends ActiveGuessHandler {
     Log.debug("Found " + recipes.size() + " Smelting Recipes");
   }
   
+  @Override
+  public List<ItemStack> getItemStacks() {
+    return toGuess;
+  }
+  
   public void add(ItemStack output, ItemStack input) {
     List<Pair<ItemStack, ItemStack>> list;
     if (recipes.get(output.itemID) != null) {
@@ -52,22 +57,8 @@ public class SmeltingGuessHandler extends ActiveGuessHandler {
       list = new ArrayList<Pair<ItemStack, ItemStack>>();
     }
     list.add(new Pair<ItemStack, ItemStack>(output, input));
+    toGuess.add(output);
     recipes.put(output.itemID, list);
-  }
-  
-  public void guess() {
-    for (Integer id : recipes.keySet()) {
-      for (Pair<ItemStack, ItemStack> pair : recipes.get(id)) {
-        if (Guess.shouldGuess(pair.left)) {
-          double value = Guess.check(pair.right);
-          if (value > 0) {
-            QMC.add(pair.left, value);
-          } else {
-            Guess.addToFailed(pair.left);
-          }
-        }
-      }
-    }
   }
   
   @Override

@@ -1,20 +1,36 @@
 package oe.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 
 public class GuessHandler {
   
   /**
-   * Load values
+   * The Type
    */
-  public void init() {
+  public static enum Type {
+    Passive, Active;
     
+    public String toString() {
+      return this.name() + " Guess Handler";
+    }
+  }
+  
+  public final Type type;
+  
+  public GuessHandler() {
+    this(Type.Passive);
+  }
+  
+  protected GuessHandler(Type type) {
+    this.type = type;
   }
   
   /**
-   * Anything before the main guess loop
+   * Load values
    */
-  public void beforeGuess() {
+  public void init() {
     
   }
   
@@ -27,11 +43,12 @@ public class GuessHandler {
   
   public static class ActiveGuessHandler extends GuessHandler {
     
-    /**
-     * Guess
-     */
-    public void guess() {
-      
+    public ActiveGuessHandler() {
+      super(Type.Active);
+    }
+    
+    public List<ItemStack> getItemStacks() {
+      return new ArrayList<ItemStack>();
     }
   }
 }
