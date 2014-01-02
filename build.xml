@@ -6,14 +6,19 @@
     <format property="time" pattern="hh:mm a z" unit="hour"/>
   </tstamp>
   <property file="build.properties" prefix="build"/>
+  <property file="forgeversion.properties" prefix="forgefile"/>
   <property name="mc.version" value="1.6.4"/>
-  <property name="forge.version" value="9.11.1.965"/>
+  <property name="forge.version" value="${forgefile.forge.major.number}.${forgefile.forge.minor.number}.${forgefile.forge.revision.number}.${forgefile.forge.build.number}"/>
   <property name="forge.name" value="forge-${mc.version}-${forge.version}-src.zip"/>
   <property name="forge.download" value="http://files.minecraftforge.net/maven/net/minecraftforge/forge/${mc.version}-${forge.version}/${forge.name}"/>
   <property name="v" value="${build.build_type}-${build.build_number}"/>
   <property name="output.file" value="${basedir}\jars\Open-Exchange ${v}.jar"/>
-  <property name="output.test" value="${basedir}\jars\Open-Exchange TEST.jar"/>
-  <target name="forge">
+  
+  <condition property="forge.wrongver" value="false" else="true">
+    <filesmatch file1="${basedir}/forgeversion.properties" file2="${basedir}/temp/forge/forgeversion.properties"/>
+  </condition>
+  
+  <target name="forge" if="${forge.wrongver}">
     <delete dir="${basedir}/temp/" />
     <mkdir dir="${basedir}/temp/"/>
     <get src="${forge.download}" dest="${basedir}/temp/forge.zip" usetimestamp="True" />
@@ -27,10 +32,6 @@
   </target>
   
   <target name="clean">
-    <delete dir="${basedir}\temp\" />
-  </target>
-  
-  <target name="cleanlocal">
     <delete file="${basedir}\temp\forge\mcp\src\minecraft\mcmod.info" />
     <delete dir="${basedir}\temp\forge\mcp\src\minecraft\oe" />
     <delete dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
@@ -78,7 +79,7 @@
   
   <target name="file">
     <delete file="${basedir}\temp\build.txt" />
-    <property file="${basedir}\temp\forge\forgeversion.properties" prefix="forgefile"/>
+    <property file="${basedir}\temp\forge\forgeversion.properties" prefix="tempforgefile"/>
     <echo file="${basedir}\temp\build.txt" append="true">
 Open-Exchange ${v} by ictrobot
 
@@ -87,7 +88,7 @@ Minecraft
 
 Forge
   Script = ${forge.version}
-  Actual = ${forgefile.forge.major.number}.${forgefile.forge.minor.number}.${forgefile.forge.revision.number}.${forgefile.forge.build.number}
+  Actual = ${tempforgefile.forge.major.number}.${tempforgefile.forge.minor.number}.${tempforgefile.forge.revision.number}.${tempforgefile.forge.build.number}
   
 Built:
   ${now.time}
@@ -106,8 +107,6 @@ Environment:
   </target> 
   
   <target name="Build">
-    <echo message="Starting to build Open-Exchange"/>
-    <echo message="NORMAL BUILD - Download + Install Forge/MCP"/>
     
     <!-- Prep for the build -->
     <antcall target="increment_build_number" />	
@@ -136,66 +135,12 @@ Environment:
   </target>
   
   <target name="Jenkins">
-    <echo message="Starting to build Open-Exchange"/>
-    <echo message="JENKINS BUILD - Download + Install Forge/MCP"/>
-    
-    <!-- Prep for the build -->
-    <antcall target="increment_build_number" />	
-    <antcall target="clean" />
-    <antcall target="forge" />
-    <antcall target="copy" />
-    <antcall target="replace_tokens" />
-    <antcall target="recompile" />		
-    <antcall target="reobfuscate" />
-    <antcall target="file" />
-    
     <!-- Remove previous builds -->
     <delete dir="${basedir}\jars\" />
     
-    <!-- Build the jar -->
-    <mkdir dir="${basedir}\jars\" />
-    <jar destfile="${output.file}">
-      <fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft" />
-      <fileset dir="${basedir}\resources"/>
-      <fileset dir="${basedir}" includes="LICENSE" />
-      <fileset dir="${basedir}" includes="CREDITS" />
-      <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
-      <fileset dir="${basedir}\temp\" includes="build.txt" />
-    </jar>
-
-    <!-- Clean up the Temp source now that we are done -->
-    <antcall target="clean" />
-    
+    <!-- Build -->
+    <antcall target="Build" />	
   </target>
-  
-  <target name="Local">
-    <!-- LOCAL BUILDS - MCP already installed -->
-    <echo message="Starting to build Open-Exchange"/>
-    <echo message="LOCAL BUILD - Forge/MCP already installed"/>
-		<!-- Prep for the build -->
-    <antcall target="increment_build_number" />	
-    <antcall target="cleanlocal" />
-		<antcall target="copy" />
-    <antcall target="replace_tokens" />
-		<antcall target="recompile" />		
-		<antcall target="reobfuscate" />
-    <antcall target="file" />
-
-		<!-- Build the jar -->
-		<mkdir dir="${basedir}\jars\" />
-		<jar destfile="${output.file}">
-			<fileset dir="${basedir}\temp\forge\mcp\reobf\minecraft\" />
-			<fileset dir="${basedir}\resources"/>
-      <fileset dir="${basedir}" includes="LICENSE" />
-      <fileset dir="${basedir}" includes="CREDITS" />
-      <fileset dir="${basedir}\temp\forge\mcp\src\minecraft" includes="mcmod.info" />
-      <fileset dir="${basedir}\temp\" includes="build.txt" />
-		</jar>
-
-		<!-- Clean up the Temp source now that we are done -->
-		<antcall target="cleanlocal" />
-	</target>
-
   
   <target name="Setupforge">
     <antcall target="clean" />
