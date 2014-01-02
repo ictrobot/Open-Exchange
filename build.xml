@@ -1,5 +1,5 @@
 <?xml version="1.0" ?> 
-<project name="ModBuild" default="Build" basedir="">
+<project name="OE_Build" default="Build" basedir="">
 
   <tstamp prefix="now">
     <format property="date" pattern="dd MMMM yyyy" locale="en,GB"/>
@@ -107,7 +107,6 @@ Environment:
   </target> 
   
   <target name="Build">
-    
     <!-- Prep for the build -->
     <antcall target="increment_build_number" />	
     <antcall target="clean" />
@@ -131,7 +130,6 @@ Environment:
 
     <!-- Clean up the Temp source now that we are done -->
     <antcall target="clean" />
-    
   </target>
   
   <target name="Jenkins">
@@ -140,11 +138,6 @@ Environment:
     
     <!-- Build -->
     <antcall target="Build" />	
-  </target>
-  
-  <target name="Setupforge">
-    <antcall target="clean" />
-		<antcall target="forge" />
   </target>
   
 </project>
