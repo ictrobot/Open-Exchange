@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import oe.api.GuessHandler;
+import oe.core.Log;
 
 public class CraftingGuessHandlerFactory extends GuessHandler {
   
@@ -14,6 +15,7 @@ public class CraftingGuessHandlerFactory extends GuessHandler {
   
   @Override
   public void init() {
+    int guessHandlerNum = Guess.handlers.size();
     for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
       if (recipeObject instanceof IRecipe) {
         IRecipe irecipe = (IRecipe) recipeObject;
@@ -22,6 +24,7 @@ public class CraftingGuessHandlerFactory extends GuessHandler {
           list = new ArrayList<IRecipe>();
         } else {
           list = recipes.get(irecipe.getClass());
+          recipes.remove(irecipe.getClass());
         }
         list.add(irecipe);
         recipes.put(irecipe.getClass(), list);
@@ -31,6 +34,7 @@ public class CraftingGuessHandlerFactory extends GuessHandler {
       CraftingGuessHandler cgh = new CraftingGuessHandler(c, recipes.get(c));
       cgh.init();
     }
+    Log.debug("CraftingGuessHandlerFactory: Created " + (Guess.handlers.size() - guessHandlerNum) + " CraftingGuessHandlers");
     Iterator<GuessHandler> iterator = Guess.handlers.iterator();
     while (iterator.hasNext()) {
       GuessHandler g = iterator.next();

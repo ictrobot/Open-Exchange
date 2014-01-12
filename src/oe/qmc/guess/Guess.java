@@ -1,14 +1,13 @@
 package oe.qmc.guess;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
 import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Log;
-import oe.core.util.ItemStackUtil;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -18,7 +17,7 @@ public class Guess {
   
   public static List<ItemStack> currentlyChecking = new ArrayList<ItemStack>();
   
-  private static List<ItemStack> toGuess = new ArrayList<ItemStack>();
+  private static HashMap<ItemStack, List<GuessHandler>> toGuess = new HashMap<ItemStack, List<GuessHandler>>();
   
   public static void addHandler(GuessHandler h) {
     handlers.add(h);
@@ -37,21 +36,24 @@ public class Guess {
       if (h instanceof ActiveGuessHandler) {
         List<ItemStack> g = ((ActiveGuessHandler) h).getItemStacks();
         for (ItemStack i : g) {
-          if (!toGuess.contains(i)) {
-            toGuess.add(i);
+          List<GuessHandler> list;
+          if (toGuess.containsKey(i)) {
+            list = toGuess.get(i);
+            toGuess.remove(i);
+          } else {
+            list = new ArrayList<GuessHandler>();
           }
+          list.add(h);
+          toGuess.put(i, list);
         }
       }
     }
-    Object[] objects = toGuess.toArray();
-    for (Object o : objects) {
-      if (toGuess.contains(o)) {
-        check((ItemStack) o);
-      }
+    for (Object o : toGuess.keySet().toArray()) {
+      check((ItemStack) o);
     }
     timer.stop();
     Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
-    toGuess = new ArrayList<ItemStack>();
+    toGuess = new HashMap<ItemStack, List<GuessHandler>>();
     System.gc();
   }
   
@@ -60,10 +62,9 @@ public class Guess {
       return QMC.getQMC(itemstack);
     }
     currentlyChecking.add(itemstack);
-    ItemStack toCheck = itemstack.copy();
     double qmc = -1;
-    for (GuessHandler h : handlers) {
-      qmc = h.check(toCheck);
+    for (GuessHandler h : toGuess.get(itemstack)) {
+      qmc = h.check(itemstack);
       if (qmc > 0) {
         break;
       }
@@ -73,7 +74,7 @@ public class Guess {
       QMC.add(itemstack, qmc);
       return qmc;
     } else {
-      addToFailed(itemstack);
+      toGuess.remove(itemstack);
       return -1;
     }
   }
@@ -82,7 +83,10 @@ public class Guess {
     if (itemstack == null) {
       return false;
     }
-    if (!toGuess.contains(itemstack)) {
+    if (!toGuess.keySet().contains(itemstack)) {
+      return false;
+    }
+    if (currentlyChecking.contains(itemstack)) {
       return false;
     }
     if (QMC.hasQMC(itemstack)) {
@@ -91,19 +95,6 @@ public class Guess {
     if (QMC.isBlacklisted(itemstack)) {
       return false;
     }
-    if (currentlyChecking.contains(itemstack)) {
-      return false;
-    }
     return true;
-  }
-  
-  public static void addToFailed(ItemStack itemstack) {
-    Iterator<ItemStack> iterator = toGuess.iterator();
-    while (iterator.hasNext()) {
-      ItemStack check = iterator.next();
-      if (ItemStackUtil.equalsIgnoreNBT(check, itemstack)) {
-        iterator.remove();
-      }
-    }
   }
 }
