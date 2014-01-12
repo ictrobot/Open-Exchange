@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
 import oe.api.GuessHandler.ActiveGuessHandler;
 import oe.core.Log;
+import oe.core.util.ItemStackUtil;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -26,11 +27,13 @@ public class Guess {
   public static void load() {
     Stopwatch timer = new Stopwatch();
     timer.start();
-    for (GuessHandler h : handlers) {
+    for (Object o : handlers.toArray()) { // So list can change
+      GuessHandler h = (GuessHandler) o;
       Log.debug("Initiating " + h.getClass().getSimpleName() + " " + h.type);
       h.init();
     }
-    for (GuessHandler h : handlers) {
+    for (Object o : handlers.toArray()) { // So list can change
+      GuessHandler h = (GuessHandler) o;
       if (h instanceof ActiveGuessHandler) {
         List<ItemStack> g = ((ActiveGuessHandler) h).getItemStacks();
         for (ItemStack i : g) {
@@ -42,7 +45,9 @@ public class Guess {
     }
     Object[] objects = toGuess.toArray();
     for (Object o : objects) {
-      check((ItemStack) o);
+      if (toGuess.contains(o)) {
+        check((ItemStack) o);
+      }
     }
     timer.stop();
     Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
@@ -77,13 +82,13 @@ public class Guess {
     if (itemstack == null) {
       return false;
     }
+    if (!toGuess.contains(itemstack)) {
+      return false;
+    }
     if (QMC.hasQMC(itemstack)) {
       return false;
     }
     if (QMC.isBlacklisted(itemstack)) {
-      return false;
-    }
-    if (!toGuess.contains(itemstack)) {
       return false;
     }
     if (currentlyChecking.contains(itemstack)) {
@@ -93,6 +98,12 @@ public class Guess {
   }
   
   public static void addToFailed(ItemStack itemstack) {
-    toGuess.remove(itemstack);
+    Iterator<ItemStack> iterator = toGuess.iterator();
+    while (iterator.hasNext()) {
+      ItemStack check = iterator.next();
+      if (ItemStackUtil.equalsIgnoreNBT(check, itemstack)) {
+        iterator.remove();
+      }
+    }
   }
 }

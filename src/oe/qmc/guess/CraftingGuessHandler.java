@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
@@ -88,40 +87,51 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
     }
   }
   
+  public CraftingGuessHandler(Class<?> type, List<IRecipe> recipes) {
+    this.type = type;
+    this.recipes = recipes;
+  }
+  
+  private Class<?> type;
+  private List<IRecipe> recipes;
+  
+  public String toString() {
+    return "CraftingGuessHandler[ " + type.toString() + " ]";
+  }
+  
   // ItemID, Pair of Output ItemStack and Input (See above)
   private HashMap<Integer, List<Pair<ItemStack, Input>>> crafting = new HashMap<Integer, List<Pair<ItemStack, Input>>>();
   private List<ItemStack> toGuess = new ArrayList<ItemStack>();
   
   @Override
   public void init() {
-    int recipes = 0;
-    for (Object recipeObject : CraftingManager.getInstance().getRecipeList()) {
+    int recipeNum = 0;
+    for (IRecipe recipe : recipes) {
       try {
-        if (recipeObject instanceof IRecipe) {
-          IRecipe recipe = (IRecipe) recipeObject;
-          ItemStack output = recipe.getRecipeOutput();
-          if (output != null) {
-            Input input = getInputs(recipe);
-            if (input != null) {
-              List<Pair<ItemStack, Input>> data;
-              if (crafting.get(output.itemID) != null) {
-                data = crafting.get(output.itemID);
-                crafting.remove(output.itemID);
-              } else {
-                data = new ArrayList<Pair<ItemStack, Input>>();
-              }
-              data.add(new Pair<ItemStack, Input>(output, input));
-              toGuess.add(output);
-              crafting.put(output.itemID, data);
-              recipes++;
+        ItemStack output = recipe.getRecipeOutput();
+        if (output != null) {
+          Input input = getInputs(recipe);
+          if (input != null) {
+            List<Pair<ItemStack, Input>> data;
+            if (crafting.get(output.itemID) != null) {
+              data = crafting.get(output.itemID);
+              crafting.remove(output.itemID);
+            } else {
+              data = new ArrayList<Pair<ItemStack, Input>>();
             }
+            data.add(new Pair<ItemStack, Input>(output, input));
+            toGuess.add(output);
+            crafting.put(output.itemID, data);
+            recipeNum++;
           }
         }
       } catch (Exception e) {
         Debug.handleException(e);
       }
     }
-    Log.debug("Found " + recipes + " Crafting Recipes");
+    if (recipeNum > 0) {
+      Guess.handlers.add(this);
+    }
   }
   
   @Override

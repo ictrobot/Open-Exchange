@@ -31,7 +31,7 @@ import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
-import oe.qmc.guess.CraftingGuessHandler;
+import oe.qmc.guess.CraftingGuessHandlerFactory;
 import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.OreGuessHandler;
@@ -84,7 +84,7 @@ public class OpenExchange {
     QMC.loadHandlers();
     Log.debug("Adding QMC Guess Handlers");
     Guess.addHandler(new FluidGuessHandler());
-    Guess.addHandler(new CraftingGuessHandler());
+    Guess.addHandler(new CraftingGuessHandlerFactory());
     Guess.addHandler(new SmeltingGuessHandler());
     Guess.addHandler(new OreGuessHandler());
     Log.debug("Loading QMC");
