@@ -111,11 +111,11 @@ public class Guess {
       }
     }
     currentlyChecking.remove(itemstack);
+    toGuess.remove(itemstack);
     if (qmc > 0) {
       QMC.add(itemstack, qmc);
       return qmc;
     } else {
-      toGuess.remove(itemstack);
       return -1;
     }
   }

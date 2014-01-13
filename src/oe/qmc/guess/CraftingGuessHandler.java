@@ -102,32 +102,23 @@ public class CraftingGuessHandler extends GuessHandler {
   // ItemID, Pair of Output ItemStack and Input (See above)
   private Input input;
   
-  @Override
-  public boolean init() {
-    try {
-      ItemStack output = recipe.getRecipeOutput();
-      if (output != null) {
-        Input input = getInput(recipe);
-        if (input != null) {
-          this.input = input;
-          return true;
-        }
-      }
-    } catch (Exception e) {
-      Debug.handleException(e);
-    }
-    
-    return false;
-  }
-  
   private ItemStack getItemstack() {
     return this.itemstacks.get(0);
   }
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null || input == null) {
+    if (itemstack == null) {
       return -1;
+    }
+    ItemStack output = recipe.getRecipeOutput();
+    if (output != null) {
+      Input input = getInput(recipe);
+      if (input != null) {
+        this.input = input;
+      } else {
+        return -1;
+      }
     }
     double value = check();
     if (value > 0) {
