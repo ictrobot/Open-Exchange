@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
 import oe.api.GuessHandlerFactory;
+import oe.core.Debug;
 import oe.core.Log;
 import oe.core.util.Util;
 import oe.qmc.QMC;
@@ -29,34 +30,50 @@ public class Guess {
     Stopwatch timer = new Stopwatch();
     timer.start();
     for (GuessHandlerFactory f : factories) {
-      Log.debug("Initiating " + f.getClass().getSimpleName() + " GuessHandlerFactory");
-      f.init();
+      try {
+        Log.debug("Initiating " + f.getClass().getSimpleName() + " GuessHandlerFactory");
+        f.init();
+      } catch (Exception e) {
+        Debug.handleException(e);
+      }
     }
     for (GuessHandlerFactory f : factories) {
-      List<GuessHandler> data = f.handlers();
-      getHandlers().addAll(data);
-      int num = 0;
-      for (GuessHandler h : data) {
-        for (ItemStack i : h.itemstacks) {
-          List<GuessHandler> list;
-          if (toGuess.containsKey(i)) {
-            list = toGuess.get(i);
-            toGuess.remove(i);
-          } else {
-            list = new ArrayList<GuessHandler>();
+      try {
+        List<GuessHandler> data = f.handlers();
+        getHandlers().addAll(data);
+        int num = 0;
+        for (GuessHandler h : data) {
+          for (ItemStack i : h.itemstacks) {
+            List<GuessHandler> list;
+            if (toGuess.containsKey(i)) {
+              list = toGuess.get(i);
+              toGuess.remove(i);
+            } else {
+              list = new ArrayList<GuessHandler>();
+            }
+            list.add(h);
+            toGuess.put(i, list);
+            num++;
           }
-          list.add(h);
-          toGuess.put(i, list);
-          num++;
         }
+        Log.debug("Received " + num + " Handlers from " + f.getClass().getSimpleName());
+      } catch (Exception e) {
+        Debug.handleException(e);
       }
-      Log.debug("Received " + num + " Handlers from " + f.getClass().getSimpleName());
     }
     for (GuessHandler h : handlers) {
-      h.init();
+      try {
+        h.init();
+      } catch (Exception e) {
+        Debug.handleException(e);
+      }
     }
     for (Object o : toGuess.keySet().toArray()) {
-      check((ItemStack) o);
+      try {
+        check((ItemStack) o);
+      } catch (Exception e) {
+        Debug.handleException(e);
+      }
     }
     timer.stop();
     Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
