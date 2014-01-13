@@ -15,15 +15,15 @@ public class InputOutputGuessHandler extends GuessHandler {
     super(parent);
     this.input = input;
     this.output = output;
-    this.itemstacks.add(input);
+    this.itemstacks.add(output);
   }
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null || itemstack != input) {
+    if (itemstack == null) {
       return -1;
     }
-    double value = Guess.check(output);
+    double value = Guess.check(input);
     if (value > 0) {
       return value;
     }

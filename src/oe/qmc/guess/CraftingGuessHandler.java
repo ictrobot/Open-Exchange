@@ -107,7 +107,7 @@ public class CraftingGuessHandler extends GuessHandler {
     try {
       ItemStack output = recipe.getRecipeOutput();
       if (output != null) {
-        Input input = getInputs(recipe);
+        Input input = getInput(recipe);
         if (input != null) {
           this.input = input;
           return true;
@@ -126,7 +126,7 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null || itemstack != getItemstack() || input == null) {
+    if (itemstack == null || input == null) {
       return -1;
     }
     double value = check();
@@ -218,7 +218,7 @@ public class CraftingGuessHandler extends GuessHandler {
     return data;
   }
   
-  private static Input getInputs(IRecipe recipe) {
+  private static Input getInput(IRecipe recipe) {
     Input input = new Input();
     boolean failed = false;
     if (recipe instanceof ShapedRecipes) {

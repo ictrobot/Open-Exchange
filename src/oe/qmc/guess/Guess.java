@@ -27,7 +27,9 @@ public class Guess {
   
   public static void load() {
     Stopwatch timer = new Stopwatch();
+    Stopwatch stepTimer = new Stopwatch();
     timer.start();
+    stepTimer.start();
     for (GuessHandlerFactory f : factories) {
       try {
         Log.debug("Initiating " + f.getClass().getSimpleName() + " GuessHandlerFactory");
@@ -36,6 +38,10 @@ public class Guess {
         Debug.handleException(e);
       }
     }
+    stepTimer.stop();
+    Log.debug("Initiating factories took " + stepTimer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds");
+    stepTimer.reset();
+    stepTimer.start();
     for (GuessHandlerFactory f : factories) {
       try {
         List<GuessHandler> data = f.handlers();
@@ -60,13 +66,23 @@ public class Guess {
         Debug.handleException(e);
       }
     }
-    for (GuessHandler h : handlers) {
-      try {
-        h.init();
-      } catch (Exception e) {
-        Debug.handleException(e);
+    stepTimer.stop();
+    Log.debug("Receiving handlers took " + stepTimer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds");
+    stepTimer.reset();
+    stepTimer.start();
+    for (List<GuessHandler> list : toGuess.values()) {
+      for (GuessHandler h : list) {
+        try {
+          h.init();
+        } catch (Exception e) {
+          Debug.handleException(e);
+        }
       }
     }
+    stepTimer.stop();
+    Log.debug("Initiating handlers took " + stepTimer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds");
+    stepTimer.reset();
+    stepTimer.start();
     for (Object o : toGuess.keySet().toArray()) {
       try {
         check((ItemStack) o);
@@ -74,8 +90,10 @@ public class Guess {
         Debug.handleException(e);
       }
     }
+    stepTimer.stop();
     timer.stop();
-    Log.info("It took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds to Guess");
+    Log.debug("Checking took " + stepTimer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds");
+    Log.info("Guessing took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds");
     toGuess = new HashMap<ItemStack, List<GuessHandler>>();
     System.gc();
   }
