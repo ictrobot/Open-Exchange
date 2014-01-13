@@ -35,7 +35,8 @@ import oe.qmc.guess.CraftingGuessHandlerFactory;
 import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
 import oe.qmc.guess.OreGuessHandler;
-import oe.qmc.guess.SmeltingGuessHandler;
+import oe.qmc.guess.SimpleGuessHandlerFactory;
+import oe.qmc.guess.SmeltingGuessHandlerFactory;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -82,11 +83,11 @@ public class OpenExchange {
     GameRegistry.registerFuelHandler(new QMCFuelHandler());
     Log.debug("Adding QMC Handlers");
     QMC.loadHandlers();
-    Log.debug("Adding QMC Guess Handlers");
-    Guess.addHandler(new FluidGuessHandler());
-    Guess.addHandler(new CraftingGuessHandlerFactory());
-    Guess.addHandler(new SmeltingGuessHandler());
-    Guess.addHandler(new OreGuessHandler());
+    Log.debug("Adding QMC Guess Factories");
+    Guess.addFactory(new SimpleGuessHandlerFactory(new FluidGuessHandler(SimpleGuessHandlerFactory.class)));
+    Guess.addFactory(new CraftingGuessHandlerFactory());
+    Guess.addFactory(new SmeltingGuessHandlerFactory());
+    Guess.addFactory(new SimpleGuessHandlerFactory(new OreGuessHandler(SimpleGuessHandlerFactory.class)));
     Log.debug("Loading QMC");
     QMC.load();
     if (Util.isClient()) {

@@ -6,36 +6,38 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.item.ItemStack;
 import oe.api.GuessHandler;
-import oe.api.GuessHandler.ActiveGuessHandler;
+import oe.api.GuessHandlerFactory;
 import oe.core.Log;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
 public class Guess {
   
-  public static List<GuessHandler> handlers = new ArrayList<GuessHandler>();
+  private static List<GuessHandler> handlers = new ArrayList<GuessHandler>();
+  private static List<GuessHandlerFactory> factories = new ArrayList<GuessHandlerFactory>();
   
   public static List<ItemStack> currentlyChecking = new ArrayList<ItemStack>();
   
   private static HashMap<ItemStack, List<GuessHandler>> toGuess = new HashMap<ItemStack, List<GuessHandler>>();
   
-  public static void addHandler(GuessHandler h) {
-    handlers.add(h);
+  public static void addFactory(GuessHandlerFactory f) {
+    factories.add(f);
   }
   
   public static void load() {
     Stopwatch timer = new Stopwatch();
     timer.start();
-    for (Object o : handlers.toArray()) { // So list can change
-      GuessHandler h = (GuessHandler) o;
-      Log.debug("Initiating " + h.getClass().getSimpleName() + " " + h.type);
-      h.init();
+    for (GuessHandlerFactory f : factories) {
+      Log.debug("Initiating " + f.getClass().getSimpleName() + " GuessHandlerFactory");
+      f.init();
     }
-    for (Object o : handlers.toArray()) { // So list can change
-      GuessHandler h = (GuessHandler) o;
-      if (h instanceof ActiveGuessHandler) {
-        List<ItemStack> g = ((ActiveGuessHandler) h).getItemStacks();
-        for (ItemStack i : g) {
+    for (GuessHandlerFactory f : factories) {
+      List<GuessHandler> data = f.handlers();
+      getHandlers().addAll(data);
+      int num = 0;
+      for (GuessHandler h : data) {
+        for (ItemStack i : h.itemstacks) {
           List<GuessHandler> list;
           if (toGuess.containsKey(i)) {
             list = toGuess.get(i);
@@ -45,8 +47,13 @@ public class Guess {
           }
           list.add(h);
           toGuess.put(i, list);
+          num++;
         }
       }
+      Log.debug("Received " + num + " Handlers from " + f.getClass().getSimpleName());
+    }
+    for (GuessHandler h : handlers) {
+      h.init();
     }
     for (Object o : toGuess.keySet().toArray()) {
       check((ItemStack) o);
@@ -64,9 +71,9 @@ public class Guess {
     currentlyChecking.add(itemstack);
     double qmc = -1;
     for (GuessHandler h : toGuess.get(itemstack)) {
-      qmc = h.check(itemstack);
-      if (qmc > 0) {
-        break;
+      double q = h.check(itemstack);
+      if (q > 0) {
+        qmc = Util.minPos(qmc, q);
       }
     }
     currentlyChecking.remove(itemstack);
@@ -96,5 +103,13 @@ public class Guess {
       return false;
     }
     return true;
+  }
+  
+  public static List<GuessHandlerFactory> getFactories() {
+    return factories;
+  }
+  
+  public static List<GuessHandler> getHandlers() {
+    return handlers;
   }
 }

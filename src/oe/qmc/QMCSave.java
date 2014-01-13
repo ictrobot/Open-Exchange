@@ -109,7 +109,7 @@ public class QMCSave {
   
   public static List<String> getGuessHandlers() {
     List<String> data = new ArrayList<String>();
-    for (GuessHandler h : Guess.handlers) {
+    for (GuessHandler h : Guess.getHandlers()) {
       data.add(h.getClass().getSimpleName());
     }
     return data;

@@ -6,25 +6,12 @@ import net.minecraft.item.ItemStack;
 
 public class GuessHandler {
   
-  /**
-   * The Type
-   */
-  public static enum Type {
-    Passive, Active;
-    
-    public String toString() {
-      return this.name() + " Guess Handler";
-    }
-  }
+  public List<ItemStack> itemstacks;
+  public final Class<?> parent;
   
-  public final Type type;
-  
-  public GuessHandler() {
-    this(Type.Passive);
-  }
-  
-  protected GuessHandler(Type type) {
-    this.type = type;
+  public GuessHandler(Class<?> parent) {
+    this.parent = parent;
+    this.itemstacks = new ArrayList<ItemStack>();
   }
   
   /**
@@ -39,16 +26,5 @@ public class GuessHandler {
    */
   public double check(ItemStack itemstack) {
     return -1;
-  }
-  
-  public static class ActiveGuessHandler extends GuessHandler {
-    
-    public ActiveGuessHandler() {
-      super(Type.Active);
-    }
-    
-    public List<ItemStack> getItemStacks() {
-      return new ArrayList<ItemStack>();
-    }
   }
 }

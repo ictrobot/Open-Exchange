@@ -10,7 +10,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import oe.OpenExchange;
-import oe.api.GuessHandler.ActiveGuessHandler;
+import oe.api.GuessHandler;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.data.FakeContainer;
@@ -20,7 +20,7 @@ import oe.core.util.Util;
 import oe.core.util.data.Pair;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CraftingGuessHandler extends ActiveGuessHandler {
+public class CraftingGuessHandler extends GuessHandler {
   
   public static class Input {
     
@@ -87,82 +87,59 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
     }
   }
   
-  public CraftingGuessHandler(Class<?> type, List<IRecipe> recipes) {
-    this.type = type;
-    this.recipes = recipes;
+  public CraftingGuessHandler(IRecipe recipe) {
+    super(CraftingGuessHandlerFactory.class);
+    this.recipe = recipe;
+    this.itemstacks.add(recipe.getRecipeOutput());
   }
   
-  private Class<?> type;
-  private List<IRecipe> recipes;
+  private IRecipe recipe;
   
   public String toString() {
-    return "CraftingGuessHandler[ " + type.toString() + " ]";
+    return "CraftingGuessHandler[ " + recipe.toString() + " ]";
   }
   
   // ItemID, Pair of Output ItemStack and Input (See above)
-  private HashMap<Integer, List<Pair<ItemStack, Input>>> crafting = new HashMap<Integer, List<Pair<ItemStack, Input>>>();
-  private List<ItemStack> toGuess = new ArrayList<ItemStack>();
+  private Input input;
   
   @Override
   public void init() {
-    int recipeNum = 0;
-    for (IRecipe recipe : recipes) {
-      try {
-        ItemStack output = recipe.getRecipeOutput();
-        if (output != null) {
-          Input input = getInputs(recipe);
-          if (input != null) {
-            List<Pair<ItemStack, Input>> data;
-            if (crafting.get(output.itemID) != null) {
-              data = crafting.get(output.itemID);
-              crafting.remove(output.itemID);
-            } else {
-              data = new ArrayList<Pair<ItemStack, Input>>();
-            }
-            data.add(new Pair<ItemStack, Input>(output, input));
-            toGuess.add(output);
-            crafting.put(output.itemID, data);
-            recipeNum++;
-          }
+    try {
+      ItemStack output = recipe.getRecipeOutput();
+      if (output != null) {
+        Input input = getInputs(recipe);
+        if (input != null) {
+          this.input = input;
         }
-      } catch (Exception e) {
-        Debug.handleException(e);
       }
-    }
-    if (recipeNum > 0) {
-      Guess.handlers.add(this);
+    } catch (Exception e) {
+      Debug.handleException(e);
     }
   }
   
-  @Override
-  public List<ItemStack> getItemStacks() {
-    return toGuess;
+  private ItemStack getItemstack() {
+    return this.itemstacks.get(0);
   }
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null || !Util.notEmpty(crafting.get(itemstack.itemID))) {
+    if (itemstack == null || itemstack != getItemstack() || input == null) {
       return -1;
     }
-    int id = itemstack.itemID;
-    for (Pair<ItemStack, Input> pair : crafting.get(id)) {
-      if (pair.left.getItemDamage() == itemstack.getItemDamage()) {
-        double value = check(pair);
-        if (value > 0) {
-          return value;
-        }
-      }
+    double value = check();
+    if (value > 0) {
+      return value;
     }
     return -1;
   }
   
-  private double check(Pair<ItemStack, Input> pair) {
-    Guess.currentlyChecking.add(pair.left);
+  private double check() {
+    Guess.currentlyChecking.add(getItemstack());
     double total = -1;
-    List<Pair<ItemStack[], Double>> data = getValuedInputs(pair);
+    List<Pair<ItemStack[], Double>> data = getValuedInputs();
     for (Pair<ItemStack[], Double> p : data) {
       double t = p.right;
-      for (ItemStack itemstack : getReturned(p.left, pair.left)) {
+      for (ItemStack itemstack : getReturned(p.left)) {
         double value = Guess.check(itemstack);
         if (value > 0) {
           t = -value;
@@ -175,13 +152,12 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
         total = Util.minPos(total, t);
       }
     }
-    Guess.currentlyChecking.remove(pair.left);
+    Guess.currentlyChecking.remove(getItemstack());
     return total;
   }
   
-  private List<Pair<ItemStack[], Double>> getValuedInputs(Pair<ItemStack, Input> pair) {
-    ItemStack output = pair.left;
-    Input input = pair.right;
+  private List<Pair<ItemStack[], Double>> getValuedInputs() {
+    ItemStack output = this.getItemstack();
     List<Pair<ItemStack[], Double>> data = new ArrayList<Pair<ItemStack[], Double>>();
     ItemStack[] stacks;
     int maxComb = 1;
@@ -317,7 +293,8 @@ public class CraftingGuessHandler extends ActiveGuessHandler {
     return input;
   }
   
-  private List<ItemStack> getReturned(ItemStack[] inputs, ItemStack output) {
+  private List<ItemStack> getReturned(ItemStack[] inputs) {
+    ItemStack output = getItemstack();
     List<ItemStack> data = new ArrayList<ItemStack>();
     try {
       FakeContainer fake = new FakeContainer();
