@@ -16,9 +16,11 @@ public class GuessHandler {
   
   /**
    * Load values
+   * 
+   * @return False to be marked as not valid or True to be marked as valid
    */
-  public void init() {
-    
+  public boolean init() {
+    return true;
   }
   
   /**

@@ -9,7 +9,6 @@ import oe.api.GuessHandler;
 import oe.api.GuessHandlerFactory;
 import oe.core.Debug;
 import oe.core.Log;
-import oe.core.util.Util;
 import oe.qmc.QMC;
 import com.google.common.base.Stopwatch;
 
@@ -88,9 +87,9 @@ public class Guess {
     currentlyChecking.add(itemstack);
     double qmc = -1;
     for (GuessHandler h : toGuess.get(itemstack)) {
-      double q = h.check(itemstack);
-      if (q > 0) {
-        qmc = Util.minPos(qmc, q);
+      qmc = h.check(itemstack);
+      if (qmc > 0) {
+        break;
       }
     }
     currentlyChecking.remove(itemstack);
