@@ -122,9 +122,17 @@ public class Guess {
     Log.debug(itemstacks);
     stepTimer.reset();
     stepTimer.start();
+    int i = 0;
+    int max = itemstacks.keySet().size();
+    Stopwatch checkTimer = new Stopwatch();
     for (Object o : itemstacks.keySet().toArray()) {
       try {
+        checkTimer.start();
         check(((HashStack) o).itemstack);
+        checkTimer.stop();
+        i++;
+        Log.debug(i + "/" + max + " " + checkTimer.elapsed(TimeUnit.MICROSECONDS) + "Microseconds " + timer.elapsed(TimeUnit.MILLISECONDS) + "TotalMS " + ((HashStack) o).itemstack + " ID:" + ((HashStack) o).itemstack.itemID + " Meta:" + ((HashStack) o).itemstack.getItemDamage());
+        checkTimer.reset();
       } catch (Exception e) {
         Debug.handleException(e);
       }
