@@ -108,9 +108,6 @@ public class CraftingGuessHandler extends GuessHandler {
   
   @Override
   public double check(ItemStack itemstack) {
-    if (itemstack == null) {
-      return -1;
-    }
     ItemStack output = recipe.getRecipeOutput();
     if (output != null) {
       Input input = getInput(recipe);
@@ -160,8 +157,6 @@ public class CraftingGuessHandler extends GuessHandler {
     for (int i = 0; i < 9; i++) {
       if (input.getInputs(i).size() > 1) {
         multiple.add(i);
-      }
-      if (input.getInputs(i).size() > 0) {
         maxComb = maxComb * input.getInputs(i).size();
       }
     }
@@ -196,7 +191,7 @@ public class CraftingGuessHandler extends GuessHandler {
               toSkip[slot]--;
             }
           }
-          if (foundValue < notEmpty) {
+          if (foundValue != notEmpty) {
             continue;
           }
         }
@@ -209,7 +204,7 @@ public class CraftingGuessHandler extends GuessHandler {
     return data;
   }
   
-  private static Input getInput(IRecipe recipe) {
+  private Input getInput(IRecipe recipe) {
     Input input = new Input();
     boolean failed = false;
     if (recipe instanceof ShapedRecipes) {

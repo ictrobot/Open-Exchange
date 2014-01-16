@@ -11,6 +11,7 @@ public class ToolTipHandler {
   
   @ForgeSubscribe
   public void handleItemTooltipEvent(ItemTooltipEvent event) {
+    
     if (event.itemStack.getItem() instanceof OEItemMode) {
       OEItemMode im = (OEItemMode) event.itemStack.getItem();
       String mode = im.getMode(event.itemStack);
@@ -18,6 +19,7 @@ public class ToolTipHandler {
         event.toolTip.add("Mode: " + mode);
       }
     }
+    
     if (event.itemStack.getItem() instanceof OEItemInterface) {
       OEItemInterface oe = (OEItemInterface) event.itemStack.getItem();
       double stored = oe.getQMC(event.itemStack);
@@ -29,11 +31,13 @@ public class ToolTipHandler {
         event.toolTip.add("Tier: " + oe.getTier(event.itemStack));
       }
     }
+    
     if (QMC.hasQMC(event.itemStack)) {
       event.toolTip.add("Each " + QMC.formatter.format(QMC.getQMC(event.itemStack)) + " " + QMC.name);
       if (event.itemStack.stackSize != 1) {
         event.toolTip.add(event.itemStack.stackSize + ": " + QMC.formatter.format(QMC.getQMC(event.itemStack) * event.itemStack.stackSize) + " " + QMC.name);
       }
     }
+    
   }
 }

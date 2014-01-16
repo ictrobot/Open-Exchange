@@ -3,11 +3,12 @@ package oe.qmc;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class QMCValues extends QMC {
+public class QMCValues {
   public static void load() {
-    // Minecraft
+    
     add(Block.cobblestone, 1);
     add(Block.stone, 1);
     add(Block.dirt, 1);
@@ -94,16 +95,32 @@ public class QMCValues extends QMC {
     add(Item.bucketMilk, 784); // Because milk is not a fluid
     
     add(Item.record13, 16384);
-    add(Item.recordCat, getQMC(Item.record11));
-    add(Item.recordBlocks, getQMC(Item.record11));
-    add(Item.recordChirp, getQMC(Item.record11));
-    add(Item.recordFar, getQMC(Item.record11));
-    add(Item.recordMall, getQMC(Item.record11));
-    add(Item.recordMellohi, getQMC(Item.record11));
-    add(Item.recordStal, getQMC(Item.record11));
-    add(Item.recordStrad, getQMC(Item.record11));
-    add(Item.recordWard, getQMC(Item.record11));
-    add(Item.record11, getQMC(Item.record11));
-    add(Item.recordWait, getQMC(Item.record11));
+    add(Item.recordCat, 16384);
+    add(Item.recordBlocks, 16384);
+    add(Item.recordChirp, 16384);
+    add(Item.recordFar, 16384);
+    add(Item.recordMall, 16384);
+    add(Item.recordMellohi, 16384);
+    add(Item.recordStal, 16384);
+    add(Item.recordStrad, 16384);
+    add(Item.recordWard, 16384);
+    add(Item.record11, 16384);
+    add(Item.recordWait, 16384);
+  }
+  
+  private static void add(Block block, double qmc) {
+    add(new ItemStack(block), qmc);
+  }
+  
+  private static void add(Item item, double qmc) {
+    add(new ItemStack(item), qmc);
+  }
+  
+  private static void add(Fluid fluid, double qmc) {
+    QMC.add(fluid, qmc);
+  }
+  
+  private static void add(ItemStack itemstack, double qmc) {
+    QMC.add(itemstack, qmc);
   }
 }

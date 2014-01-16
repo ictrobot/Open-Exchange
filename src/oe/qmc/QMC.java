@@ -5,14 +5,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import oe.OpenExchange;
 import oe.api.QMCHandler;
+import oe.api.QMCProcessor;
 import oe.core.Log;
 import oe.core.util.ConfigUtil;
 import oe.core.util.Util;
@@ -20,19 +16,17 @@ import oe.qmc.file.CustomActionReader;
 import oe.qmc.file.QMCCustomAction;
 import oe.qmc.guess.Guess;
 
-public class QMC {
+public final class QMC {
   
   // Name
   public static final String name = "QMC";
   public static final String nameFull = "Quantum Matter Currency";
+  // Database (HashMap of getID() to decode())
+  private static HashMap<NBTTagCompound, NBTTagCompound> data = new HashMap<NBTTagCompound, NBTTagCompound>();
   // Formatter
   public static final DecimalFormat formatter = new DecimalFormat("0.00");
   // Handlers
-  public static HashMap<Class<?>, QMCHandler> handlers = new HashMap<Class<?>, QMCHandler>();
-  public static List<QMCHandler> handlersList = new ArrayList<QMCHandler>();
-  // Built in handlers
-  public static final QMCItemStack itemstackHandler = new QMCItemStack();
-  public static final QMCFluid fluidHandler = new QMCFluid();
+  public static List<QMCHandler> handlers = new ArrayList<QMCHandler>();
   // Custom Actions
   public static List<QMCCustomAction> actions = new ArrayList<QMCCustomAction>();
   // QMCSave
@@ -41,6 +35,8 @@ public class QMC {
   private static NBTTagCompound loadedSnapshot = new NBTTagCompound();
   private static boolean QMCSaveEnabled = true;
   
+  // TODO: Itemstacks criteria (containing fluids), Guessing containing itemstacks in something with
+  // hashcode
   public static void load() {
     actions = CustomActionReader.actions();
     QMCSave saveFromFile = QMCSave.readFromFile(saveFile);
@@ -74,9 +70,6 @@ public class QMC {
     Log.info("Scheduled Guessing");
     save = null;
     saveFile.delete();
-    for (QMCHandler h : handlersList) {
-      h.restoreSnapshot(new NBTTagCompound()); // Try to wipe
-    }
     for (QMCCustomAction action : actions) {
       Log.debug("Executing Custom Action - " + action);
       action.execute();
@@ -98,24 +91,32 @@ public class QMC {
   }
   
   public static void loadHandlers() {
-    addHandler(itemstackHandler, new Class<?>[] { ItemStack.class, String.class, Block.class, Item.class });
-    addHandler(fluidHandler, new Class<?>[] { Fluid.class, FluidStack.class, QMCFluid.FluidItemStack.class });
+    addHandler(new QMCItemStack());
+    addHandler(new QMCFluid());
   }
   
-  public static boolean add(Object o, double Value) {
+  public static boolean add(Object o, double qmc) {
     QMCHandler h = getHandler(o);
-    if (h == null) {
-      return false;
+    if (h != null) {
+      NBTTagCompound id = getID(o, h);
+      if (id != null) {
+        data.put(id, h.encode(o, qmc));
+        return true;
+      }
     }
-    return h.add(o, Value);
+    return false;
   }
   
   public static double getQMC(Object o) {
     QMCHandler h = getHandler(o);
-    if (h == null) {
-      return -1;
+    if (h != null) {
+      NBTTagCompound id = getID(o, h);
+      NBTTagCompound nbt = data.get(id);
+      if (id != null && nbt != null) {
+        return h.decode(o, nbt);
+      }
     }
-    return h.getQMC(o);
+    return 0;
   }
   
   public static boolean hasQMC(Object o) {
@@ -124,40 +125,50 @@ public class QMC {
   
   public static boolean blacklist(Object o) {
     QMCHandler h = getHandler(o);
-    if (h == null) {
-      return false;
+    if (h != null) {
+      NBTTagCompound id = getID(o, h);
+      if (id != null) {
+        data.put(id, h.blacklist(o));
+        return true;
+      }
     }
-    return h.blacklist(o);
+    return false;
   }
   
   public static boolean isBlacklisted(Object o) {
     QMCHandler h = getHandler(o);
-    if (h == null) {
-      return false;
+    if (h != null) {
+      NBTTagCompound id = getID(o, h);
+      NBTTagCompound nbt = data.get(id);
+      if (id != null && nbt != null) {
+        return h.isBlacklisted(o, nbt);
+      }
     }
-    return h.isBlacklisted(o);
+    return false;
   }
   
   public static int length() {
-    int l = 0;
-    for (QMCHandler handler : handlersList) {
-      l += handler.length();
-    }
-    return l;
+    return data.size();
   }
   
-  public static NBTTagCompound snapshot(String SnapShotName) {
-    Log.info("Taking " + SnapShotName + " " + name + " Snapshot");
+  public static NBTTagCompound snapshot(String SnapshotName) {
+    Log.info("Taking " + SnapshotName + " " + name + " Snapshot");
     NBTTagCompound nbt = new NBTTagCompound();
-    for (QMCHandler handler : handlersList) {
-      NBTTagCompound snapshot = handler.snapshot();
-      if (snapshot != null && !snapshot.hasNoTags()) {
-        nbt.setCompoundTag(handler.getClass().getSimpleName(), snapshot);
+    int i = 0;
+    for (NBTTagCompound id : data.keySet()) {
+      if (id == null) {
+        continue;
       }
+      NBTTagCompound snapshot = new NBTTagCompound();
+      snapshot.setCompoundTag("data", (NBTTagCompound) data.get(id).copy());
+      snapshot.setCompoundTag("ID", (NBTTagCompound) id.copy());
+      i++;
+      nbt.setCompoundTag(i + "", snapshot);
     }
-    nbt.setString("Name", SnapShotName);
-    nbt.setString("Date", Util.getDate());
-    nbt.setString("Time", Util.getTime());
+    nbt.setInteger("length", i);
+    nbt.setString("name", SnapshotName);
+    nbt.setString("date", Util.getDate());
+    nbt.setString("time", Util.getTime());
     return nbt;
   }
   
@@ -165,39 +176,53 @@ public class QMC {
     if (nbt == null) {
       return;
     }
-    Log.info("Restoring " + nbt.getString("Name") + " " + name + " Snapshot");
+    Log.info("Restoring " + nbt.getString("name") + " " + name + " Snapshot");
     Log.debug("Currently there are " + length() + " " + name + " values");
-    for (QMCHandler handler : handlersList) {
-      handler.restoreSnapshot(nbt.getCompoundTag(handler.getClass().getSimpleName()));
+    for (int i = 1; i <= nbt.getInteger("length"); i++) {
+      NBTTagCompound snapshot = nbt.getCompoundTag(i + "");
+      data.put(snapshot.getCompoundTag("ID"), snapshot.getCompoundTag("data"));
     }
     Log.debug("After restoring there are " + length() + " " + name + " values");
     loadedSnapshot = nbt;
   }
   
+  public static void process(QMCProcessor processor) {
+    for (Object o : data.keySet().toArray()) {
+      NBTTagCompound id = (NBTTagCompound) o;
+      if (id == null) {
+        continue;
+      }
+      QMCProcessor.Data d = new QMCProcessor.Data(id, data.get(id));
+      processor.process(d);
+      if (d.changed()) {
+        data.remove(id);
+        d.setID((NBTTagCompound) d.getID().setName(id.getName()));
+        data.put(d.getID(), d.getData());
+      }
+    }
+  }
+  
+  public static NBTTagCompound getID(Object o, QMCHandler handler) {
+    NBTTagCompound nbt = handler.getID(o);
+    nbt.setName(handler.getClass().getSimpleName());
+    return nbt;
+  }
+  
   public static QMCHandler getHandler(Object o) {
-    for (Class<?> c : handlers.keySet()) {
-      if (c.isInstance(o)) {
-        return handlers.get(c);
+    for (QMCHandler handler : handlers) {
+      for (Class<?> c : handler.handles) {
+        if (c.isInstance(o)) {
+          return handler;
+        }
       }
     }
     return null;
   }
   
-  public static void addHandler(QMCHandler handler, Class<?> canHandle) {
-    addHandler(handler, new Class<?>[] { canHandle });
-  }
-  
-  public static void addHandler(QMCHandler handler, Class<?>[] canHandle) {
+  public static void addHandler(QMCHandler handler) {
     if (handler == null) {
       return;
     }
-    if (!handlersList.contains(handler)) {
-      handlersList.add(handler);
-    }
-    for (Class<?> c : canHandle) {
-      if (c != null) {
-        handlers.put(c, handler);
-      }
-    }
+    handlers.add(handler);
   }
 }

@@ -31,6 +31,7 @@ import oe.network.packet.PacketHandler;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
+import oe.qmc.QMCItemStack;
 import oe.qmc.guess.CraftingGuessHandlerFactory;
 import oe.qmc.guess.FluidGuessHandler;
 import oe.qmc.guess.Guess;
@@ -46,6 +47,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
@@ -125,13 +127,21 @@ public class OpenExchange {
   public void postInit(FMLPostInitializationEvent event) {
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
-    Log.debug("Updating Database Ore Dictionary Values");
-    QMC.itemstackHandler.updateOreDictionary();
   }
   
   @EventHandler
   public void handleIMCMessages(IMCEvent event) {
     IMCHandler.processIMCMessages(event);
+  }
+  
+  private int starts = 0;
+  
+  @EventHandler
+  public void serverAboutToStart(FMLServerAboutToStartEvent event) {
+    if (starts == 0) {
+      QMC.process(new QMCItemStack.OreProcessor());
+    }
+    starts++;
   }
   
   @EventHandler

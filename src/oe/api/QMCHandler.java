@@ -6,31 +6,36 @@ public class QMCHandler {
   /*
    * Base QMC Database Class
    */
-  public Double getQMC(Object o) {
-    return -1.0;
+  public final Class<?>[] handles;
+  
+  public QMCHandler(Class<?>[] handles) {
+    this.handles = handles;
   }
   
-  public Boolean add(Object o, Double Value) {
+  public double decode(Object o, NBTTagCompound nbt) {
+    return nbt.getDouble("qmc");
+  }
+  
+  public NBTTagCompound encode(Object o, double qmc) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setDouble("qmc", qmc);
+    return nbt;
+  }
+  
+  public NBTTagCompound blacklist(Object o) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setDouble("qmc", -1);
+    return nbt;
+  }
+  
+  public Boolean isBlacklisted(Object o, NBTTagCompound nbt) {
+    if (nbt.getDouble("qmc") <= 0) {
+      return true;
+    }
     return false;
   }
   
-  public Boolean blacklist(Object o) {
-    return false;
-  }
-  
-  public Boolean isBlacklisted(Object o) {
-    return false;
-  }
-  
-  public NBTTagCompound snapshot() {
+  public NBTTagCompound getID(Object o) {
     return new NBTTagCompound();
-  }
-  
-  public void restoreSnapshot(NBTTagCompound nbt) {
-    
-  }
-  
-  public Integer length() {
-    return 0;
   }
 }
