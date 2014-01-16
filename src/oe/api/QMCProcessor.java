@@ -37,12 +37,6 @@ public class QMCProcessor {
     }
   }
   
-  /**
-   * 
-   * @param id
-   * @param data
-   * @return data
-   */
   public void process(QMCProcessor.Data data) {
     
   }
