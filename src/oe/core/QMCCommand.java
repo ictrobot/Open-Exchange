@@ -6,7 +6,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatMessageComponent;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -63,8 +63,8 @@ public class QMCCommand extends CommandBase {
   }
   
   private void commandHelp(ICommandSender sender, String[] arguments) {
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("Usage"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/QMC save - Rebuilds QMCSave"));
+    sendMsg(sender, "Usage");
+    sendMsg(sender, "/QMC save - Rebuilds QMCSave");
   }
   
   @Override
@@ -91,5 +91,9 @@ public class QMCCommand extends CommandBase {
   public static EntityPlayerMP getPlayerForName(String name) {
     EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
     return tempPlayer;
+  }
+  
+  public static void sendMsg(ICommandSender sender, String msg) {
+    Util.sendMsg(sender, msg);
   }
 }

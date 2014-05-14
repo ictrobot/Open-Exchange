@@ -1,5 +1,6 @@
 package oe.api;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -13,7 +14,7 @@ public class OE_IMC {
     NBTTagCompound nbt = new NBTTagCompound();
     NBTTagCompound item = new NBTTagCompound();
     o.writeToNBT(item);
-    nbt.setCompoundTag("item", item);
+    nbt.setTag("item", item);
     nbt.setDouble("qmc", value);
     FMLInterModComms.sendMessage("OE", "addQMCItemStack", nbt);
   }
@@ -25,9 +26,9 @@ public class OE_IMC {
     FMLInterModComms.sendMessage("OE", "addQMCItemStack", nbt);
   }
   
-  public static void addToolBlacklist(int BlockID) {
+  public static void addToolBlacklist(Block block) {
     NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setInteger("blockID", BlockID);
+    nbt.setInteger("blockID", Block.getIdFromBlock(block));
     FMLInterModComms.sendMessage("OE", "addQuantumToolBlackList", nbt);
   }
 }

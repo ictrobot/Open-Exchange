@@ -1,10 +1,6 @@
 package oe.item;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,18 +9,18 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import oe.api.OEItemInterface;
 import oe.api.lib.OEType;
-import oe.core.Debug;
+import oe.core.util.NetworkUtil;
+import oe.core.util.NetworkUtil.Channel;
 import oe.core.util.Util;
 
 public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   
-  public ItemQuantumAxe(int id) {
-    super(id, Items.quantum);
-    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+  public ItemQuantumAxe() {
+    super(OEItems.quantumToolMaterial);
+    setTextureName(OEItems.Texture(this.getClass().getSimpleName().substring(4).trim()));
     setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
     setMaxDamage(0);
@@ -47,11 +43,11 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   }
   
   @Override
-  public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLivingBase entity) {
+  public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, Block block, int par3, int par4, int par5, EntityLivingBase entity) {
     if (!(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)) {
       decreaseQMC(1, par1ItemStack);
     }
-    return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, entity);
+    return super.onBlockDestroyed(par1ItemStack, par2World, block, par3, par4, par5, entity);
   }
   
   private void checkNBT(ItemStack itemstack) {
@@ -64,41 +60,17 @@ public class ItemQuantumAxe extends ItemAxe implements OEItemInterface {
   @Override
   public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
     if (Util.isClientSide()) {
-      if (Minecraft.getMinecraft().objectMouseOver != null) {
-        int x = Minecraft.getMinecraft().objectMouseOver.blockX;
-        int y = Minecraft.getMinecraft().objectMouseOver.blockY;
-        int z = Minecraft.getMinecraft().objectMouseOver.blockZ;
-        packet(x, y, z, player);
-      }
+      NetworkUtil.sendMouseOverToServer(Channel.QuantumDestruction, player);
     }
     return itemstack;
   }
   
-  private void packet(int x, int y, int z, EntityPlayer tmpplayer) {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-    DataOutputStream outputStream = new DataOutputStream(bos);
-    try {
-      outputStream.writeInt(x);
-      outputStream.writeInt(y);
-      outputStream.writeInt(z);
-    } catch (Exception e) {
-      Debug.handleException(e);
-    }
-    
-    Packet250CustomPayload packet = new Packet250CustomPayload();
-    packet.channel = "OpenExchangeQD";
-    packet.data = bos.toByteArray();
-    packet.length = bos.size();
-    EntityClientPlayerMP player = (EntityClientPlayerMP) tmpplayer;
-    player.sendQueue.addToSendQueue(packet);
-  }
-  
   @Override
-  public float getStrVsBlock(ItemStack stack, Block block, int meta) {
+  public float getDigSpeed(ItemStack stack, Block block, int meta) {
     if (getQMC(stack) < 1) {
       return 0.5F;
     }
-    return super.getStrVsBlock(stack, block, meta);
+    return super.getDigSpeed(stack, block, meta);
   }
   
   @Override

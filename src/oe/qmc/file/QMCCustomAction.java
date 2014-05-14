@@ -59,7 +59,7 @@ public class QMCCustomAction {
   public NBTTagCompound toNBT() {
     NBTTagCompound nbt = new NBTTagCompound();
     if (itemstack != null) {
-      nbt.setCompoundTag("item", itemstack.writeToNBT(new NBTTagCompound()));
+      nbt.setTag("item", itemstack.writeToNBT(new NBTTagCompound()));
     } else {
       nbt.setString("ore", ore);
     }

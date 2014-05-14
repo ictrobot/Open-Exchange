@@ -1,7 +1,6 @@
 package oe.block.tile;
 
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +24,8 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
   @SuppressWarnings("unchecked")
   @Override
   public void updateEntity() {
-    double pStored = stored;
     stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
-    if (pStored != stored) {
-      onInventoryChanged();
-    }
-    Block block = Block.blocksList[worldObj.getBlockId(xCoord, yCoord, zCoord)];
-    AxisAlignedBB boundingBox = block.getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord);
+    AxisAlignedBB boundingBox = worldObj.getBlock(xCoord, yCoord, zCoord).getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord);
     int radius = 2;
     List<EntityXPOrb> list = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, boundingBox.expand(radius, radius, radius));
     for (EntityXPOrb xp : list) {
@@ -80,7 +74,6 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
     } else {
       stored = value;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -91,7 +84,6 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
     } else if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -100,7 +92,6 @@ public class TileExperienceConsumer extends TileEntity implements ServerNetworke
     if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override

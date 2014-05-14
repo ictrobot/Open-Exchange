@@ -110,23 +110,8 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
   }
   
   @Override
-  public String getInvName() {
-    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
-  }
-  
-  @Override
   public ItemStack getStackInSlot(int i) {
     return chestContents[i];
-  }
-  
-  @Override
-  public void closeChest() {
-    onInventoryChanged();
-  }
-  
-  @Override
-  public void openChest() {
-    onInventoryChanged();
   }
   
   @Override
@@ -135,14 +120,12 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
       if (chestContents[slotnum].stackSize <= x) {
         ItemStack itemstack = chestContents[slotnum];
         chestContents[slotnum] = null;
-        onInventoryChanged();
         return itemstack;
       }
       ItemStack itemstack1 = chestContents[slotnum].splitStack(x);
       if (chestContents[slotnum].stackSize == 0) {
         chestContents[slotnum] = null;
       }
-      onInventoryChanged();
       return itemstack1;
     } else {
       return null;
@@ -155,16 +138,15 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
       itemstack.stackSize = getInventoryStackLimit();
     }
-    onInventoryChanged();
   }
   
   @Override
   public void readFromNBT(NBTTagCompound TagCompound) {
     super.readFromNBT(TagCompound);
-    NBTTagList TagList = TagCompound.getTagList("Items");
+    NBTTagList TagList = TagCompound.getTagList("Items", chestContents.length);
     chestContents = new ItemStack[getSizeInventory()];
     for (int i = 0; i < TagList.tagCount(); i++) {
-      NBTTagCompound nbttagcompound1 = (NBTTagCompound) TagList.tagAt(i);
+      NBTTagCompound nbttagcompound1 = (NBTTagCompound) TagList.getCompoundTagAt(i);
       int j = nbttagcompound1.getByte("Slot") & 0xff;
       if (j >= 0 && j < chestContents.length) {
         chestContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
@@ -201,7 +183,7 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     if (worldObj == null) {
       return true;
     }
-    if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
+    if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this) {
       return false;
     }
     return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
@@ -210,11 +192,6 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
   @Override
   public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
     return true;
-  }
-  
-  @Override
-  public boolean isInvNameLocalized() {
-    return false;
   }
   
   @Override
@@ -295,7 +272,6 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     } else {
       stored = value;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -306,7 +282,6 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     } else if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -315,7 +290,6 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
     if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -371,5 +345,25 @@ public class TileCharging extends TileEntity implements ServerNetworkedTile, Cli
   public void restoreServer(NBTTagCompound nbt) {
     mode = nbt.getBoolean("mode");
     modeToClients = true;
+  }
+  
+  @Override
+  public String getInventoryName() {
+    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
+  }
+  
+  @Override
+  public boolean hasCustomInventoryName() {
+    return false;
+  }
+  
+  @Override
+  public void openInventory() {
+    
+  }
+  
+  @Override
+  public void closeInventory() {
+    
   }
 }

@@ -68,6 +68,6 @@ public class ContainerExtractor extends Container {
   
   @Override
   public void onContainerClosed(EntityPlayer entityplayer) {
-    tileEntity.onInventoryChanged();
+    
   }
 }

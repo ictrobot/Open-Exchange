@@ -1,7 +1,7 @@
 package oe.core;
 
 public class Reference {
-  public static final String MOD_ID = "OE";
+  public static final String MOD_ID = "oe";
   public static final String MOD_NAME = "Open-Exchange";
   public static final String VERSION_NUMBER = "@VERSION@";
   public static final String VERSION_WITHSPACES = "@VERSIONSPACES@";

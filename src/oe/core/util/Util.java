@@ -1,6 +1,8 @@
 package oe.core.util;
 
 import java.util.List;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
 import oe.OpenExchange;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -56,5 +58,9 @@ public class Util {
       return a;
     }
     return Math.min(a, b);
+  }
+  
+  public static void sendMsg(ICommandSender sender, String msg) {
+    sender.addChatMessage(new ChatComponentText(msg));
   }
 }

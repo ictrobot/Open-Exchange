@@ -5,18 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.item.ItemStack;
-import oe.OpenExchange;
 import oe.core.Debug;
 import oe.qmc.QMC;
 import org.apache.commons.io.FileUtils;
 
 public class CustomActionReader {
   
+  // TODO Fix
   public static List<QMCCustomAction> actions() {
-    return read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true, false);
+    return new ArrayList<QMCCustomAction>();
+    // read(new File(OpenExchange.configdir + "/OpenExchange/CustomItemStackValues.cfg"), true,
+    // false);
   }
   
+  @SuppressWarnings("unused")
   private static List<QMCCustomAction> read(File file, boolean shouldCreate, boolean read) {
     List<QMCCustomAction> data = new ArrayList<QMCCustomAction>();
     try {
@@ -100,9 +102,10 @@ public class CustomActionReader {
   
   private static Object read(String[] str, int starting) { // String or ItemStack
     try {
-      return new ItemStack(Integer.parseInt(str[starting]), 1, Integer.parseInt(str[starting + 1]));
+      // return new ItemStack(Integer.parseInt(str[starting]), 1, Integer.parseInt(str[starting +
+      // 1]));
     } catch (Exception e) {
-      return str[starting];
     }
+    return str[starting];
   }
 }

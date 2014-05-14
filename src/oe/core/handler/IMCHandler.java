@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import oe.core.Log;
 import oe.core.data.QuantumToolBlackList;
-import oe.core.util.ItemStackUtil;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
@@ -30,10 +29,8 @@ public class IMCHandler {
   private static void toolBlackList(IMCMessage imc) {
     NBTTagCompound nbt = imc.getNBTValue();
     int blockID = nbt.getInteger("blockID");
-    if (blockID != 0 && ItemStackUtil.isBlock(blockID)) {
-      QuantumToolBlackList.add(Block.blocksList[blockID]);
-      Log.debug("[IMC] Added id " + blockID + " to QuantumToolBlackList");
-    }
+    QuantumToolBlackList.add(Block.getBlockById(blockID));
+    Log.debug("[IMC] Added id " + Block.getBlockById(blockID) + " to QuantumToolBlackList");
   }
   
   private static void addQMCItemStack(IMCMessage imc) {

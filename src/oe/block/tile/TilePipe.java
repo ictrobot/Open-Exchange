@@ -15,7 +15,6 @@ public class TilePipe extends TileEntity implements ServerNetworkedTile, OEPipeI
   
   @Override
   public void updateEntity() {
-    onInventoryChanged();
     passThrough = 0;
   }
   

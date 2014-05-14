@@ -2,19 +2,16 @@ package oe.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import oe.api.OEItemInterface;
 import oe.core.util.FluidUtil;
-import oe.core.util.ItemStackUtil;
+import oe.core.util.Util;
 import oe.qmc.QMC;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -75,11 +72,11 @@ public class OECommand implements ICommand {
   }
   
   private void commandHelp(ICommandSender sender, String[] arguments) {
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("Usage"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe version - Returns Open Exchange version"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe data - Returns info about the item in your hand"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe fluid - Returns info about the fluid container in your hand"));
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText("/oe mod - Returns what mod the item in your hand is from"));
+    sendMsg(sender, "Usage");
+    sendMsg(sender, "/oe version  - Returns Open Exchange version");
+    sendMsg(sender, "/oe data     - Returns info about the item in your hand");
+    sendMsg(sender, "/oe fluid    - Returns info about the fluid container in your hand");
+    sendMsg(sender, "/oe mod      - Returns what mod the item in your hand is from");
   }
   
   private void commandFluid(ICommandSender sender, String[] arguments) {
@@ -87,23 +84,23 @@ public class OECommand implements ICommand {
     if (player != null) {
       ItemStack held = player.getHeldItem();
       if (held != null) {
-        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- ItemStack Fluid Data ---"));
+        sendMsg(sender, "--- ItemStack Fluid Data ---");
         if (FluidUtil.storesFluid(held)) {
           FluidStack f = FluidUtil.getFluidStack(held);
           ItemStack e = FluidUtil.getEmpty(held);
           if (f != null && e != null) {
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Fluid:"));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  Name: " + FluidUtil.getName(f.fluidID)));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  FluidID: " + f.fluidID));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  Amount: " + f.amount));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  QMC:"));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC per 1000mb: " + QMC.getQMC(FluidUtil.getFluid(f.fluidID))));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("    QMC: " + QMC.getQMC(f)));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("Empty Container:"));
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText("  " + e.getUnlocalizedName() + " (ID:" + e.itemID + " Meta:" + e.getItemDamage() + " QMC:" + QMC.getQMC(e) + ")"));
+            sendMsg(sender, "Fluid:");
+            sendMsg(sender, "  Name: " + FluidUtil.getName(f.fluidID));
+            sendMsg(sender, "  FluidID: " + f.fluidID);
+            sendMsg(sender, "  Amount: " + f.amount);
+            sendMsg(sender, "  QMC:");
+            sendMsg(sender, "    QMC per 1000mb: " + QMC.getQMC(FluidUtil.getFluid(f.fluidID)));
+            sendMsg(sender, "    QMC: " + QMC.getQMC(f));
+            sendMsg(sender, "Empty Container:");
+            sendMsg(sender, "  ID:" + held.getUnlocalizedName() + " Meta:" + held.getItemDamage());
           }
         } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held ItemStack does not store fluid"));
+          sendMsg(sender, "The held ItemStack does not store fluid");
         }
       }
     }
@@ -114,26 +111,13 @@ public class OECommand implements ICommand {
     if (player != null) {
       ItemStack held = player.getHeldItem();
       if (held != null) {
-        GameRegistry.UniqueIdentifier id = null;
-        if (ItemStackUtil.isBlock(held.itemID)) {
-          Block block = Block.blocksList[held.itemID];
-          if (block == null) {
-            return;
-          }
-          id = GameRegistry.findUniqueIdentifierFor(block);
-        } else if (ItemStackUtil.isItem(held.itemID)) {
-          Item item = Item.itemsList[held.itemID];
-          if (item == null) {
-            return;
-          }
-          id = GameRegistry.findUniqueIdentifierFor(item);
-        }
-        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- ItemStack Mod Data ---"));
+        GameRegistry.UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(held.getItem());
+        sendMsg(sender, "--- ItemStack Mod Data ---");
         if (id != null) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Mod: " + id.modId));
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Name: " + id.name));
+          sendMsg(sender, "Mod: " + id.modId);
+          sendMsg(sender, "Name: " + id.name);
         } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held ItemStack is not registered correctly in the GameRegistery"));
+          sendMsg(sender, "The held ItemStack is not registered correctly in the GameRegistery");
         }
       }
     }
@@ -144,29 +128,28 @@ public class OECommand implements ICommand {
     if (player != null) {
       ItemStack held = player.getHeldItem();
       if (held != null) {
-        Log.info(player.username + " queried the database");
-        sender.sendChatToPlayer(ChatMessageComponent.createFromText("--- Open Exchange Data ---"));
+        sendMsg(sender, "--- Open Exchange Data ---");
         if (QMC.hasQMC(held)) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText(QMC.getQMC(held) + " " + QMC.name));
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Itemstack " + held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
+          sendMsg(sender, QMC.getQMC(held) + " " + QMC.name);
+          sendMsg(sender, "ID:" + held.getUnlocalizedName() + " Meta:" + held.getItemDamage());
         } else {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("The held item does not have a value"));
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText(held.getUnlocalizedName() + " (ID:" + held.itemID + " Meta:" + held.getItemDamage() + ")"));
+          sendMsg(sender, "The held item does not have a value");
+          sendMsg(sender, "ID:" + held.getUnlocalizedName() + " Meta:" + held.getItemDamage());
         }
         if (held.getItem() instanceof OEItemInterface) {
           OEItemInterface oe = (OEItemInterface) held.getItem();
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("Stored " + oe.getQMC(held) + " " + QMC.name + ", Max " + oe.getMaxQMC(held) + " " + QMC.name));
+          sendMsg(sender, "Stored " + oe.getQMC(held) + " " + QMC.name + ", Max " + oe.getMaxQMC(held) + " " + QMC.name);
         }
         int oreID = OreDictionary.getOreID(held);
         if (oreID != -1) {
-          sender.sendChatToPlayer(ChatMessageComponent.createFromText("OreDictionary: " + OreDictionary.getOreName(oreID)));
+          sendMsg(sender, "OreDictionary: " + OreDictionary.getOreName(oreID));
         }
       }
     }
   }
   
   private void commandVersion(ICommandSender sender, String[] arguments) {
-    sender.sendChatToPlayer(ChatMessageComponent.createFromText(Reference.NAME_DEBUG));
+    sendMsg(sender, Reference.NAME_DEBUG);
   }
   
   @Override
@@ -193,5 +176,9 @@ public class OECommand implements ICommand {
   public static EntityPlayerMP getPlayerForName(String name) {
     EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
     return tempPlayer;
+  }
+  
+  public static void sendMsg(ICommandSender sender, String msg) {
+    Util.sendMsg(sender, msg);
   }
 }

@@ -1,15 +1,15 @@
 package oe.core.handler;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import oe.api.OEItemInterface;
 import oe.api.OEItemMode;
 import oe.qmc.QMC;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ToolTipHandler {
   
-  @ForgeSubscribe
+  @SubscribeEvent
   public void handleItemTooltipEvent(ItemTooltipEvent event) {
     
     if (event.itemStack.getItem() instanceof OEItemMode) {

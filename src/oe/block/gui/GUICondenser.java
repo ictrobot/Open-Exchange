@@ -22,13 +22,13 @@ public class GUICondenser extends GuiContainer {
     // Progress Bar
     GUIHandler.drawProgressPar(tile.percent, this, this.mc);
     // Charging Bench Text
-    fontRenderer.drawString(StatCollector.translateToLocal(tile.getInvName()), 26, 3, 4210752);
+    fontRendererObj.drawString(StatCollector.translateToLocal(tile.getInventoryName()), 26, 3, 4210752);
     // Storage Text
     String text = QMC.formatter.format(tile.stored) + " " + QMC.name;
     int pos = 176 - (text.length() * 6);
-    fontRenderer.drawString(text, pos, 3, 4210752);
+    fontRendererObj.drawString(text, pos, 3, 4210752);
     // Inventory Text
-    fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);
+    fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, 77, 4210752);
   }
   
   @Override

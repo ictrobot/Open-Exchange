@@ -2,6 +2,7 @@ package oe.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -16,7 +17,7 @@ public class FluidUtil {
       return true;
     }
     for (FluidContainerData f : getFluidData()) {
-      if (f.filledContainer.itemID == itemstack.itemID && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
+      if (Item.getIdFromItem(f.filledContainer.getItem()) == Item.getIdFromItem(itemstack.getItem()) && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
         return true;
       }
     }
@@ -33,7 +34,7 @@ public class FluidUtil {
       return r;
     }
     for (FluidContainerData f : getFluidData()) {
-      if (f.filledContainer.itemID == itemstack.itemID && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
+      if (Item.getIdFromItem(f.filledContainer.getItem()) == Item.getIdFromItem(itemstack.getItem()) && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
         return f.fluid;
       }
     }
@@ -59,7 +60,7 @@ public class FluidUtil {
       }
     }
     for (FluidContainerData f : getFluidData()) {
-      if (f.filledContainer.itemID == itemstack.itemID && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
+      if (Item.getIdFromItem(f.filledContainer.getItem()) == Item.getIdFromItem(itemstack.getItem()) && f.filledContainer.getItemDamage() == itemstack.getItemDamage()) {
         return f.emptyContainer;
       }
     }

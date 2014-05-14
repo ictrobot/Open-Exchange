@@ -1,76 +1,64 @@
 package oe.network.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import oe.api.OE;
 import oe.api.OEItemInterface;
 import oe.core.Debug;
 import oe.core.data.QuantumToolBlackList;
 import oe.core.util.ConfigUtil;
-import cpw.mods.fml.common.network.Player;
+import oe.core.util.NetworkUtil.PacketProcessor;
+import cpw.mods.fml.relauncher.Side;
 
-public class QuantumDestructionPacket {
+public class QuantumDestructionPacket implements PacketProcessor {
   
-  private static double QMCNeeded;
+  private static double QMCNeeded = -1;
   
-  public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player Player) {
-    DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-    int x;
-    int y;
-    int z;
-    
-    try {
-      x = inputStream.readInt();
-      y = inputStream.readInt();
-      z = inputStream.readInt();
-    } catch (IOException e) {
-      return;
-    }
-    if (Player instanceof EntityPlayer) {
-      EntityPlayer player = (EntityPlayer) Player;
+  @Override
+  public void handlePacket(NBTTagCompound nbt, EntityPlayer player, Side side) {
+    int x = nbt.getInteger("x");
+    int y = nbt.getInteger("y");
+    int z = nbt.getInteger("z");
+    if (QMCNeeded == -1) {
       QMCNeeded = ConfigUtil.other("Item", "Quantum tools right click cost per block", 5);
-      blockBreak(x, y, z, player);
     }
+    blockBreak(x, y, z, player);
   }
   
   private static void blockBreak(int x, int y, int z, EntityPlayer player) {
-    int ID = player.worldObj.getBlockId(x, y, z);
+    String ID = player.worldObj.getBlock(x, y, z).getUnlocalizedName();
     int meta = player.worldObj.getBlockMetadata(x, y, z);
+    Block block = player.worldObj.getBlock(x, y, z);
     if (OE.isOE(player.getHeldItem().getItem().getClass())) {
-      Item item = player.getHeldItem().getItem();
-      Float f = item.getStrVsBlock(player.getHeldItem(), Block.blocksList[ID], meta);
+      ItemStack item = player.getHeldItem();
+      Float f = item.getItem().getDigSpeed(item, block, meta);
       if (f <= 1) {
         return;
       }
     } else {
       return;
     }
-    blockBreak(x, y, z, player, 0, ID, meta);
+    blockBreak(x, y, z, player, 0, block, ID, meta);
   }
   
-  private static void blockBreak(int x, int y, int z, EntityPlayer player, int times, int ID, int meta) {
+  private static void blockBreak(int x, int y, int z, EntityPlayer player, int times, Block block, String ID, int meta) {
     try {
       if (times == 5) {
         return;
       }
       World world = player.worldObj;
-      Block block = Block.blocksList[ID];
       if (QuantumToolBlackList.isBlackListed(block)) {
         return;
       }
-      if (ID == world.getBlockId(x, y, z) && meta == world.getBlockMetadata(x, y, z)) {
+      if (ID == world.getBlock(x, y, z).getUnlocalizedName() && meta == world.getBlockMetadata(x, y, z)) {
         if (OE.isOE(player.getHeldItem().getItem().getClass())) {
           OEItemInterface oe = (OEItemInterface) player.getHeldItem().getItem();
           if (oe.getQMC(player.getHeldItem()) > QMCNeeded) {
-            Object[] drops = block.getBlockDropped(player.worldObj, x, y, x, meta, 0).toArray();
+            ArrayList<ItemStack> drops = block.getDrops(player.worldObj, x, y, x, meta, 0);
             boolean invSpace = false;
             for (Object o : drops) {
               if (o != null && o instanceof ItemStack) {
@@ -120,7 +108,7 @@ public class QuantumDestructionPacket {
             targetX--;
             break;
         }
-        blockBreak(targetX, targetY, targetZ, player, times + 1, ID, meta);
+        blockBreak(targetX, targetY, targetZ, player, times + 1, block, ID, meta);
       }
     } catch (Exception e) {
       Debug.handleException(e);

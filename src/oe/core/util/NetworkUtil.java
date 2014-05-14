@@ -1,60 +1,67 @@
 package oe.core.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import oe.core.Debug;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import oe.OpenExchange;
+import oe.item.ItemBlockManipulator;
+import oe.item.OEItems;
+import oe.network.packet.ItemModePacket;
+import oe.network.packet.NBTPacket;
+import oe.network.packet.QMCSynchronizationPacket;
+import oe.network.packet.QuantumDestructionPacket;
+import oe.network.packet.TileInfoPacket;
+import cpw.mods.fml.relauncher.Side;
 
 public class NetworkUtil {
   
-  public static final String baseChannel = "OpenExchange";
+  public static interface PacketProcessor {
+    public void handlePacket(NBTTagCompound nbt, EntityPlayer player, Side side);
+  }
   
-  public static final String[] channels = new String[] { // OE network channels
-    "OpenExchange", // Internal
-    "OpenExchangeTS", // TileSync
-    "OpenExchangeIM", // ItemMode
-    "OpenExchangeQD", // QuantumDestruction
-    "OpenExchangeBM", // BlockManipulater
-    "OpenExchangeQMC", // QMC Server --> Client Snapshot
-    "OpenExchangeT" // TileInfo
-  };
+  public static final String BASE_CHANNEL = "OpenExchange";
   
-  public static boolean sendToClient(Player player, String channel, NBTTagCompound nbt) {
-    try {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-      DataOutputStream outputStream = new DataOutputStream(bos);
-      CompressedStreamTools.writeCompressed(nbt, outputStream);
-      Packet250CustomPayload packet = new Packet250CustomPayload();
-      packet.channel = baseChannel + channel;
-      packet.data = bos.toByteArray();
-      packet.length = bos.size();
-      PacketDispatcher.sendPacketToPlayer(packet, player);
-      return true;
-    } catch (Exception e) {
-      Debug.handleException(e);
-      return false;
+  public static enum Channel {
+    TileSync(new oe.core.data.TileSync()), ItemMode(new ItemModePacket()), QuantumDestruction(new QuantumDestructionPacket()), BlockManipulater((ItemBlockManipulator) OEItems.blockManipulator), ServerToClientSnapshot(new QMCSynchronizationPacket()), TileInfo(new TileInfoPacket());
+    
+    public final PacketProcessor p;
+    
+    private Channel(PacketProcessor p) {
+      this.p = p;
     }
   }
   
-  public static boolean sendToServer(EntityClientPlayerMP player, String channel, NBTTagCompound nbt) {
-    try {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-      DataOutputStream outputStream = new DataOutputStream(bos);
-      CompressedStreamTools.writeCompressed(nbt, outputStream);
-      Packet250CustomPayload packet = new Packet250CustomPayload();
-      packet.channel = baseChannel + channel;
-      packet.data = bos.toByteArray();
-      packet.length = bos.size();
-      player.sendQueue.addToSendQueue(packet);
-      return true;
-    } catch (Exception e) {
-      Debug.handleException(e);
-      return false;
+  public static void sendToClient(EntityPlayerMP player, Channel channel, NBTTagCompound nbt) {
+    NBTPacket p = new NBTPacket(getContainerNBT(channel, nbt));
+    OpenExchange.packetPipeline.sendTo(p, player);
+  }
+  
+  public static void sendToServer(Channel channel, NBTTagCompound nbt) {
+    NBTPacket p = new NBTPacket(getContainerNBT(channel, nbt));
+    OpenExchange.packetPipeline.sendToServer(p);
+  }
+  
+  public static void handlePacket(NBTTagCompound nbt, EntityPlayer player, Side side) {
+    String channelStr = nbt.getString("channel");
+    Channel c = Channel.valueOf(channelStr);
+    c.p.handlePacket(nbt, player, side);
+  }
+  
+  private static NBTTagCompound getContainerNBT(Channel channel, NBTTagCompound nbt) {
+    NBTTagCompound c = new NBTTagCompound();
+    c.setTag("data", nbt);
+    c.setString("channel", channel.toString());
+    return c;
+  }
+  
+  public static void sendMouseOverToServer(Channel channel, EntityPlayer player) {
+    if (Minecraft.getMinecraft().objectMouseOver != null) {
+      NBTTagCompound nbt = new NBTTagCompound();
+      nbt.setInteger("x", Minecraft.getMinecraft().objectMouseOver.blockX);
+      nbt.setInteger("y", Minecraft.getMinecraft().objectMouseOver.blockY);
+      nbt.setInteger("z", Minecraft.getMinecraft().objectMouseOver.blockZ);
+      sendToServer(channel, nbt);
     }
   }
 }

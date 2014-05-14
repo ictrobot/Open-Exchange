@@ -1,8 +1,12 @@
 package oe.api;
 
+import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
+import oe.qmc.QMC.Data;
+import oe.qmc.QMC.ID;
+import oe.qmc.QMC.IDWrapper;
 
-public class QMCHandler {
+public abstract class QMCHandler {
   /*
    * Base QMC Database Class
    */
@@ -12,30 +16,17 @@ public class QMCHandler {
     this.handles = handles;
   }
   
-  public double decode(Object o, NBTTagCompound nbt) {
-    return nbt.getDouble("qmc");
-  }
+  public abstract ID getID(Object o);
   
-  public NBTTagCompound encode(Object o, double qmc) {
-    NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setDouble("qmc", qmc);
-    return nbt;
-  }
+  public abstract ID getIDFromNBT(NBTTagCompound nbt);
   
-  public NBTTagCompound blacklist(Object o) {
-    NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setDouble("qmc", -1);
-    return nbt;
-  }
+  public abstract Data getData(double qmc, ID id, Object o);
   
-  public Boolean isBlacklisted(Object o, NBTTagCompound nbt) {
-    if (nbt.getDouble("qmc") <= 0) {
-      return true;
-    }
-    return false;
-  }
+  public abstract Data getData(NBTTagCompound nbt);
   
-  public NBTTagCompound getID(Object o) {
-    return new NBTTagCompound();
+  public abstract double getQMC(Data data, ID id, Object o);
+  
+  public Map<IDWrapper, Data> process(Map<IDWrapper, Data> map) {
+    return map;
   }
 }

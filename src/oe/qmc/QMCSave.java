@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import oe.api.GuessHandler;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.util.Util;
 import oe.qmc.file.QMCCustomAction;
 import oe.qmc.guess.Guess;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
@@ -45,10 +45,10 @@ public class QMCSave {
     this.guessHandlers = getGuessHandlers();
     this.QMCSnapshot = QMC.snapshot("QMCSave");
     this.save = new NBTTagCompound();
-    save.setCompoundTag("mods", getNBTModData(mods));
-    save.setCompoundTag("actions", getNBTActions());
-    save.setCompoundTag("guess", getNBTGuessHandlers(guessHandlers));
-    save.setCompoundTag("snapshot", QMCSnapshot);
+    save.setTag("mods", getNBTModData(mods));
+    save.setTag("actions", getNBTActions());
+    save.setTag("guess", getNBTGuessHandlers(guessHandlers));
+    save.setTag("snapshot", QMCSnapshot);
     save.setString("time", Util.getTime() + " " + Util.getDate());
     this.saved = false;
   }
@@ -73,7 +73,7 @@ public class QMCSave {
       NBTTagCompound mod = new NBTTagCompound();
       mod.setString("modID", modID);
       mod.setString("version", data.get(modID));
-      nbt.setCompoundTag(i + "", mod);
+      nbt.setTag(i + "", mod);
     }
     nbt.setInteger("number", data.size());
     return nbt;
@@ -93,7 +93,7 @@ public class QMCSave {
     int i = 0;
     for (QMCCustomAction action : QMC.actions) {
       i++;
-      nbt.setCompoundTag(i + "", action.toNBT());
+      nbt.setTag(i + "", action.toNBT());
     }
     nbt.setInteger("number", i);
     return nbt;

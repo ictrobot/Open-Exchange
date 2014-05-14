@@ -1,7 +1,7 @@
 package oe.core.util;
 
 import java.io.File;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import oe.OpenExchange;
 
 public class ConfigUtil {

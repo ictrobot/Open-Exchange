@@ -17,11 +17,7 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
   
   @Override
   public void updateEntity() {
-    double pStored = stored;
     stored = InWorldQMC.provide(xCoord, yCoord, zCoord, worldObj, stored);
-    if (pStored != stored) {
-      onInventoryChanged();
-    }
   }
   
   @Override
@@ -62,7 +58,6 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
     } else {
       stored = value;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -73,7 +68,6 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
     } else if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -82,7 +76,6 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
     if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -103,5 +96,4 @@ public class TileStorage extends TileEntity implements ServerNetworkedTile, OETi
   public void onClick(EntityPlayer player) {
     
   }
-  
 }

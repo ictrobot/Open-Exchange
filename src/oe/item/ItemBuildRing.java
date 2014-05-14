@@ -16,9 +16,9 @@ import oe.qmc.QMC;
 
 public class ItemBuildRing extends Item implements OEItemInterface, OEItemMode {
   
-  public ItemBuildRing(int id) {
-    super(id);
-    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+  public ItemBuildRing() {
+    super();
+    setTextureName(OEItems.Texture(this.getClass().getSimpleName().substring(4).trim()));
     setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
     setMaxStackSize(1);
@@ -33,7 +33,7 @@ public class ItemBuildRing extends Item implements OEItemInterface, OEItemMode {
           EntityPlayer player = (EntityPlayer) entity;
           ItemStack held = player.getHeldItem();
           if (held != null) {
-            if (ItemStackUtil.isBlock(held.itemID)) {
+            if (ItemStackUtil.isBlock(held)) {
               if (held.stackSize == 1) {
                 if (QMC.hasQMC(held)) {
                   double v = itemStack.getTagCompound().getDouble("Value");

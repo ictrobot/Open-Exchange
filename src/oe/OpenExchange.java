@@ -3,8 +3,7 @@ package oe;
 import java.io.File;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import oe.block.BlockIDs;
-import oe.block.Blocks;
+import oe.block.OEBlocks;
 import oe.block.gui.GUIHandler;
 import oe.block.tile.TileEntities;
 import oe.core.CraftingRecipes;
@@ -13,21 +12,19 @@ import oe.core.Log;
 import oe.core.OECommand;
 import oe.core.QMCCommand;
 import oe.core.Reference;
-import oe.core.data.FakePlayer;
+import oe.core.data.OEFakePlayer;
 import oe.core.data.QuantumToolBlackList;
-import oe.core.data.RemoteDrillData;
+import oe.core.data.TileSync;
+import oe.core.handler.EntityJoinHandler;
 import oe.core.handler.IMCHandler;
-import oe.core.handler.PlayerInteractHandler;
 import oe.core.handler.QMCFuelHandler;
 import oe.core.handler.ToolTipHandler;
 import oe.core.handler.keybind.OEKeyBindHandler;
 import oe.core.util.ConfigUtil;
-import oe.core.util.OreDictionaryUtil;
 import oe.core.util.Util;
-import oe.item.ItemIDs;
-import oe.item.Items;
-import oe.network.connection.ConnectionHandler;
-import oe.network.packet.PacketHandler;
+import oe.item.OEItems;
+import oe.network.packet.NBTPacket;
+import oe.network.packet.PacketPipeline;
 import oe.network.proxy.Server;
 import oe.qmc.ModIntegration;
 import oe.qmc.QMC;
@@ -38,7 +35,6 @@ import oe.qmc.guess.Guess;
 import oe.qmc.guess.OreGuessHandler;
 import oe.qmc.guess.SimpleGuessHandlerFactory;
 import oe.qmc.guess.SmeltingGuessHandlerFactory;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -51,11 +47,9 @@ import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "OpenExchange", "OpenExchangeTS", "OpenExchangeIM", "OpenExchangeQD", "OpenExchangeBM", "OpenExchangeQMC", "OpenExchangeT" }, packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
 public class OpenExchange {
   
@@ -71,6 +65,8 @@ public class OpenExchange {
   @Instance("OE")
   public static OpenExchange instance;
   
+  public static final PacketPipeline packetPipeline = new PacketPipeline();
+  
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     configdir = event.getModConfigurationDirectory();
@@ -78,9 +74,6 @@ public class OpenExchange {
     if (debug) {
       Log.info("Debugging Enabled");
     }
-    Log.debug("Registering Handlers");
-    MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
-    MinecraftForge.EVENT_BUS.register(new PlayerInteractHandler());
     Log.debug("Loading Fuel Handler");
     GameRegistry.registerFuelHandler(new QMCFuelHandler());
     Log.debug("Adding QMC Handlers");
@@ -92,41 +85,46 @@ public class OpenExchange {
     Guess.addFactory(new SimpleGuessHandlerFactory(new OreGuessHandler(SimpleGuessHandlerFactory.class)));
     Log.debug("Loading QMC");
     QMC.load();
+    Log.debug("Loading Blocks");
+    OEBlocks.Load();
+    Log.debug("Loading Items");
+    OEItems.Load();
+    Log.debug("Registering Handlers");
+    MinecraftForge.EVENT_BUS.register(new ToolTipHandler());
+    MinecraftForge.EVENT_BUS.register(OEItems.blockManipulator);
+    MinecraftForge.EVENT_BUS.register(new TileSync());
+    MinecraftForge.EVENT_BUS.register(new EntityJoinHandler());
     if (Util.isClient()) {
       Log.debug("Adding KeyBind Handler");
-      KeyBindingRegistry.registerKeyBinding(new OEKeyBindHandler());
+      MinecraftForge.EVENT_BUS.register(new OEKeyBindHandler());
     }
-    Log.debug("Loading Block IDs");
-    BlockIDs.Load();
-    Log.debug("Loading Blocks");
-    Blocks.Load();
-    Log.debug("Loading Item IDs");
-    ItemIDs.Load();
-    Log.debug("Loading Items");
-    Items.Load();
     Log.debug("Registering Blocks");
-    Blocks.Register();
+    OEBlocks.Register();
     Log.debug("Registering Items");
-    Items.Register();
+    OEItems.Register();
     Log.debug("Registering Tile Entities");
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
-    NetworkRegistry.instance().registerGuiHandler(OpenExchange.instance, new GUIHandler());
+    NetworkRegistry.INSTANCE.registerGuiHandler(OpenExchange.instance, new GUIHandler());
     Log.debug("Loading Quantum Tool Blacklist");
     QuantumToolBlackList.init();
   }
   
   @EventHandler
   public void load(FMLInitializationEvent event) {
-    OreDictionaryUtil.minecraftInit();
     Log.debug("Adding Crafting Recipes");
     CraftingRecipes.load();
+    Log.debug("Initialising Packet Pipeline");
+    packetPipeline.initialise();
   }
   
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
     Log.debug("Loading Mod Integration");
     ModIntegration.init();
+    Log.debug("Post Initialising Packet Pipeline");
+    packetPipeline.postInitialise();
+    packetPipeline.registerPacket(NBTPacket.class);
   }
   
   @EventHandler
@@ -139,16 +137,13 @@ public class OpenExchange {
   @EventHandler
   public void serverAboutToStart(FMLServerAboutToStartEvent event) {
     if (starts == 0) {
-      QMC.process(new QMCItemStack.OreProcessor());
+      QMC.process(QMCItemStack.instance);
     }
     starts++;
   }
   
   @EventHandler
   public void serverStarting(FMLServerStartingEvent event) {
-    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
-      RemoteDrillData.loadNBT();
-    }
     event.registerServerCommand(new OECommand());
     event.registerServerCommand(new QMCCommand());
   }
@@ -156,15 +151,12 @@ public class OpenExchange {
   @EventHandler
   public void serverStarted(FMLServerStartedEvent event) {
     Log.debug("Loading Fake Player");
-    fakePlayer = new FakePlayer.OEFakePlayer();
+    fakePlayer = new OEFakePlayer();
     QMC.serverStarted();
   }
   
   @EventHandler
   public void serverStop(FMLServerStoppingEvent event) {
-    if (ConfigUtil.other("block", "drillRemoteEnabled", true)) {
-      RemoteDrillData.saveNBT();
-    }
     fakePlayer = null;
   }
 }

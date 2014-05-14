@@ -3,13 +3,13 @@ package oe.qmc;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import oe.api.OE;
 import oe.api.OEPipeInterface;
 import oe.api.OETileInterface;
 import oe.api.lib.OEType;
 import oe.core.data.BlockLocation;
+import oe.core.util.Util;
 import oe.core.util.WorldUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -51,7 +51,7 @@ public class InWorldQMC {
       return 0;
     }
     int srcTier = 0;
-    TileEntity srcTile = world.getBlockTileEntity(X, Y, Z);
+    TileEntity srcTile = world.getTileEntity(X, Y, Z);
     if (srcTile != null && isOETile(srcTile.getClass())) {
       OETileInterface oe = (OETileInterface) srcTile;
       srcTier = oe.getTier();
@@ -62,7 +62,7 @@ public class InWorldQMC {
     double qmcCanTransfer = srcTier * factor;
     Path[] paths = getPaths(X, Y, Z, world);
     for (Path p : paths) {
-      TileEntity tile = world.getBlockTileEntity(p.block.x, p.block.y, p.block.z);
+      TileEntity tile = world.getTileEntity(p.block.x, p.block.y, p.block.z);
       if (!p.block.equals(new BlockLocation(X, Y, Z))) {
         if (tile != null && isOETile(tile.getClass())) {
           OETileInterface oe = (OETileInterface) tile;
@@ -70,7 +70,7 @@ public class InWorldQMC {
             double canHandle = oe.getMaxQMC() - oe.getQMC();
             double maxPipeTransfer = qmcCanTransfer;
             for (BlockLocation pipeLoc : p.pipes) {
-              TileEntity tilePipe = world.getBlockTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
+              TileEntity tilePipe = world.getTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
               if (tilePipe != null) {
                 if (isOEPipe(tilePipe.getClass())) {
                   OEPipeInterface pipe = (OEPipeInterface) tilePipe;
@@ -91,7 +91,7 @@ public class InWorldQMC {
             qmcLeftOver = qmcLeftOver - amount;
             qmcCanTransfer = qmcCanTransfer - amount;
             for (BlockLocation pipeLoc : p.pipes) {
-              TileEntity tilePipe = world.getBlockTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
+              TileEntity tilePipe = world.getTileEntity(pipeLoc.x, pipeLoc.y, pipeLoc.z);
               if (tilePipe != null) {
                 if (isOEPipe(tilePipe.getClass())) {
                   OEPipeInterface pipe = (OEPipeInterface) tilePipe;
@@ -110,24 +110,24 @@ public class InWorldQMC {
   }
   
   public static void info(EntityPlayer player, int x, int y, int z) {
-    TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
+    TileEntity te = player.worldObj.getTileEntity(x, y, z);
     if (te != null) {
       if (OE.isOE(te.getClass())) {
         OETileInterface oe = (OETileInterface) te;
-        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + oe.getQMC() + ", Max " + QMC.name + ": " + oe.getMaxQMC() + ", Tier: " + oe.getTier() + ", Type: " + oe.getType()));
+        Util.sendMsg(player, "\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + oe.getQMC() + ", Max " + QMC.name + ": " + oe.getMaxQMC() + ", Tier: " + oe.getTier() + ", Type: " + oe.getType());
       } else if (InWorldQMC.isOEPipe(te.getClass())) {
         OEPipeInterface oe = (OEPipeInterface) te;
-        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + (oe.getMaxQMC() - oe.passThroughLeft()) + ", Max " + QMC.name + ": " + oe.getMaxQMC()));
+        Util.sendMsg(player, "\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + (oe.getMaxQMC() - oe.passThroughLeft()) + ", Max " + QMC.name + ": " + oe.getMaxQMC());
       } else {
-        ItemStack stack = new ItemStack(player.worldObj.getBlockId(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
+        ItemStack stack = new ItemStack(player.worldObj.getBlock(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
         if (QMC.hasQMC(stack)) {
-          player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack)));
+          Util.sendMsg(player, "\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack));
         }
       }
     } else {
-      ItemStack stack = new ItemStack(player.worldObj.getBlockId(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
+      ItemStack stack = new ItemStack(player.worldObj.getBlock(x, y, z), 1, player.worldObj.getBlockMetadata(x, y, z));
       if (QMC.hasQMC(stack)) {
-        player.sendChatToPlayer(ChatMessageComponent.createFromText("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack)));
+        Util.sendMsg(player, ("\u00A73\u00A7l" + QMC.name + " Info:\u00A7r\u00A77 " + QMC.name + ": " + QMC.getQMC(stack)));
       }
     }
   }
@@ -136,7 +136,7 @@ public class InWorldQMC {
     Path[] path = new Path[0];
     for (int i = 0; i < 6; i++) {
       BlockLocation b = WorldUtil.getLocationOnSide(x, y, z, i);
-      TileEntity te = world.getBlockTileEntity(b.x, b.y, b.z);
+      TileEntity te = world.getTileEntity(b.x, b.y, b.z);
       if (te != null && isOETile(te.getClass())) {
         path = addPath(path, b, new BlockLocation[] {});
       }
@@ -180,7 +180,7 @@ public class InWorldQMC {
     BlockLocation[] pipes = Pipes.clone();
     for (int c = 0; c < 6; c++) {
       BlockLocation check = WorldUtil.getLocationOnSide(x, y, z, c);
-      TileEntity tile = world.getBlockTileEntity(check.x, check.y, check.z);
+      TileEntity tile = world.getTileEntity(check.x, check.y, check.z);
       if (tile != null) {
         if (isOEPipe(tile.getClass())) {
           if (!WorldUtil.exists(data.checkedPipes, check)) {

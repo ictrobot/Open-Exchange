@@ -3,6 +3,7 @@ package oe.network.proxy;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 
 public class Server {
   
@@ -18,7 +19,13 @@ public class Server {
     if (!(player instanceof EntityPlayerMP)) {
       return;
     }
-    ((EntityPlayerMP) player).playerNetServerHandler.ticksForFloatKick = 0;
+    // floatingTickCount
+    NetHandlerPlayServer nhps = ((EntityPlayerMP) player).playerNetServerHandler;
+    try {
+      nhps.getClass().getField("floatingTickCount").set(nhps, 0);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
   
   public boolean isSinglePlayer() {

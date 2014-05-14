@@ -2,23 +2,10 @@ package oe.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class OreDictionaryUtil {
-  
-  public static void minecraftInit() {
-    RegisterUtil.Ore("oreCoal", Block.oreCoal);
-    RegisterUtil.Ore("ingotGold", Item.ingotGold);
-    RegisterUtil.Ore("ingotIron", Item.ingotIron);
-    RegisterUtil.Ore("materialCoal", Item.coal);
-    RegisterUtil.Ore("gemDiamond", Item.diamond);
-    RegisterUtil.Ore("materialRedstone", Item.redstone);
-    RegisterUtil.Ore("gemEmerald", Item.emerald);
-    RegisterUtil.Ore("materialNetherQuartz", Item.netherQuartz);
-  }
   
   public static List<ItemStack> getItemStacks(String ore) {
     return OreDictionary.getOres(ore);

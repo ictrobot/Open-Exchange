@@ -10,18 +10,18 @@ import oe.block.tile.TilePipe;
 
 public class BlockPipe extends BlockContainer {
   
-  public BlockPipe(int id) {
-    super(id, Material.iron);
-    setTextureName(Blocks.Texture(this.getClass().getSimpleName().substring(5).trim()));
-    setUnlocalizedName(this.getClass().getSimpleName());
+  public BlockPipe() {
+    super(Material.iron);
+    setBlockTextureName(OEBlocks.Texture(this.getClass().getSimpleName().substring(5).trim()));
+    setBlockName(this.getClass().getSimpleName());
     setHardness(3.0F);
     setResistance(5.0F);
-    setStepSound(Block.soundMetalFootstep);
+    setStepSound(Block.soundTypeMetal);
     setCreativeTab(CreativeTabs.tabBlock);
   }
   
   @Override
-  public TileEntity createNewTileEntity(World par1World) {
+  public TileEntity createNewTileEntity(World par1World, int var2) {
     TilePipe pipe = new TilePipe();
     return pipe;
   }

@@ -1,19 +1,15 @@
 package oe.core.handler.keybind;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.nbt.NBTTagCompound;
 import oe.api.OEItemMode;
-import oe.core.Debug;
+import oe.core.handler.keybind.OEKeyBindHandler.OEKeyBinding;
+import oe.core.util.NetworkUtil;
+import oe.core.util.NetworkUtil.Channel;
 import org.lwjgl.input.Keyboard;
 
-public class OEKeyItemMode extends OEKeyBinding {
-  
-  public OEKeyItemMode() {
-    super("OE Item Mode", Keyboard.KEY_M);
-  }
+public class OEKeyItemMode implements OEKeyBinding {
   
   public void keyDown() {
     EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
@@ -21,19 +17,12 @@ public class OEKeyItemMode extends OEKeyBinding {
       return; // Not in game
     }
     if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof OEItemMode) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-      DataOutputStream outputStream = new DataOutputStream(bos);
-      try {
-        outputStream.writeBoolean(true);
-      } catch (Exception e) {
-        Debug.handleException(e);
-      }
-      
-      Packet250CustomPayload packet = new Packet250CustomPayload();
-      packet.channel = "OpenExchangeIM";
-      packet.data = bos.toByteArray();
-      packet.length = bos.size();
-      player.sendQueue.addToSendQueue(packet);
+      NetworkUtil.sendToServer(Channel.ItemMode, new NBTTagCompound());
     }
+  }
+  
+  @Override
+  public int key() {
+    return Keyboard.KEY_M;
   }
 }

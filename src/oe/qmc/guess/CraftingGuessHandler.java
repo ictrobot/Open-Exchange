@@ -18,7 +18,6 @@ import oe.core.util.ItemStackUtil;
 import oe.core.util.PlayerUtil;
 import oe.core.util.Util;
 import oe.core.util.data.Pair;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingGuessHandler extends GuessHandler {
   
@@ -274,7 +273,7 @@ public class CraftingGuessHandler extends GuessHandler {
       }
     }
     if (failed || input.isBlank()) {
-      Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().itemID + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
+      Log.debug("Error while reading crafting recipes inputs for " + recipe.getRecipeOutput().getDisplayName() + " (ID:" + recipe.getRecipeOutput().getUnlocalizedName() + ", Meta:" + recipe.getRecipeOutput().getItemDamage() + ")");
       Log.debug("IRecipe Type: " + recipe.getClass());
       Debug.printObject(recipe);
       return null;
@@ -294,12 +293,12 @@ public class CraftingGuessHandler extends GuessHandler {
         }
       }
       PlayerUtil.wipeInv(OpenExchange.fakePlayer);
-      GameRegistry.onItemCrafted(OpenExchange.fakePlayer, output, ic);
+      output.onCrafting(OpenExchange.fakePlayer.worldObj, OpenExchange.fakePlayer, 1);
       for (int i = 0; i < inputs.length; i++) {
         if (inputs[i] != null) {
           if (inputs[i] != ic.getStackInSlot(i)) {
             data.add(ic.getStackInSlot(i));
-          } else if (ic.getStackInSlot(i).getItem().hasContainerItem() && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
+          } else if (ic.getStackInSlot(i).getItem().hasContainerItem(ic.getStackInSlot(i)) && ic.getStackInSlot(i).getItem().getContainerItem() != null) {
             data.add(new ItemStack(ic.getStackInSlot(i).getItem().getContainerItem()));
           }
         }

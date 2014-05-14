@@ -15,9 +15,9 @@ import oe.qmc.QMC;
 
 public class ItemRepair extends Item implements OEItemInterface, OEItemMode {
   
-  public ItemRepair(int id) {
-    super(id);
-    setTextureName(Items.Texture(this.getClass().getSimpleName().substring(4).trim()));
+  public ItemRepair() {
+    super();
+    setTextureName(OEItems.Texture(this.getClass().getSimpleName().substring(4).trim()));
     setUnlocalizedName(this.getClass().getSimpleName());
     setCreativeTab(CreativeTabs.tabTools);
     setMaxStackSize(1);
@@ -34,7 +34,7 @@ public class ItemRepair extends Item implements OEItemInterface, OEItemMode {
             if (stack != null) {
               if (stack.isItemStackDamageable() && stack.getMaxStackSize() == 1) {
                 if (stack.getItemDamage() > 0) {
-                  ItemStack normal = new ItemStack(stack.itemID, 1, 0);
+                  ItemStack normal = new ItemStack(stack.getItem(), 1, 0);
                   double repairCost = (QMC.getQMC(normal) - QMC.getQMC(stack)) / stack.getItemDamage();
                   if (getQMC(itemstack) >= repairCost) {
                     decreaseQMC(repairCost, itemstack);

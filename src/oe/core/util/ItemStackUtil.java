@@ -106,34 +106,16 @@ public class ItemStackUtil {
     return array;
   }
   
+  public static boolean isBlock(ItemStack o) {
+    return Block.getBlockById(Item.getIdFromItem(o.getItem())) != null;
+  }
+  
+  public static boolean isItem(ItemStack o) {
+    return !isBlock(o);
+  }
+  
   public static boolean isValidTool(ItemStack o) {
     return o.getItem().isItemTool(o);
-  }
-  
-  public static boolean isItem(int ID) {
-    if (ID >= 32000) {
-      return false;
-    }
-    if (isBlock(ID)) {
-      return false;
-    }
-    if (Item.itemsList[ID] == null) {
-      return false;
-    }
-    return true;
-  }
-  
-  public static boolean isBlock(int ID) {
-    if (ID >= 4096) {
-      return false;
-    }
-    if (Block.blocksList[ID] == null) {
-      return false;
-    }
-    if (Block.blocksList[ID].getUnlocalizedName().contains("ForgeFiller")) {
-      return false;
-    }
-    return true;
   }
   
   public static boolean equalsSize(ItemStack itemstack1, ItemStack itemstack2) {
@@ -152,7 +134,7 @@ public class ItemStackUtil {
     if (itemstack1 == null || itemstack2 == null) {
       return false;
     }
-    boolean id = itemstack1.itemID == itemstack2.itemID;
+    boolean id = itemstack1.getUnlocalizedName() == itemstack2.getUnlocalizedName();
     boolean meta = itemstack1.getItemDamage() == itemstack2.getItemDamage();
     boolean nbt = equalsNBT(itemstack1, itemstack2);
     if (id && meta && nbt) {
@@ -165,7 +147,7 @@ public class ItemStackUtil {
     if (itemstack1 == null || itemstack2 == null) {
       return false;
     }
-    boolean id = itemstack1.itemID == itemstack2.itemID;
+    boolean id = itemstack1.getUnlocalizedName() == itemstack2.getUnlocalizedName();
     boolean meta = itemstack1.getItemDamage() == itemstack2.getItemDamage();
     if (id && meta) {
       return true;

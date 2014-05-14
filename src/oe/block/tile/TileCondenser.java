@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -58,7 +58,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
   public void updateEntity() {
     updateDifferent();
     if (Util.isServerSide()) {
-      onInventoryChanged();
       if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0) {
         for (int i = 1; i <= 4; i++) {
           fluidTarget = FluidUtil.getFluidStack(getStackInSlot(0));
@@ -144,23 +143,8 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
   }
   
   @Override
-  public String getInvName() {
-    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
-  }
-  
-  @Override
   public ItemStack getStackInSlot(int i) {
     return chestContents[i];
-  }
-  
-  @Override
-  public void closeChest() {
-    onInventoryChanged();
-  }
-  
-  @Override
-  public void openChest() {
-    onInventoryChanged();
   }
   
   @Override
@@ -169,14 +153,12 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
       if (chestContents[slotnum].stackSize <= x) {
         ItemStack itemstack = chestContents[slotnum];
         chestContents[slotnum] = null;
-        onInventoryChanged();
         return itemstack;
       }
       ItemStack itemstack1 = chestContents[slotnum].splitStack(x);
       if (chestContents[slotnum].stackSize == 0) {
         chestContents[slotnum] = null;
       }
-      onInventoryChanged();
       return itemstack1;
     } else {
       return null;
@@ -197,7 +179,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
       }
       if (slot != -1) {
         chestContents[slot].stackSize++;
-        onInventoryChanged();
         return true;
       }
       int free = freeSlot();
@@ -227,16 +208,15 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
       itemstack.stackSize = getInventoryStackLimit();
     }
-    onInventoryChanged();
   }
   
   @Override
   public void readFromNBT(NBTTagCompound TagCompound) {
     super.readFromNBT(TagCompound);
-    NBTTagList TagList = TagCompound.getTagList("Items");
+    NBTTagList TagList = TagCompound.getTagList("Items", chestContents.length);
     chestContents = new ItemStack[getSizeInventory()];
     for (int i = 0; i < TagList.tagCount(); i++) {
-      NBTTagCompound nbttagcompound1 = (NBTTagCompound) TagList.tagAt(i);
+      NBTTagCompound nbttagcompound1 = (NBTTagCompound) TagList.getCompoundTagAt(i);
       int j = nbttagcompound1.getByte("Slot") & 0xff;
       if (j >= 0 && j < chestContents.length) {
         chestContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
@@ -264,7 +244,7 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     TagCompound.setTag("Items", TagList);
     TagCompound.setBoolean("FluidBehaviour", fluidBehaviour);
     if (fluidStored != null) {
-      TagCompound.setCompoundTag("Fluid", fluidStored.writeToNBT(new NBTTagCompound()));
+      TagCompound.setTag("Fluid", fluidStored.writeToNBT(new NBTTagCompound()));
     }
     TagCompound.setDouble("OE_Stored_Value", stored);
   }
@@ -279,7 +259,7 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     if (worldObj == null) {
       return true;
     }
-    if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
+    if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this) {
       return false;
     }
     return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
@@ -288,11 +268,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
   @Override
   public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
     return true;
-  }
-  
-  @Override
-  public boolean isInvNameLocalized() {
-    return false;
   }
   
   @Override
@@ -398,7 +373,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     } else {
       stored = value;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -409,7 +383,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     } else if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -418,7 +391,6 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
     if (stored < 0) {
       stored = 0;
     }
-    onInventoryChanged();
   }
   
   @Override
@@ -506,5 +478,25 @@ public class TileCondenser extends TileEntity implements ServerNetworkedTile, II
   @Override
   public FluidTankInfo[] getTankInfo(ForgeDirection from) {
     return new FluidTankInfo[] { new FluidTankInfo(fluidStored, capacity) };
+  }
+  
+  @Override
+  public String getInventoryName() {
+    return "container." + this.getClass().getSimpleName().substring(4) + ".name";
+  }
+  
+  @Override
+  public boolean hasCustomInventoryName() {
+    return false;
+  }
+  
+  @Override
+  public void openInventory() {
+    
+  }
+  
+  @Override
+  public void closeInventory() {
+    
   }
 }

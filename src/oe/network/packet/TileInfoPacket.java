@@ -1,28 +1,18 @@
 package oe.network.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.nbt.NBTTagCompound;
+import oe.core.util.NetworkUtil.PacketProcessor;
 import oe.qmc.InWorldQMC;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
-public class TileInfoPacket {
+public class TileInfoPacket implements PacketProcessor {
   
-  public static void packet(INetworkManager manager, Packet250CustomPayload packet, Player Player) {
-    DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-    int x;
-    int y;
-    int z;
-    try {
-      x = inputStream.readInt();
-      y = inputStream.readInt();
-      z = inputStream.readInt();
-    } catch (IOException e) {
-      return;
-    }
-    InWorldQMC.info((EntityPlayer) Player, x, y, z);
+  @Override
+  public void handlePacket(NBTTagCompound nbt, EntityPlayer player, Side side) {
+    int x = nbt.getInteger("x");
+    int y = nbt.getInteger("y");
+    int z = nbt.getInteger("z");
+    InWorldQMC.info(player, x, y, z);
   }
 }

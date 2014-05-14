@@ -26,7 +26,7 @@ public class Guess {
       }
       this.itemstack = itemstack.copy();
       this.itemstack.stackSize = 1;
-      this.hashcode = itemstack.getDisplayName().hashCode() ^ itemstack.itemID ^ (itemstack.getItemDamage());
+      this.hashcode = itemstack.getDisplayName().hashCode() ^ itemstack.getUnlocalizedName().hashCode() ^ itemstack.getItemDamage();
       if (this.itemstack.stackTagCompound != null) {
         this.hashcode = this.hashcode ^ this.itemstack.stackTagCompound.hashCode();
       }
@@ -131,7 +131,7 @@ public class Guess {
         check(((HashStack) o).itemstack);
         checkTimer.stop();
         i++;
-        Log.debug(i + "/" + max + " " + checkTimer.elapsed(TimeUnit.MICROSECONDS) + "Microseconds " + timer.elapsed(TimeUnit.MILLISECONDS) + "TotalMS " + ((HashStack) o).itemstack + " ID:" + ((HashStack) o).itemstack.itemID + " Meta:" + ((HashStack) o).itemstack.getItemDamage());
+        Log.debug(i + "/" + max + " " + checkTimer.elapsed(TimeUnit.MICROSECONDS) + "Microseconds " + timer.elapsed(TimeUnit.MILLISECONDS) + "TotalMS " + ((HashStack) o).itemstack + " ID:" + ((HashStack) o).itemstack.getUnlocalizedName() + " Meta:" + ((HashStack) o).itemstack.getItemDamage());
         checkTimer.reset();
       } catch (Exception e) {
         Debug.handleException(e);
