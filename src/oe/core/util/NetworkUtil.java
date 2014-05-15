@@ -45,7 +45,7 @@ public class NetworkUtil {
   public static void handlePacket(NBTTagCompound nbt, EntityPlayer player, Side side) {
     String channelStr = nbt.getString("channel");
     Channel c = Channel.valueOf(channelStr);
-    c.p.handlePacket(nbt, player, side);
+    c.p.handlePacket(nbt.getCompoundTag("data"), player, side);
   }
   
   private static NBTTagCompound getContainerNBT(Channel channel, NBTTagCompound nbt) {
@@ -55,7 +55,7 @@ public class NetworkUtil {
     return c;
   }
   
-  public static void sendMouseOverToServer(Channel channel, EntityPlayer player) {
+  public static void sendMouseOverToServer(Channel channel) {
     if (Minecraft.getMinecraft().objectMouseOver != null) {
       NBTTagCompound nbt = new NBTTagCompound();
       nbt.setInteger("x", Minecraft.getMinecraft().objectMouseOver.blockX);

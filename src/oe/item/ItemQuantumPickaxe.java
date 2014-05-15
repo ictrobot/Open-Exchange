@@ -60,7 +60,7 @@ public class ItemQuantumPickaxe extends ItemPickaxe implements OEItemInterface {
   @Override
   public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
     if (Util.isClientSide()) {
-      NetworkUtil.sendMouseOverToServer(Channel.QuantumDestruction, player);
+      NetworkUtil.sendMouseOverToServer(Channel.QuantumDestruction);
     }
     return itemstack;
   }

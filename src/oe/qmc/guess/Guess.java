@@ -60,10 +60,8 @@ public class Guess {
   }
   
   public static void load() {
-    Stopwatch timer = new Stopwatch();
-    Stopwatch stepTimer = new Stopwatch();
-    timer.start();
-    stepTimer.start();
+    Stopwatch timer = Stopwatch.createStarted();
+    Stopwatch stepTimer = Stopwatch.createStarted();
     for (GuessHandlerFactory f : factories) {
       try {
         Log.debug("Initiating " + f.getClass().getSimpleName() + " GuessHandlerFactory");
@@ -124,7 +122,7 @@ public class Guess {
     stepTimer.start();
     int i = 0;
     int max = itemstacks.keySet().size();
-    Stopwatch checkTimer = new Stopwatch();
+    Stopwatch checkTimer = Stopwatch.createUnstarted();
     for (Object o : itemstacks.keySet().toArray()) {
       try {
         checkTimer.start();

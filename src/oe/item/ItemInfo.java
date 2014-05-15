@@ -28,7 +28,7 @@ public class ItemInfo extends Item implements OEItemMode {
     checkNBT(itemstack);
     if (Util.isClientSide() && Minecraft.getMinecraft().objectMouseOver != null) {
       if (itemstack.getTagCompound().getBoolean("Server")) {
-        NetworkUtil.sendMouseOverToServer(Channel.TileInfo, player);
+        NetworkUtil.sendMouseOverToServer(Channel.TileInfo);
       } else {
         int x = Minecraft.getMinecraft().objectMouseOver.blockX;
         int y = Minecraft.getMinecraft().objectMouseOver.blockY;

@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import oe.block.tile.TileStorage;
 import oe.core.util.Util;
@@ -38,7 +37,7 @@ public class BlockStorage extends BlockContainer {
         return true;
       }
       TileStorage storage = (TileStorage) te;
-      player.addChatMessage(new ChatComponentText("Stored " + storage.getQMC() + " Maximum " + storage.getMaxQMC() + " Percentage " + QMC.formatter.format(storage.stored / storage.getMaxQMC() * 100)));
+      Util.sendMsg(player, "Stored " + storage.getQMC() + " Maximum " + storage.getMaxQMC() + " Percentage " + QMC.formatter.format(storage.stored / storage.getMaxQMC() * 100));
       storage.onClick(player);
     }
     return true;
