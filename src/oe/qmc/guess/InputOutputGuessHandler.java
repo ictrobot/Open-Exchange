@@ -1,7 +1,7 @@
 package oe.qmc.guess;
 
 import net.minecraft.item.ItemStack;
-import oe.api.GuessHandler;
+import oe.api.qmc.guess.GuessHandler;
 
 /**
  * Simple Guess Handler with one Input and one Output

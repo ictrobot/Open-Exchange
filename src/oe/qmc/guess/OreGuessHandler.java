@@ -2,7 +2,7 @@ package oe.qmc.guess;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.api.GuessHandler;
+import oe.api.qmc.guess.GuessHandler;
 import oe.core.util.OreDictionaryUtil;
 import oe.qmc.QMC;
 

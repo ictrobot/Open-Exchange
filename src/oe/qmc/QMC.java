@@ -8,7 +8,10 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import oe.OpenExchange;
-import oe.api.QMCHandler;
+import oe.api.qmc.Data;
+import oe.api.qmc.ID;
+import oe.api.qmc.QMCHandler;
+import oe.api.qmc.QMCIDWrapper;
 import oe.core.Log;
 import oe.core.util.ConfigUtil;
 import oe.core.util.Util;
@@ -17,85 +20,11 @@ import oe.qmc.file.QMCCustomAction;
 import oe.qmc.guess.Guess;
 
 public final class QMC {
-  
-  // TODO Move ID&Data to their own files
-  public static interface ID {
-    public NBTTagCompound toNBT();
-    
-    public Class<? extends QMCHandler> getQMCHandlerClass();
-  }
-  
-  public final static class IDWrapper {
-    public final ID id;
-    public final QMCHandler handler;
-    
-    public IDWrapper(ID id, QMCHandler handler) {
-      this.id = id;
-      this.handler = handler;
-    }
-    
-    public IDWrapper(NBTTagCompound nbt) {
-      this.handler = QMC.getHandlerFromString(nbt.getString("handler"));
-      this.id = handler.getIDFromNBT(nbt.getCompoundTag("id"));
-    }
-    
-    public NBTTagCompound getNBT() {
-      NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setTag("id", id.toNBT());
-      nbt.setString("handler", handler.getClass().getSimpleName());
-      return nbt;
-    }
-    
-    public String toString() {
-      return handler.getClass().getSimpleName() + ":" + id.toString();
-    }
-    
-    public int hashCode() {
-      return id.hashCode();
-    }
-    
-    public boolean equals(Object o) {
-      if (o instanceof IDWrapper) {
-        return id.equals(((IDWrapper) o).id);
-      }
-      return false;
-    }
-  }
-  
-  public static interface Data {
-    public NBTTagCompound toNBT();
-  }
-  
-  public static class DataNormal implements Data {
-    
-    public final double qmc;
-    
-    public DataNormal(double qmc) {
-      this.qmc = qmc;
-    }
-    
-    @Override
-    public NBTTagCompound toNBT() {
-      NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setDouble("qmc", qmc);
-      return nbt;
-    }
-    
-    public String toString() {
-      return qmc + "";
-    }
-    
-    public static Data getData(NBTTagCompound nbt) {
-      return new DataNormal(nbt.getDouble("qmc"));
-    }
-    
-  }
-  
   // Name
   public static final String name = "QMC";
   public static final String nameFull = "Quantum Matter Currency";
   // Database
-  private static HashMap<IDWrapper, Data> database = new HashMap<IDWrapper, Data>();
+  private static HashMap<QMCIDWrapper, Data> database = new HashMap<QMCIDWrapper, Data>();
   private static ArrayList<ID> blacklist = new ArrayList<ID>();
   // Formatter
   public static final DecimalFormat formatter = new DecimalFormat("0.00");
@@ -174,7 +103,7 @@ public final class QMC {
     if (h != null) {
       ID id = h.getID(o);
       if (id != null && !blacklist.contains(id)) {
-        database.put(new IDWrapper(id, h), h.getData(qmc, id, o));
+        database.put(new QMCIDWrapper(id, h), h.getData(qmc, id, o));
         return true;
       }
     }
@@ -185,7 +114,7 @@ public final class QMC {
     QMCHandler h = getHandler(o);
     if (h != null) {
       ID id = h.getID(o);
-      Data data = database.get(new IDWrapper(id, h));
+      Data data = database.get(new QMCIDWrapper(id, h));
       if (id != null && data != null) {
         return h.getQMC(data, id, o);
       }
@@ -197,7 +126,7 @@ public final class QMC {
     QMCHandler h = getHandler(o);
     if (h != null) {
       ID id = h.getID(o);
-      return database.containsKey(new IDWrapper(id, h));
+      return database.containsKey(new QMCIDWrapper(id, h));
     }
     return false;
   }
@@ -233,7 +162,7 @@ public final class QMC {
     Log.info("Taking " + snapshotName + " " + name + " Snapshot");
     NBTTagCompound nbt = new NBTTagCompound();
     NBTTagList list = new NBTTagList();
-    for (IDWrapper id : database.keySet()) {
+    for (QMCIDWrapper id : database.keySet()) {
       if (id == null) {
         continue;
       }
@@ -258,17 +187,17 @@ public final class QMC {
     NBTTagList list = nbt.getTagList("data", 10);
     for (int i = 0; i < list.tagCount(); i++) {
       NBTTagCompound snapshot = list.getCompoundTagAt(i);
-      IDWrapper id = new IDWrapper(snapshot.getCompoundTag("id"));
-      database.put(id, id.handler.getData(snapshot.getCompoundTag("data")));
+      QMCIDWrapper id = new QMCIDWrapper(snapshot.getCompoundTag("id"));
+      database.put(id, id.handler.getData(snapshot.getTag("data")));
     }
     Log.debug("After restoring there are " + size() + " " + name + " values");
     loadedSnapshot = nbt;
   }
   
   public static void process(QMCHandler handler) {
-    HashMap<IDWrapper, Data> map = new HashMap<IDWrapper, Data>();
+    HashMap<QMCIDWrapper, Data> map = new HashMap<QMCIDWrapper, Data>();
     for (Object o : database.keySet().toArray()) {
-      IDWrapper id = (IDWrapper) o;
+      QMCIDWrapper id = (QMCIDWrapper) o;
       if (id == null) {
         continue;
       }

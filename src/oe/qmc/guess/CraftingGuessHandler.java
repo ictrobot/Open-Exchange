@@ -10,7 +10,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import oe.OpenExchange;
-import oe.api.GuessHandler;
+import oe.api.qmc.guess.GuessHandler;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.data.FakeContainer;

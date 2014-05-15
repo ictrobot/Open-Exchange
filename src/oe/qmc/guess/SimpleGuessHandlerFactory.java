@@ -2,8 +2,8 @@ package oe.qmc.guess;
 
 import java.util.ArrayList;
 import java.util.List;
-import oe.api.GuessHandler;
-import oe.api.GuessHandlerFactory;
+import oe.api.qmc.guess.GuessHandler;
+import oe.api.qmc.guess.GuessHandlerFactory;
 
 public class SimpleGuessHandlerFactory extends GuessHandlerFactory {
   

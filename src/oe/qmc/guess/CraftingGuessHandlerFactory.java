@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import oe.api.GuessHandler;
-import oe.api.GuessHandlerFactory;
+import oe.api.qmc.guess.GuessHandler;
+import oe.api.qmc.guess.GuessHandlerFactory;
 
 public class CraftingGuessHandlerFactory extends GuessHandlerFactory {
   

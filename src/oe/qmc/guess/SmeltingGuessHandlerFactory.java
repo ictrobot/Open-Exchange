@@ -6,8 +6,8 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import oe.api.GuessHandler;
-import oe.api.GuessHandlerFactory;
+import oe.api.qmc.guess.GuessHandler;
+import oe.api.qmc.guess.GuessHandlerFactory;
 
 public class SmeltingGuessHandlerFactory extends GuessHandlerFactory {
   

@@ -2,7 +2,7 @@ package oe.qmc.guess;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
-import oe.api.GuessHandler;
+import oe.api.qmc.guess.GuessHandler;
 import oe.core.util.FluidUtil;
 
 /*

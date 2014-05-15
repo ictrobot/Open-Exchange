@@ -2,99 +2,21 @@ package oe.qmc;
 
 import java.util.Map;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
-import oe.api.QMCHandler;
+import oe.api.qmc.Data;
+import oe.api.qmc.ID;
+import oe.api.qmc.QMCHandler;
+import oe.api.qmc.QMCIDWrapper;
+import oe.api.qmc.SimpleData;
+import oe.api.qmc.id.ItemStackID;
+import oe.api.qmc.id.OreDictionaryID;
 import oe.core.util.ItemStackUtil;
-import oe.qmc.QMC.Data;
-import oe.qmc.QMC.DataNormal;
-import oe.qmc.QMC.ID;
-import oe.qmc.QMC.IDWrapper;
 
 public class QMCItemStack extends QMCHandler {
   
-  public static class ItemStackID implements ID {
-    
-    public final ItemStack itemstack;
-    private int hashcode;
-    
-    public ItemStackID(ItemStack itemstack) {
-      this.itemstack = itemstack;
-      if (this.itemstack.stackTagCompound != null) {
-        this.hashcode = itemstack.getUnlocalizedName().hashCode() ^ itemstack.getItemDamage() ^ this.itemstack.stackTagCompound.hashCode();
-      } else {
-        this.hashcode = itemstack.getUnlocalizedName().hashCode() ^ itemstack.getItemDamage();
-      }
-    }
-    
-    @Override
-    public NBTTagCompound toNBT() {
-      NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setTag("stack", itemstack.writeToNBT(new NBTTagCompound()));
-      return nbt;
-    }
-    
-    @Override
-    public Class<? extends QMCHandler> getQMCHandlerClass() {
-      return QMCItemStack.class;
-    }
-    
-    public int hashCode() {
-      return hashcode;
-    }
-    
-    public boolean equals(Object o) {
-      System.out.println(o + " " + itemstack);
-      if (o instanceof ItemStackID) {
-        ItemStack io = ((ItemStackID) o).itemstack;
-        return io.getUnlocalizedName().contentEquals(itemstack.getUnlocalizedName()) & io.getItemDamage() == itemstack.getItemDamage() & ((io.stackTagCompound == null && itemstack.stackTagCompound == null) || io.stackTagCompound == itemstack.stackTagCompound);
-      }
-      return false;
-    }
-    
-    public String toString() {
-      return itemstack.getUnlocalizedName();
-    }
-  }
-  
-  public static class OreDictionaryID implements ID {
-    
-    public final String ore;
-    
-    public OreDictionaryID(String ore) {
-      this.ore = ore;
-    }
-    
-    @Override
-    public NBTTagCompound toNBT() {
-      NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setString("ore", ore);
-      return nbt;
-    }
-    
-    @Override
-    public Class<? extends QMCHandler> getQMCHandlerClass() {
-      return QMCItemStack.class;
-    }
-    
-    public int hashCode() {
-      return ore.hashCode();
-    }
-    
-    public boolean equals(Object o) {
-      if (o instanceof OreDictionaryID) {
-        return ((OreDictionaryID) o).ore == this.ore;
-      }
-      return false;
-    }
-    
-    public String toString() {
-      return ore;
-    }
-    
-  }
-  
-  public static class ItemStackData extends DataNormal {
+  public static class ItemStackData extends SimpleData {
     
     public final boolean metaSensitive;
     public final int maxMeta;
@@ -111,7 +33,8 @@ public class QMCItemStack extends QMCHandler {
     
     @Override
     public NBTTagCompound toNBT() {
-      NBTTagCompound nbt = super.toNBT();
+      NBTTagCompound nbt = new NBTTagCompound();
+      nbt.setTag("qmc", super.toNBT());
       nbt.setBoolean("meta", metaSensitive);
       nbt.setInteger("maxMeta", maxMeta);
       return nbt;
@@ -158,7 +81,8 @@ public class QMCItemStack extends QMCHandler {
   }
   
   @Override
-  public Data getData(NBTTagCompound nbt) {
+  public Data getData(NBTBase n) {
+    NBTTagCompound nbt = (NBTTagCompound) n;
     return new ItemStackData(nbt.getDouble("qmc"), nbt.getBoolean("meta"), nbt.getInteger("maxMeta"));
   }
   
@@ -172,15 +96,15 @@ public class QMCItemStack extends QMCHandler {
     return qmc;
   }
   
-  public Map<IDWrapper, Data> process(Map<IDWrapper, Data> map) {
+  public Map<QMCIDWrapper, Data> process(Map<QMCIDWrapper, Data> map) {
     for (Object o : map.keySet().toArray()) {
-      IDWrapper idw = (IDWrapper) o;
+      QMCIDWrapper idw = (QMCIDWrapper) o;
       ID id = idw.id;
       Data data = map.get(idw);
       if (id instanceof ItemStackID) {
-        if (OreDictionary.getOreID(((ItemStackID) id).itemstack) != -1) {
+        if (OreDictionary.getOreID(((ItemStackID) id).getItemStack()) != -1) {
           map.remove(idw);
-          IDWrapper n = new IDWrapper(new OreDictionaryID(OreDictionary.getOreName(OreDictionary.getOreID(((ItemStackID) id).itemstack))), this);
+          QMCIDWrapper n = new QMCIDWrapper(new OreDictionaryID(OreDictionary.getOreName(OreDictionary.getOreID(((ItemStackID) id).getItemStack()))), this);
           map.put(n, data);
         }
       }

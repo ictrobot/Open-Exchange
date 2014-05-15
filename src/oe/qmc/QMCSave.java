@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import oe.api.GuessHandler;
+import oe.api.qmc.guess.GuessHandler;
 import oe.core.Debug;
 import oe.core.Log;
 import oe.core.util.Util;
