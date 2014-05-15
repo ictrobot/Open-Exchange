@@ -105,7 +105,7 @@ public class OpenExchange {
     Log.debug("Registering Tile Entities");
     TileEntities.Register();
     Log.debug("Registering GUI Handler");
-    NetworkRegistry.INSTANCE.registerGuiHandler(OpenExchange.instance, new GUIHandler());
+    NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
     Log.debug("Loading Quantum Tool Blacklist");
     QuantumToolBlackList.init();
   }
@@ -125,6 +125,8 @@ public class OpenExchange {
     Log.debug("Post Initialising Packet Pipeline");
     packetPipeline.postInitialise();
     packetPipeline.registerPacket(NBTPacket.class);
+    Log.debug("Printing QMC Database");
+    Log.debug(QMC.databaseString());
   }
   
   @EventHandler

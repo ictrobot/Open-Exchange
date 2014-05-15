@@ -16,9 +16,15 @@ public class QMCItemStack extends QMCHandler {
   public static class ItemStackID implements ID {
     
     public final ItemStack itemstack;
+    private int hashcode;
     
     public ItemStackID(ItemStack itemstack) {
       this.itemstack = itemstack;
+      if (this.itemstack.stackTagCompound != null) {
+        this.hashcode = itemstack.getUnlocalizedName().hashCode() ^ itemstack.getItemDamage() ^ this.itemstack.stackTagCompound.hashCode();
+      } else {
+        this.hashcode = itemstack.getUnlocalizedName().hashCode() ^ itemstack.getItemDamage();
+      }
     }
     
     @Override
@@ -33,6 +39,22 @@ public class QMCItemStack extends QMCHandler {
       return QMCItemStack.class;
     }
     
+    public int hashCode() {
+      return hashcode;
+    }
+    
+    public boolean equals(Object o) {
+      System.out.println(o + " " + itemstack);
+      if (o instanceof ItemStackID) {
+        ItemStack io = ((ItemStackID) o).itemstack;
+        return io.getUnlocalizedName().contentEquals(itemstack.getUnlocalizedName()) & io.getItemDamage() == itemstack.getItemDamage() & ((io.stackTagCompound == null && itemstack.stackTagCompound == null) || io.stackTagCompound == itemstack.stackTagCompound);
+      }
+      return false;
+    }
+    
+    public String toString() {
+      return itemstack.getUnlocalizedName();
+    }
   }
   
   public static class OreDictionaryID implements ID {
@@ -53,6 +75,21 @@ public class QMCItemStack extends QMCHandler {
     @Override
     public Class<? extends QMCHandler> getQMCHandlerClass() {
       return QMCItemStack.class;
+    }
+    
+    public int hashCode() {
+      return ore.hashCode();
+    }
+    
+    public boolean equals(Object o) {
+      if (o instanceof OreDictionaryID) {
+        return ((OreDictionaryID) o).ore == this.ore;
+      }
+      return false;
+    }
+    
+    public String toString() {
+      return ore;
     }
     
   }
@@ -93,6 +130,9 @@ public class QMCItemStack extends QMCHandler {
     if (o instanceof String) {
       return new OreDictionaryID((String) o);
     } else {
+      if (OreDictionary.getOreID((ItemStack) o) != -1) {
+        return new OreDictionaryID(OreDictionary.getOreName(OreDictionary.getOreID((ItemStack) o)));
+      }
       return new ItemStackID((ItemStack) o);
     }
   }
@@ -133,7 +173,8 @@ public class QMCItemStack extends QMCHandler {
   }
   
   public Map<IDWrapper, Data> process(Map<IDWrapper, Data> map) {
-    for (IDWrapper idw : map.keySet()) {
+    for (Object o : map.keySet().toArray()) {
+      IDWrapper idw = (IDWrapper) o;
       ID id = idw.id;
       Data data = map.get(idw);
       if (id instanceof ItemStackID) {

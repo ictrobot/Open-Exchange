@@ -40,7 +40,7 @@ public class QMCValues {
     add(Items.coal, 128); // Coal
     add(Blocks.mossy_cobblestone, 128);
     add(Items.leather, 12);
-    add(Blocks.reeds, 16);
+    // add(Blocks.reeds, 16);
     add(Items.reeds, 16);
     add(Items.wheat, 24);
     add(Items.carrot, 24);
@@ -66,7 +66,7 @@ public class QMCValues {
     add(Blocks.vine, 16);
     add(Blocks.waterlily, 16);
     add(Blocks.nether_brick, 4);
-    add(Blocks.nether_wart, 32);
+    // add(Blocks.nether_wart, 32);
     add(Blocks.end_stone, 8);
     add(Items.ender_pearl, 1024);
     add(Items.blaze_rod, 512);

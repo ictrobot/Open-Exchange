@@ -18,6 +18,7 @@ import oe.qmc.guess.Guess;
 
 public final class QMC {
   
+  // TODO Move ID&Data to their own files
   public static interface ID {
     public NBTTagCompound toNBT();
     
@@ -44,6 +45,21 @@ public final class QMC {
       nbt.setString("handler", handler.getClass().getSimpleName());
       return nbt;
     }
+    
+    public String toString() {
+      return handler.getClass().getSimpleName() + ":" + id.toString();
+    }
+    
+    public int hashCode() {
+      return id.hashCode();
+    }
+    
+    public boolean equals(Object o) {
+      if (o instanceof IDWrapper) {
+        return id.equals(((IDWrapper) o).id);
+      }
+      return false;
+    }
   }
   
   public static interface Data {
@@ -63,6 +79,10 @@ public final class QMC {
       NBTTagCompound nbt = new NBTTagCompound();
       nbt.setDouble("qmc", qmc);
       return nbt;
+    }
+    
+    public String toString() {
+      return qmc + "";
     }
     
     public static Data getData(NBTTagCompound nbt) {
@@ -165,7 +185,7 @@ public final class QMC {
     QMCHandler h = getHandler(o);
     if (h != null) {
       ID id = h.getID(o);
-      Data data = database.get(id);
+      Data data = database.get(new IDWrapper(id, h));
       if (id != null && data != null) {
         return h.getQMC(data, id, o);
       }
@@ -177,7 +197,7 @@ public final class QMC {
     QMCHandler h = getHandler(o);
     if (h != null) {
       ID id = h.getID(o);
-      return database.containsKey(id);
+      return database.containsKey(new IDWrapper(id, h));
     }
     return false;
   }
@@ -285,5 +305,9 @@ public final class QMC {
       return;
     }
     handlers.add(handler);
+  }
+  
+  public static String databaseString() {
+    return database.toString();
   }
 }
