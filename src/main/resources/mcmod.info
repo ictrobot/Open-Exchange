@@ -1,0 +1,19 @@
+[
+{
+  "modid": "OE",
+  "name": "Open-Exchange",
+  "description": "Idea from Equivalent Exchange 2 by x3n0ph0b3 & Pahimar",
+  "version": "@VERSION@",
+  "credits": "ictrobot",
+  "logoFile": "logo.png",
+  "mcversion": "1.7.10",
+  "url": "https://github.com/ictrobot/",
+  "updateUrl": "",
+  "authors": [ "ictrobot"],
+  "parent": "",
+  "screenshots": [],
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]

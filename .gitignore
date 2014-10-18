@@ -4,6 +4,7 @@ bin/
 tmp/
 jars/
 temp/
+run/
 build.properties
 *.tmp
 *.bak
@@ -41,6 +42,9 @@ mcp/
 *.tli
 *.tlh
 *.tmp
+*.iml
+*.ipr
+*.iws
 *.vspscc
 .builds
 *.dotCover
